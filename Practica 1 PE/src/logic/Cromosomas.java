@@ -60,7 +60,7 @@ public class Cromosomas {
         }
     }
 
-    public Cromosomas[] crossover(Cromosomas other) {
+    public Cromosomas[] cruceUnif(Cromosomas other) {
 
         int cut = 1 + (int) (Math.random() * (cromosoma.length - 1));
 
@@ -69,6 +69,26 @@ public class Cromosomas {
 
         for (int i = 0; i < cromosoma.length; i++) {
             if (i < cut) {
+                c1[i] = this.cromosoma[i];
+                c2[i] = other.cromosoma[i];
+            } else {
+                c1[i] = other.cromosoma[i];
+                c2[i] = this.cromosoma[i];
+            }
+        }
+
+        return new Cromosomas[] {
+                new Cromosomas(fila, col, n_cam, c1),
+                new Cromosomas(fila, col, n_cam, c2)
+        };
+    }
+    public Cromosomas[] cruceMonop(Cromosomas other, double crossRatio) {
+
+        boolean[] c1 = new boolean[cromosoma.length];
+        boolean[] c2 = new boolean[cromosoma.length];
+
+        for (int i = 0; i < cromosoma.length; i++) {
+            if (Math.random() < crossRatio) {
                 c1[i] = this.cromosoma[i];
                 c2[i] = other.cromosoma[i];
             } else {

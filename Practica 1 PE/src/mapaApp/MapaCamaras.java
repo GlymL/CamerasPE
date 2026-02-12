@@ -3,7 +3,7 @@ package mapaApp;
 
 public class MapaCamaras {
     public int[][] mapa;
-    private int[][] prioridad;
+    private int[][] priority;
     private int n_cameras;
     private int r_vision;
     private int filas;
@@ -25,17 +25,17 @@ public class MapaCamaras {
     private void cargaMapa1(){
         mapa = new int[][]{
             {0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 1, 0}, // Pasillo Norte
+            {0, 1, 0, 0, 0, 0, 0, 0, 1, 0}, 
             {0, 0, 0, 1, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Pasillo Centro
-            {1, 0, 0, 0, 1, 0, 0, 0, 0, 0}, // <--- JOYA (10)
-            {0, 0, 1, 0, 0, 0, 0, 1, 0, 0}, // Conexión
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Conexión
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+            {1, 0, 0, 0, 1, 0, 0, 0, 0, 0}, 
+            {0, 0, 1, 0, 0, 0, 0, 1, 0, 0}, 
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, // Pasillo Sur
+            {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, 
             {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}
         };
-        prioridad = new int[][]{
+        priority = new int[][]{
             {1, 1, 1, 1, 1, 0, 1, 1, 1, 1},
             {1, 0, 5, 5, 5, 1, 1, 1, 0, 1}, // Pasillo Norte
             {1, 1, 1, 0, 1, 1, 0, 1, 1, 1},
@@ -71,7 +71,7 @@ public class MapaCamaras {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} 
         };
 
-        prioridad = new int[][]{
+        priority = new int[][]{
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0,20, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1,20, 0},
             {0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0},
@@ -113,7 +113,7 @@ public class MapaCamaras {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
         };
-        prioridad = new int[][]{
+        priority = new int[][]{
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 1, 1, 1, 1, 1, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 0}, // Entrada
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -142,8 +142,8 @@ public class MapaCamaras {
     public boolean esObstaculo(int x, int y){
         return mapa[x][y] == 1;
     }
-    public int proiroidad(int x, int y){
-        return prioridad[x][y];
+    public int prioridad(int x, int y){
+        return priority[x][y];
     }
     public int getFilas(){
         return filas;

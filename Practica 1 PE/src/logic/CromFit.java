@@ -34,7 +34,6 @@ public class CromFit implements Comparable<CromFit>{
     public Cromosomas getCrom() { return crom; }
     public Fitness getFit() { return fit; }
     public double getApt() { return apt; }
-
-     public void setFit(Fitness fit) { this.fit = fit; }
+    public void setFit(Fitness fit) { this.fit = fit; }
     
 }
