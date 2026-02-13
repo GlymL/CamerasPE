@@ -14,13 +14,16 @@ public class Population {
     private Random rand = new Random();
     private boolean ponderado;
     private boolean monopunto;
+    private double elitismo;
 
 
-    public Population(MapaCamaras mapa, int popSize, double crossRatio, double mutRatio, boolean ponder, boolean monop) {
+    public Population(MapaCamaras mapa, int popSize, 
+        double crossRatio, double mutRatio, boolean ponder, boolean monop, double elitismo) {
         this.mapa = mapa;
         this.population = new ArrayList<>();
         this.ponderado = ponder;
         this.monopunto = monop;
+        this.elitismo = elitismo;
         crossoverRatio = crossRatio;
         mutationRatio = mutRatio;
         initializeRandom(popSize);
@@ -199,6 +202,15 @@ public class Population {
     public void evolve(Selection m) {
 
         ArrayList<CromFit> selected = new ArrayList<>();
+        ArrayList<CromFit> elite = new ArrayList<>();
+
+        sortByFitness();
+        if(elitismo > 0){
+            for(int i = 0; i < elitismo*population.size(); i++){
+                elite.add(population.get(i).clone());
+            }
+        }
+
 
         if (m.equals(Selection.RULETA))
             selected = rouletteSelection(population.size());
@@ -210,18 +222,31 @@ public class Population {
             selected = truncSelection(population.size(), population.size()/10);
         else if (m.equals(Selection.RESTOS))
             selected = restosSelection(population.size());
+
+        
         population.clear();
         population.addAll(selected);
 
         applyCrossover();
-
+        
         applyMutation();
-
+        
         evaluateAll();
-
+        
         calculateAptitudes();
-
+        
         sortByFitness();
+
+        for(int i = 0; i < elite.size(); i++){
+            population.set(population.size() - i - 1, elite.get(i).clone());
+        }
+        
+        evaluateAll();
+        
+        calculateAptitudes();
+        
+        sortByFitness();
+
     }
 
 

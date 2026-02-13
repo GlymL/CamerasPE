@@ -27,7 +27,8 @@ public class Controller {
                 crossRatio,
                 mutRatio,
                 ponder,
-                monopoint
+                monopoint,
+                0.02
         );
 
         this.engine = new EvolutionEngine(
