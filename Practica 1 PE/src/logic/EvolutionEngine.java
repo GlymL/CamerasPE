@@ -21,13 +21,16 @@ public class EvolutionEngine {
 
     public void run(EvolutionListener listener) {
 
+        double max_fitness = 0;
         for (int gen = 0; gen <= generations; gen++) {
             population.evolve(mutationStrategy);
             avgFitnessHistory.add(population.averageFitness());
             bestFitnessHistory.add(population.bestFitness());
+            max_fitness = Math.max(max_fitness, population.bestFitness());
             if (listener != null) {
                 listener.onGeneration(gen, population);
             }
         }
+        System.out.println(max_fitness);
     }
 }

@@ -62,7 +62,7 @@ public class Population {
     }
 
 
-    public ArrayList<CromFit> rouletteSelection(int selectionSize) {
+    public ArrayList<CromFit> rouletteSelection(int size) {
         ArrayList<CromFit> selected = new ArrayList<>();
         ArrayList<Double> cumulative = new ArrayList<>();
         
@@ -73,13 +73,13 @@ public class Population {
         }
 
         if (sum == 0) {
-            for (int i = 0; i < selectionSize; i++) {
+            for (int i = 0; i < size; i++) {
                 selected.add(population.get(rand.nextInt(population.size())).clone());
             }
             return selected;
         }
 
-        for (int i = 0; i < selectionSize; i++) {
+        for (int i = 0; i < size; i++) {
             double r = rand.nextDouble();
             for (int j = 0; j < cumulative.size(); j++) {
                 if (r <= cumulative.get(j)) {
@@ -116,6 +116,54 @@ public class Population {
             torneo.add(c3);
             torneo.sort((a, b) -> b.compareTo(a));
             selected.add(torneo.get(0).clone());
+        }
+        return selected;
+    }
+
+    public ArrayList<CromFit> estocasticoSelection(int size){
+        ArrayList<CromFit> selected = new ArrayList<>();
+        ArrayList<Double> cumulative = new ArrayList<>();
+        
+        double sum = 0;
+        for (CromFit cf : population) {
+            sum += Math.max(0, cf.getApt());
+            cumulative.add(sum);
+        }
+
+        if (sum == 0) {
+            for (int i = 0; i < size; i++) {
+                selected.add(population.get(rand.nextInt(population.size())).clone());
+            }
+            return selected;
+        }
+
+        double r = rand.nextDouble();
+        int inicio = 0;
+        for (int i = 0; i < size; i++) {
+            double a = (r + i)/size;
+            for (int j = inicio; j < cumulative.size(); j++) {
+                if (a <= cumulative.get(j)) {
+                    selected.add(population.get(j).clone());
+                    inicio = j;
+                    break;
+                }
+            }
+        }
+        return selected;
+    }
+
+    public ArrayList<CromFit> restosSelection(int size) {
+        ArrayList<CromFit> selected = new ArrayList<>();
+
+        for(int i = 0; i < size; i++){
+            int copias = (int)Math.floor(population.get(i).getApt()*size);
+            for(int j = 0; j < copias; j++){
+                selected.add(population.get(i).clone());
+            }
+        }
+        ArrayList<CromFit> trunc = torneoSelection(size - selected.size());
+        for(CromFit cf : trunc){
+            selected.add(cf.clone());
         }
         return selected;
     }
@@ -157,12 +205,11 @@ public class Population {
         else if (m.equals(Selection.TORNEO))
             selected = torneoSelection(population.size());
         else if (m.equals(Selection.ESTOCASTICO))
-            selected = torneoSelection(population.size());
+            selected = estocasticoSelection(population.size());
         else if (m.equals(Selection.TRUNCAMIENTO))
             selected = truncSelection(population.size(), population.size()/10);
         else if (m.equals(Selection.RESTOS))
-            selected = torneoSelection(population.size());
-
+            selected = restosSelection(population.size());
         population.clear();
         population.addAll(selected);
 
@@ -197,7 +244,7 @@ public class Population {
     
     public double bestFitness(){
         sortByFitness();
-        return population.get(0).getApt();
+        return population.get(0).getFit().getPunt();
     }
 
 
