@@ -141,13 +141,11 @@ public class EvolutionFullGUI extends JFrame{
     return panel;
   }
 
-  private JPanel createFitnessPanel() {
+  private FitnessChartPanel createFitnessPanel() {
 
-    JPanel panel = new JPanel();
-    panel.setBorder(new TitledBorder("Evolución del Fitness"));
-    panel.setBackground(Color.WHITE);
-
+    FitnessChartPanel panel = new FitnessChartPanel();
     
+
 
     return panel;
   }
