@@ -28,7 +28,7 @@ public class EvolutionEngine {
         controller.clearChart();
 
         double max_fitness = 0;
-        for (int gen = 0; gen <= generations; gen++) {
+        for (int gen = 0; gen < generations; gen++) {
             population.evolve(mutationStrategy);
             avgFitnessHistory.add(population.averageFitness());
             bestFitnessHistory.add(population.bestFitness());

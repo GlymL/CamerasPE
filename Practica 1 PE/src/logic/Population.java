@@ -241,9 +241,9 @@ public class Population {
             population.set(population.size() - i - 1, elite.get(i).clone());
         }
         
-        evaluateAll();
+        // evaluateAll();
         
-        calculateAptitudes();
+        // calculateAptitudes();
         
         sortByFitness();
 
