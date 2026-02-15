@@ -2,11 +2,18 @@ package view;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+
+import static org.junit.jupiter.api.Assumptions.abort;
+
 import java.awt.*;
+
+// import logic.Fitness;
 import logic.Selection;
 import controller.Controller;
 
 public class EvolutionFullGUI extends JFrame{
+
+  FitnessChartPanel fitnessChart;
 
   private JComboBox < String > escenarioBox =
     new JComboBox < > (new String[] {
@@ -143,11 +150,9 @@ public class EvolutionFullGUI extends JFrame{
 
   private FitnessChartPanel createFitnessPanel() {
 
-    FitnessChartPanel panel = new FitnessChartPanel();
-    
+    fitnessChart = new FitnessChartPanel();
 
-
-    return panel;
+    return fitnessChart;
   }
 
   private void runAlgorithm(boolean isReal) {
@@ -165,6 +170,7 @@ public class EvolutionFullGUI extends JFrame{
       (Selection) selectionBox.getSelectedItem();
 
     Controller controller = new Controller(
+      this,
       generations,
       escenario + 1,
       population,
@@ -175,6 +181,10 @@ public class EvolutionFullGUI extends JFrame{
       selection);
 
     new Thread(() -> controller.start()).start();
+  }
+
+  public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
+    fitnessChart.update(maxGen, pEv, bestFitness, avgFitness);
   }
 
 }

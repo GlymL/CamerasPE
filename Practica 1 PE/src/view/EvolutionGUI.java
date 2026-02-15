@@ -74,18 +74,19 @@ public class EvolutionGUI extends JFrame {
             boolean monopoint = monopointBox.isSelected();
             Selection SelectionStrategy = (Selection) selectionBox.getSelectedItem();
 
-            Controller controller = new Controller(
-                generations,
-                map,
-                population,
-                crossover,
-                mutation,
-                ponder,
-                monopoint,
-                SelectionStrategy
-            );
+            // Controller controller = new Controller(
+            //     (EvolutionFullGUI) this,
+            //     generations,
+            //     map,
+            //     population,
+            //     crossover,
+            //     mutation,
+            //     ponder,
+            //     monopoint,
+            //     SelectionStrategy
+            // );
 
-            controller.start();
+            // controller.start();
 
             JOptionPane.showMessageDialog(this, "Algorithm started!");
 
