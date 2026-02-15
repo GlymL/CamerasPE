@@ -51,4 +51,8 @@ public class Controller {
     public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
         gui.updateChart(maxGen, pEv, bestFitness, avgFitness);
     }
+
+    public void clearChart() {
+        gui.clearChart();
+    }
 }

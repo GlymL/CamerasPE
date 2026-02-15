@@ -187,4 +187,8 @@ public class EvolutionFullGUI extends JFrame{
     fitnessChart.update(maxGen, pEv, bestFitness, avgFitness);
   }
 
+  public void clearChart() {
+    fitnessChart.reset();
+  }
+
 }

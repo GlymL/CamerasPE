@@ -25,6 +25,7 @@ public class EvolutionEngine {
     }
 
     public void run(EvolutionListener listener) {
+        controller.clearChart();
 
         double max_fitness = 0;
         for (int gen = 0; gen <= generations; gen++) {
@@ -36,7 +37,9 @@ public class EvolutionEngine {
                 listener.onGeneration(gen, population);
             }
 
-            controller.updateChart(max_fitness, 0, bestFitnessHistory.getLast(), avgFitnessHistory.getLast());
+            double bf = bestFitnessHistory.size() > 0 ? bestFitnessHistory.getLast() : 0;
+            double af = avgFitnessHistory.size() > 0 ? avgFitnessHistory.getLast() : 0;
+            controller.updateChart(max_fitness, 0, bf, af);
         }
         System.out.println(max_fitness);
     }
