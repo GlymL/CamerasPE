@@ -16,6 +16,8 @@ public class EvolutionFullGUI extends JFrame{
     });
   private JCheckBox importanciaBox =
     new JCheckBox("Modo Importancia");
+  private JCheckBox monopointBox =
+    new JCheckBox("Modo cruce monopunto");
   private JComboBox < Selection > selectionBox =
     new JComboBox < > (Selection.values());
 
@@ -112,6 +114,13 @@ public class EvolutionFullGUI extends JFrame{
 
     gbc.gridx = 0;
     gbc.gridy++;
+    panel.add(new JLabel("Cruce monopunto"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(monopointBox, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
     gbc.gridwidth = 2;
     runBinaryButton.addActionListener((e) -> runAlgorithm(false));
     panel.add(runBinaryButton, gbc);
@@ -138,6 +147,8 @@ public class EvolutionFullGUI extends JFrame{
     panel.setBorder(new TitledBorder("Evolución del Fitness"));
     panel.setBackground(Color.WHITE);
 
+    
+
     return panel;
   }
 
@@ -149,6 +160,7 @@ public class EvolutionFullGUI extends JFrame{
     double mutation = (double) mutationSpinner.getValue();
 
     boolean importancia = importanciaBox.isSelected();
+    boolean monopunto = monopointBox.isSelected();
     int escenario = escenarioBox.getSelectedIndex();
 
     Selection selection =
@@ -161,7 +173,7 @@ public class EvolutionFullGUI extends JFrame{
       crossover,
       mutation,
       importancia,
-      false,
+      monopunto,
       selection);
 
     new Thread(() -> controller.start()).start();
