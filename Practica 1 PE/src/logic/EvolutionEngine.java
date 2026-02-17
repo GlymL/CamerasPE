@@ -39,7 +39,8 @@ public class EvolutionEngine {
 
             double bf = bestFitnessHistory.size() > 0 ? bestFitnessHistory.getLast() : 0;
             double af = avgFitnessHistory.size() > 0 ? avgFitnessHistory.getLast() : 0;
-            controller.updateChart(max_fitness, 0, bf, af);
+            double pEv = bf/af > 0 ? bf/af : 0;
+            controller.updateChart(max_fitness, pEv, bf, af);
         }
         System.out.println(max_fitness);
     }

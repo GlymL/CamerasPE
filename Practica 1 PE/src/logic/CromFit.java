@@ -3,7 +3,7 @@ package logic;
 public class CromFit implements Comparable<CromFit>{
     private Cromosomas crom;
     private Fitness fit;
-    private Double apt;
+    private double apt;
 
 
     private CromFit(Cromosomas c, Fitness f, Double a){
@@ -27,7 +27,7 @@ public class CromFit implements Comparable<CromFit>{
     }
 
     public CromFit clone(){
-        return new CromFit(crom, fit, apt);
+        return new CromFit(crom.clone(), fit.clone(), apt);
 
     }
 

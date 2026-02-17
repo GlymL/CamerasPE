@@ -3,11 +3,9 @@ package view;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import static org.junit.jupiter.api.Assumptions.abort;
 
 import java.awt.*;
 
-// import logic.Fitness;
 import logic.Selection;
 import controller.Controller;
 
@@ -24,7 +22,7 @@ public class EvolutionFullGUI extends JFrame{
   private JCheckBox importanciaBox =
     new JCheckBox("Modo Importancia");
   private JCheckBox monopointBox =
-    new JCheckBox("Modo cruce monopunto");
+    new JCheckBox();
   private JComboBox < Selection > selectionBox =
     new JComboBox < > (Selection.values());
 
@@ -36,6 +34,8 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05));
   private JSpinner mutationSpinner =
     new JSpinner(new SpinnerNumberModel(0.01, 0.0, 1.0, 0.01));
+     private JSpinner elitismoSpinner =
+    new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1.0, 0.01));
 
   private JButton runBinaryButton = new JButton("Ejecutar Binario");
   private JButton runRealButton = new JButton("Ejecutar Real");
@@ -108,10 +108,17 @@ public class EvolutionFullGUI extends JFrame{
     gbc.gridx = 0;
     gbc.gridy++;
     panel.add(new JLabel("Prob. Mutación:"), gbc);
-
+    
     gbc.gridx = 1;
     panel.add(mutationSpinner, gbc);
+    
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Elitismo"), gbc);
 
+    gbc.gridx = 1;
+    panel.add(elitismoSpinner, gbc);
+    
     gbc.gridx = 0;
     gbc.gridy++;
     panel.add(new JLabel("Estr. Cruce:"), gbc);
@@ -125,6 +132,7 @@ public class EvolutionFullGUI extends JFrame{
 
     gbc.gridx = 1;
     panel.add(monopointBox, gbc);
+
 
     gbc.gridx = 0;
     gbc.gridy++;
@@ -161,7 +169,8 @@ public class EvolutionFullGUI extends JFrame{
     int generations = (int) generationsSpinner.getValue();
     double crossover = (double) crossoverSpinner.getValue();
     double mutation = (double) mutationSpinner.getValue();
-
+    double elitismo = (double) elitismoSpinner.getValue();
+ 
     boolean importancia = importanciaBox.isSelected();
     boolean monopunto = monopointBox.isSelected();
     int escenario = escenarioBox.getSelectedIndex();
@@ -178,13 +187,16 @@ public class EvolutionFullGUI extends JFrame{
       mutation,
       importancia,
       monopunto,
+      elitismo,
       selection);
 
     new Thread(() -> controller.start()).start();
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
-    fitnessChart.update(maxGen, pEv, bestFitness, avgFitness);
+    SwingUtilities.invokeLater(() -> {
+      fitnessChart.update(maxGen, pEv, bestFitness, avgFitness);
+    });
   }
 
   public void clearChart() {

@@ -121,5 +121,8 @@ public class Cromosomas {
     public boolean[] getGenes() {
         return cromosoma.clone();
     }
+    public Cromosomas clone(){
+        return new Cromosomas(fila, col, n_cam, cromosoma);
 
+    }
 }

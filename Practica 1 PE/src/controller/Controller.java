@@ -20,6 +20,7 @@ public class Controller {
                       double mutRatio,
                       boolean ponder,
                       boolean monopoint,
+                      double elitismo,
                       Selection mutationStrategy) {
 
         MapaCamaras mapaCamaras = new MapaCamaras(mapa);
@@ -31,7 +32,7 @@ public class Controller {
                 mutRatio,
                 ponder,
                 monopoint,
-                0.02
+                elitismo
         );
 
         this.engine = new EvolutionEngine(

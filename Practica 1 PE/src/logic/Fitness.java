@@ -125,4 +125,8 @@ public class Fitness {
     public boolean getPonder(){
         return ponderado;
     }
+
+    public Fitness clone(){
+        return new Fitness(mapa, camaras, ponderado);
+    }
 }
