@@ -260,6 +260,11 @@ public class Population {
         best.getFit().print();
     }
 
+    public int[][] mapBest(){
+        sortByFitness();
+        return population.get(0).getFit().print();
+    }
+
     public double averageFitness() {
         double sum = 0;
         for (CromFit cf : population) 

@@ -41,7 +41,11 @@ public class EvolutionEngine {
             double af = avgFitnessHistory.size() > 0 ? avgFitnessHistory.getLast() : 0;
             double pEv = bf/af > 0 ? bf/af : 0;
             controller.updateChart(max_fitness, pEv, bf, af);
+            controller.updateMap(getBestMap());
         }
         System.out.println(max_fitness);
+    }
+    public int[][] getBestMap(){
+        return population.mapBest();
     }
 }

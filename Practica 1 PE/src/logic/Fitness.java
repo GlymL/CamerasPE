@@ -73,21 +73,27 @@ public class Fitness {
         }
         return fitness;
     }
-    public void print(){
+    public int[][] print(){
+        int[][] ret = new int[mapa.getFilas()][mapa.getCols()];
         for(int i = 0; i < mapa.getFilas(); i++){
             for(int j = 0; j < mapa.getCols(); j++){
                 if(mapa.esObstaculo(i, j)){
-                    System.out.print(ANSI_RED + 2 + " " + ANSI_RESET);
+                    ret[i][j] = 2;
+                    //System.out.print(ANSI_RED + 2 + " " + ANSI_RESET);
                 }else if (visitado[i][j] == CUBIERTO){
-                    System.out.print(ANSI_GREEN + visitado[i][j] + " " + ANSI_RESET);
+                    ret[i][j] = CUBIERTO;
+                    //System.out.print(ANSI_GREEN + visitado[i][j] + " " + ANSI_RESET);
                 } else if (visitado[i][j] == CAMARA){
-                    System.out.print(ANSI_BLUE + visitado[i][j] + " " + ANSI_RESET);
+                    ret[i][j] = CAMARA;
+                    //System.out.print(ANSI_BLUE + visitado[i][j] + " " + ANSI_RESET);
                 }else{
-                    System.out.print(visitado[i][j] + " ");
+                    ret[i][j] = 0;
+                    //System.out.print(visitado[i][j] + " ");
                 }
             }
-            System.out.println("");
+            //System.out.println("");
         }
+        return ret;
     }
 
     private int scanDirection(int x, int y, int dx, int dy) {
@@ -124,6 +130,10 @@ public class Fitness {
 
     public boolean getPonder(){
         return ponderado;
+    }
+
+    public int[][] getMap(){
+        return visitado.clone();
     }
 
     public Fitness clone(){

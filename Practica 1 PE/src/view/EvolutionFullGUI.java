@@ -12,6 +12,7 @@ import controller.Controller;
 public class EvolutionFullGUI extends JFrame{
 
   FitnessChartPanel fitnessChart;
+  MejorMapa bd;
 
   private JComboBox < String > escenarioBox =
     new JComboBox < > (new String[] {
@@ -118,7 +119,7 @@ public class EvolutionFullGUI extends JFrame{
 
     gbc.gridx = 1;
     panel.add(elitismoSpinner, gbc);
-    
+
     gbc.gridx = 0;
     gbc.gridy++;
     panel.add(new JLabel("Estr. Cruce:"), gbc);
@@ -152,6 +153,10 @@ public class EvolutionFullGUI extends JFrame{
     JPanel panel = new JPanel();
     panel.setBorder(new TitledBorder("Mapa"));
     panel.setBackground(Color.WHITE);
+
+    bd = new MejorMapa();
+    panel.add(bd);
+    
 
     return panel;
   }
@@ -197,10 +202,15 @@ public class EvolutionFullGUI extends JFrame{
     SwingUtilities.invokeLater(() -> {
       fitnessChart.update(maxGen, pEv, bestFitness, avgFitness);
     });
+    
   }
 
   public void clearChart() {
     fitnessChart.reset();
+  }
+
+  public void updateMap(int[][] visitado) {
+    SwingUtilities.invokeLater(() -> bd.initialize(visitado));
   }
 
 }

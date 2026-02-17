@@ -56,4 +56,9 @@ public class Controller {
     public void clearChart() {
         gui.clearChart();
     }
+
+    public void updateMap(int[][] visitado){
+        gui.updateMap(visitado);
+
+    }
 }
