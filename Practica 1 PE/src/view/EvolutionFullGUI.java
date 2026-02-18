@@ -149,14 +149,14 @@ public class EvolutionFullGUI extends JFrame{
   }
 
   private JPanel createMapPanel() {
-
     JPanel panel = new JPanel();
+
+    panel.setLayout(new GridLayout(1, 1));
     panel.setBorder(new TitledBorder("Mapa"));
     panel.setBackground(Color.WHITE);
 
     bd = new MejorMapa();
     panel.add(bd);
-    
 
     return panel;
   }

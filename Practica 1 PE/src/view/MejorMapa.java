@@ -5,12 +5,13 @@ import java.awt.*;
 
 public class MejorMapa extends JPanel {
 
-
     public MejorMapa() {
+                this.setBackground(Color.WHITE);
     }
 
     public void initialize(int [][] visitado) {
         this.removeAll();
+
         setLayout(new GridLayout(visitado.length, visitado[0].length));
 
         for (int row = 0; row < visitado.length; row++) {
