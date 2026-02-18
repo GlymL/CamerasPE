@@ -18,7 +18,7 @@ public class Population {
 
 
     public Population(MapaCamaras mapa, int popSize, 
-        double crossRatio, double mutRatio, boolean ponder, boolean monop, double elitismo) {
+        double crossRatio, double mutRatio, boolean ponder, boolean monop, double elitismo, boolean binario) {
         this.mapa = mapa;
         this.population = new ArrayList<>();
         this.ponderado = ponder;
@@ -26,17 +26,21 @@ public class Population {
         this.elitismo = elitismo;
         crossoverRatio = crossRatio;
         mutationRatio = mutRatio;
-        initializeRandom(popSize);
+        initializeRandom(popSize, binario);
         evaluateAll();
         calculateAptitudes();
         sortByFitness();
     }
 
-    private void initializeRandom(int popSize) {
+    private void initializeRandom(int popSize, boolean binario) {
         for (int i = 0; i < popSize; i++) {
-            Cromosomas c = new Cromosomas(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
+            Cromosoma c;
+            if(binario)
+                c = new CromosomasBinario(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
+            else
+                c = new CromosomasReal(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
             c.randomInitialize();
-            Fitness f = new Fitness(mapa, c.decode(), ponderado);
+            FitnessBinario f = new FitnessBinario(mapa, c, ponderado);
             population.add(new CromFit(c, f));
         }
     }
@@ -44,7 +48,7 @@ public class Population {
     public void evaluateAll() {
         fTotal = 0.0;
         for (CromFit cf : population) {
-            cf.setFit(new Fitness(mapa, cf.getCrom().decode(), ponderado));
+            cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
             if(cf.getFit().getPunt() > 0)
                 fTotal += cf.getFit().getPunt();
         }
@@ -176,16 +180,16 @@ public class Population {
             if(monopunto){
                 int c1 = rand.nextInt(population.size());
                 int c2 = rand.nextInt(population.size());
-                Cromosomas[] children = population.get(c1).getCrom().cruceMonop(population.get(c2).getCrom(), crossoverRatio);
-                population.set(c1, new CromFit(children[0], new Fitness(mapa, children[0].decode(), ponderado)));
-                population.set(c2, new CromFit(children[1], new Fitness(mapa, children[1].decode(), ponderado)));
+                Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceMonop(population.get(c2).getCrom(), crossoverRatio);
+                population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
             }else{
                 if (rand.nextDouble() < crossoverRatio) {
                     int c1 = rand.nextInt(population.size());
                     int c2 = rand.nextInt(population.size());
-                    Cromosomas[] children = population.get(c1).getCrom().cruceUnif(population.get(c2).getCrom());
-                    population.set(c1, new CromFit(children[0], new Fitness(mapa, children[0].decode(), ponderado)));
-                    population.set(c2, new CromFit(children[1], new Fitness(mapa, children[1].decode(), ponderado)));
+                    Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceUnif(population.get(c2).getCrom());
+                    population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                    population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
                 }
             }
         }
@@ -194,7 +198,7 @@ public class Population {
     public void applyMutation() {
         for (CromFit cf : population) {
             cf.getCrom().mutarCromosoma(mutationRatio);
-            cf.setFit(new Fitness(mapa, cf.getCrom().decode(), ponderado));
+            cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
         }
     }
 

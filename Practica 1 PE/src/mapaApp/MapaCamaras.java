@@ -7,6 +7,7 @@ public class MapaCamaras {
     private int n_cameras;
     private int r_vision;
     private int filas;
+    private double angulo;
     private int cols;
 
     public MapaCamaras(int i){
@@ -49,6 +50,7 @@ public class MapaCamaras {
         };
         filas = 10;
         cols = 10;
+        angulo = 60;
         n_cameras = 4;
         r_vision = 3;
 
@@ -87,6 +89,7 @@ public class MapaCamaras {
         };
         filas = 12;
         cols = 15;
+        angulo = 90;
         n_cameras = 7;
         r_vision = 5;
     };
@@ -135,6 +138,7 @@ public class MapaCamaras {
         };
         filas = 18;
         cols = 20;
+        angulo = 70;
         n_cameras = 8;
         r_vision = 7;
     };
@@ -157,5 +161,9 @@ public class MapaCamaras {
 
     public int getNumCams() {
         return n_cameras;
+    }
+
+    public double getAngulo(){
+        return angulo;
     }
 }

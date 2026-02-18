@@ -1,17 +1,17 @@
 package logic;
 
 public class CromFit implements Comparable<CromFit>{
-    private Cromosomas crom;
-    private Fitness fit;
+    private Cromosoma crom;
+    private FitnessBinario fit;
     private double apt;
 
 
-    private CromFit(Cromosomas c, Fitness f, Double a){
+    private CromFit(Cromosoma c, FitnessBinario f, Double a){
         crom = c;
         fit = f;
         apt = a;
     }
-    public CromFit(Cromosomas c, Fitness f){
+    public CromFit(Cromosoma c, FitnessBinario f){
         crom = c;
         fit = f;
     }
@@ -31,9 +31,9 @@ public class CromFit implements Comparable<CromFit>{
 
     }
 
-    public Cromosomas getCrom() { return crom; }
-    public Fitness getFit() { return fit; }
+    public Cromosoma getCrom() { return crom; }
+    public FitnessBinario getFit() { return fit; }
     public double getApt() { return apt; }
-    public void setFit(Fitness fit) { this.fit = fit; }
+    public void setFit(FitnessBinario fit) { this.fit = fit; }
     
 }

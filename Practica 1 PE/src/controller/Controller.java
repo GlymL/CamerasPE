@@ -32,7 +32,8 @@ public class Controller {
                 mutRatio,
                 ponder,
                 monopoint,
-                elitismo
+                elitismo,
+                true
         );
 
         this.engine = new EvolutionEngine(

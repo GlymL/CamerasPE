@@ -11,7 +11,7 @@ public class MejorMapa extends JPanel {
 
     public void initialize(int [][] visitado) {
         this.removeAll();
-
+        this.repaint();
         setLayout(new GridLayout(visitado.length, visitado[0].length));
 
         for (int row = 0; row < visitado.length; row++) {
