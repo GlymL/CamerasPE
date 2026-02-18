@@ -1,6 +1,6 @@
 package view;
 
-import controller.Controller;
+// import controller.Controller;
 import logic.Selection;
 
 import javax.swing.*;
@@ -64,15 +64,15 @@ public class EvolutionGUI extends JFrame {
 
     private void startAlgorithm() {
         try {
-            int generations = Integer.parseInt(generationsField.getText());
-            int map = Integer.parseInt(mapField.getText());
-            int population = Integer.parseInt(populationField.getText());
-            double crossover = Double.parseDouble(crossoverField.getText());
-            double mutation = Double.parseDouble(mutationField.getText());
+            // int generations = Integer.parseInt(generationsField.getText());
+            // int map = Integer.parseInt(mapField.getText());
+            // int population = Integer.parseInt(populationField.getText());
+            // double crossover = Double.parseDouble(crossoverField.getText());
+            // double mutation = Double.parseDouble(mutationField.getText());
 
-            boolean ponder = ponderBox.isSelected();
-            boolean monopoint = monopointBox.isSelected();
-            Selection SelectionStrategy = (Selection) selectionBox.getSelectedItem();
+            // boolean ponder = ponderBox.isSelected();
+            // boolean monopoint = monopointBox.isSelected();
+            // Selection SelectionStrategy = (Selection) selectionBox.getSelectedItem();
 
             // Controller controller = new Controller(
             //     (EvolutionFullGUI) this,
