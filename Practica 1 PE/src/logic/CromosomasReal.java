@@ -169,12 +169,4 @@ public class CromosomasReal extends Cromosoma{
         }
         return ret;
     }
-
-    public static void main(String[] args){
-        CromosomasReal c =  new CromosomasReal(10, 10, 4);
-        CromosomasReal c2 =  new CromosomasReal(10, 10, 4);
-        c.mutarCromosoma(.8);
-        c2.clone();
-        double[][] d = c.decode();
-    }
 }

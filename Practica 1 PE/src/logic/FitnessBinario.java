@@ -2,7 +2,7 @@ package logic;
 
 import mapaApp.MapaCamaras;
 
-public class FitnessBinario {
+public class FitnessBinario extends Fitness{
     private static final int CAMARA = 7;
     private static final int CUBIERTO = 1;
 
@@ -127,7 +127,7 @@ public class FitnessBinario {
                 y >= 0 && y < mapa.getCols()); 
     }
 
-    public int getPunt(){
+    public double getPunt(){
         return punt;
     }
 

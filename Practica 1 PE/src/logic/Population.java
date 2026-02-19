@@ -15,6 +15,7 @@ public class Population {
     private boolean ponderado;
     private boolean monopunto;
     private double elitismo;
+    private boolean binario;
 
 
     public Population(MapaCamaras mapa, int popSize, 
@@ -24,6 +25,7 @@ public class Population {
         this.ponderado = ponder;
         this.monopunto = monop;
         this.elitismo = elitismo;
+        this.binario = false;
         crossoverRatio = crossRatio;
         mutationRatio = mutRatio;
         initializeRandom(popSize, binario);
@@ -40,7 +42,7 @@ public class Population {
             else
                 c = new CromosomasReal(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
             c.randomInitialize();
-            FitnessBinario f = new FitnessBinario(mapa, c, ponderado);
+            Fitness f = new FitnessReal(mapa, c, ponderado);
             population.add(new CromFit(c, f));
         }
     }
@@ -48,7 +50,10 @@ public class Population {
     public void evaluateAll() {
         fTotal = 0.0;
         for (CromFit cf : population) {
-            cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
+            if(binario)
+                cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
+            else
+                cf.setFit(new FitnessReal(mapa, cf.getCrom(), ponderado));
             if(cf.getFit().getPunt() > 0)
                 fTotal += cf.getFit().getPunt();
         }
@@ -181,15 +186,25 @@ public class Population {
                 int c1 = rand.nextInt(population.size());
                 int c2 = rand.nextInt(population.size());
                 Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceMonop(population.get(c2).getCrom(), crossoverRatio);
-                population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
-                population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                if(binario){
+                    population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                    population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                } else{
+                    population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                    population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                }
             }else{
                 if (rand.nextDouble() < crossoverRatio) {
                     int c1 = rand.nextInt(population.size());
                     int c2 = rand.nextInt(population.size());
                     Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceUnif(population.get(c2).getCrom());
-                    population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
-                    population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                    if(binario){
+                        population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                        population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                    } else{
+                        population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                        population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                    }
                 }
             }
         }
@@ -198,7 +213,10 @@ public class Population {
     public void applyMutation() {
         for (CromFit cf : population) {
             cf.getCrom().mutarCromosoma(mutationRatio);
-            cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
+            if(binario)
+                cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
+            else
+                cf.setFit(new FitnessReal(mapa, cf.getCrom(), ponderado));
         }
     }
 
