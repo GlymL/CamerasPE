@@ -2,6 +2,9 @@ package logic;
 
 import java.util.ArrayList;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import controller.Controller;
 
 public class EvolutionEngine {
@@ -44,6 +47,15 @@ public class EvolutionEngine {
             controller.updateMap(getBestMap(), population.bestCrom());
         }
         System.out.println(max_fitness);
+
+        JOptionPane.showMessageDialog(
+            null, 
+            "El mejor fitness es: " + max_fitness,
+            "Mejor Fitness",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+
+
     }
     public int[][] getBestMap(){
         return population.mapBest();

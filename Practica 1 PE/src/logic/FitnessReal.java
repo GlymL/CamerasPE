@@ -95,21 +95,21 @@ public class FitnessReal extends Fitness{
                 if(mapa.esObstaculo(i, j)){
                     ret[i][j] = 2;
                     visitado[i][j] = 2;
-                    System.out.print(ANSI_RED + 2 + " " + ANSI_RESET);
+                    //System.out.print(ANSI_RED + 2 + " " + ANSI_RESET);
                 }else if (visitado[i][j] == CUBIERTO){
                     ret[i][j] = CUBIERTO;
-                    System.out.print(ANSI_GREEN + visitado[i][j] + " " + ANSI_RESET);
+                   // System.out.print(ANSI_GREEN + visitado[i][j] + " " + ANSI_RESET);
                 } else if (visitado[i][j] == CAMARA){
                     ret[i][j] = CAMARA;
-                    System.out.print(ANSI_BLUE + visitado[i][j] + " " + ANSI_RESET);
+                  //  System.out.print(ANSI_BLUE + visitado[i][j] + " " + ANSI_RESET);
                 }else{
                     ret[i][j] = 0;
-                    System.out.print(visitado[i][j] + " ");
+                    //System.out.print(visitado[i][j] + " ");
                 }
             }
-            System.out.println("");
+            //System.out.println("");
         }
-        System.out.println("");
+        //System.out.println("");
         //double[][] dec = c.decode();
         //for(int i = 0; i < dec.length; i++)
             //System.out.println(dec[i][0] + " " + dec[i][1]);
