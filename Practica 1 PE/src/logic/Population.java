@@ -13,22 +13,24 @@ public class Population {
     private double mutationRatio;
     private Random rand = new Random();
     private boolean ponderado;
-    private boolean monopunto;
+    private Cruce cruce;
+    private Mutacion mut;
     private double elitismo;
     private boolean binario;
 
 
     public Population(MapaCamaras mapa, int popSize, 
-        double crossRatio, double mutRatio, boolean ponder, boolean monop, double elitismo, boolean binario) {
+        double crossRatio, double mutRatio, boolean ponder, Cruce monop, double elitismo, boolean binario, Mutacion m) {
         this.mapa = mapa;
         this.population = new ArrayList<>();
         this.ponderado = ponder;
-        this.monopunto = monop;
+        this.cruce = monop;
         this.elitismo = elitismo;
-        this.binario = false;
+        this.binario = binario;
+        this.mut = m;
         crossoverRatio = crossRatio;
         mutationRatio = mutRatio;
-        initializeRandom(popSize, binario);
+        initializeRandom(popSize, this.binario);
         evaluateAll();
         calculateAptitudes();
         sortByFitness();
@@ -36,13 +38,18 @@ public class Population {
 
     private void initializeRandom(int popSize, boolean binario) {
         for (int i = 0; i < popSize; i++) {
+            System.out.println("Map size: " + mapa.getFilas() + " x " + mapa.getCols() + ", NumCams: " + mapa.getNumCams());
             Cromosoma c;
             if(binario)
                 c = new CromosomasBinario(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
             else
                 c = new CromosomasReal(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
             c.randomInitialize();
-            Fitness f = new FitnessReal(mapa, c, ponderado);
+            Fitness f;
+            if(binario){
+                f = new FitnessBinario(mapa, c, ponderado);
+            }else
+                f = new FitnessReal(mapa, c, ponderado);
             population.add(new CromFit(c, f));
         }
     }
@@ -54,6 +61,7 @@ public class Population {
                 cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
             else
                 cf.setFit(new FitnessReal(mapa, cf.getCrom(), ponderado));
+
             if(cf.getFit().getPunt() > 0)
                 fTotal += cf.getFit().getPunt();
         }
@@ -77,13 +85,21 @@ public class Population {
     public ArrayList<CromFit> rouletteSelection(int size) {
         ArrayList<CromFit> selected = new ArrayList<>();
         ArrayList<Double> cumulative = new ArrayList<>();
-        
+        double minFit = population.stream()
+                                .mapToDouble(cf -> cf.getFit().getPunt())
+                                .min()
+                                .orElse(0.0);
+
+        double shift = (minFit < 0) ? -minFit : 0.0;
         double sum = 0;
+
         for (CromFit cf : population) {
-            sum += Math.max(0, cf.getApt());
+            double value = cf.getFit().getPunt() + shift;  // all >= 0
+            sum += value;
             cumulative.add(sum);
         }
 
+        // fallback if sum == 0
         if (sum == 0) {
             for (int i = 0; i < size; i++) {
                 selected.add(population.get(rand.nextInt(population.size())).clone());
@@ -91,8 +107,9 @@ public class Population {
             return selected;
         }
 
+        // now do standard roulette selection
         for (int i = 0; i < size; i++) {
-            double r = rand.nextDouble();
+            double r = rand.nextDouble() * sum;
             for (int j = 0; j < cumulative.size(); j++) {
                 if (r <= cumulative.get(j)) {
                     selected.add(population.get(j).clone());
@@ -182,7 +199,7 @@ public class Population {
 
     public void applyCrossover() {
         for (int i = 0; i < population.size() / 2; i++) {
-            if(monopunto){
+            if(cruce == Cruce.MONOPUNTO){
                 int c1 = rand.nextInt(population.size());
                 int c2 = rand.nextInt(population.size());
                 Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceMonop(population.get(c2).getCrom(), crossoverRatio);
@@ -193,7 +210,7 @@ public class Population {
                     population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
                     population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
                 }
-            }else{
+            }else if (cruce == Cruce.UNIFICADO){
                 if (rand.nextDouble() < crossoverRatio) {
                     int c1 = rand.nextInt(population.size());
                     int c2 = rand.nextInt(population.size());
@@ -206,13 +223,34 @@ public class Population {
                         population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
                     }
                 }
+            } else if (cruce == Cruce.ARITMETICO){
+                int c1 = rand.nextInt(population.size());
+                int c2 = rand.nextInt(population.size());
+                Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceArit(population.get(c2).getCrom(), crossoverRatio);
+                population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+            }
+            else{
+                int c1 = rand.nextInt(population.size());
+                int c2 = rand.nextInt(population.size());
+                Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceBLX(population.get(c2).getCrom(), crossoverRatio);
+                if(binario){
+                    population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                    population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                } else{
+                    population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                    population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                }
             }
         }
     }
 
     public void applyMutation() {
         for (CromFit cf : population) {
-            cf.getCrom().mutarCromosoma(mutationRatio);
+            if(mut == Mutacion.BITGEN)
+                cf.getCrom().mutarBitgen(mutationRatio);
+            else
+                cf.getCrom().mutarGauss(mutationRatio);
             if(binario)
                 cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
             else
@@ -299,6 +337,10 @@ public class Population {
         return population.get(0).getFit().getPunt();
     }
 
+    public Cromosoma bestCrom(){
+        sortByFitness();
+        return population.get(0).getCrom();
+    }
 
 
 }

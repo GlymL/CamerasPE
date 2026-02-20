@@ -53,7 +53,7 @@ public class CromosomasBinario extends Cromosoma{
     }
 
     @Override
-    public void mutarCromosoma(Double mutationRate) {
+    public void mutarBitgen(Double mutationRate) {
 
         for (int i = 0; i < cromosoma.length; i++) {
             if (Math.random() <= mutationRate) {
@@ -136,5 +136,20 @@ public class CromosomasBinario extends Cromosoma{
     public CromosomasBinario clone(){
         return new CromosomasBinario(fila, col, n_cam, cromosoma);
 
+    }
+
+    @Override
+    public Cromosoma[] cruceArit(Cromosoma other, double crossRatio) {
+        throw new UnsupportedOperationException("Cruce Aritmetico no se puede hacer en binario.");
+    }
+
+    @Override
+    public Cromosoma[] cruceBLX(Cromosoma other, double crossRatio) {
+        throw new UnsupportedOperationException("Cruce BLX-Alfa no se puede hacer en binario.");
+    }
+
+    @Override
+    public void mutarGauss(Double mutationRate) {
+        throw new UnsupportedOperationException("Mutacion gaussiana no se puede hacer en binario.");
     }
 }

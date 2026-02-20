@@ -13,15 +13,17 @@ public class Controller {
 
  
     public Controller(EvolutionFullGUI gui,
-                      int generations,
-                      int mapa,
-                      int popSize,
-                      double crossRatio,
-                      double mutRatio,
-                      boolean ponder,
-                      boolean monopoint,
-                      double elitismo,
-                      Selection mutationStrategy) {
+                    int generations,
+                    int mapa,
+                    int popSize,
+                    double crossRatio,
+                    double mutRatio,
+                    boolean ponder,
+                    Cruce monopoint,
+                    double elitismo,
+                    Selection mutationStrategy,
+                    boolean binario,
+                    Mutacion m) {
 
         MapaCamaras mapaCamaras = new MapaCamaras(mapa);
 
@@ -33,7 +35,8 @@ public class Controller {
                 ponder,
                 monopoint,
                 elitismo,
-                true
+                binario,
+                m
         );
 
         this.engine = new EvolutionEngine(
@@ -58,8 +61,8 @@ public class Controller {
         gui.clearChart();
     }
 
-    public void updateMap(int[][] visitado){
-        gui.updateMap(visitado);
+    public void updateMap(int[][] visitado, Cromosoma c){
+        gui.updateMap(visitado, c);
 
     }
 }

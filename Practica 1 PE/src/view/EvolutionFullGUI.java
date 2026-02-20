@@ -6,24 +6,32 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 
+import logic.Cromosoma;
+import logic.Cruce;
+import logic.Mutacion;
 import logic.Selection;
+import mapaApp.MapaCamaras;
 import controller.Controller;
 
 public class EvolutionFullGUI extends JFrame{
 
   FitnessChartPanel fitnessChart;
   MejorMapa bd;
+  private boolean bin;
+  private int n_mapa;
 
   private JComboBox < String > escenarioBox =
     new JComboBox < > (new String[] {
-      "Escenario 1",
-      "Escenario 2",
-      "Escenario 3"
+      "Escenario 1 - Museo",
+      "Escenario 2 - Pasillos",
+      "Escenario 3 - Supermercado"
     });
   private JCheckBox importanciaBox =
     new JCheckBox("Modo Importancia");
-  private JCheckBox monopointBox =
-    new JCheckBox();
+  private JComboBox < Cruce > cruceBox =
+    new JComboBox<>(Cruce.values());
+     private JComboBox < Mutacion > mutaBox =
+    new JComboBox<>(Mutacion.values());
   private JComboBox < Selection > selectionBox =
     new JComboBox < > (Selection.values());
 
@@ -122,17 +130,24 @@ public class EvolutionFullGUI extends JFrame{
 
     gbc.gridx = 0;
     gbc.gridy++;
-    panel.add(new JLabel("Estr. Cruce:"), gbc);
+    panel.add(new JLabel("Est. Selección:"), gbc);
 
     gbc.gridx = 1;
     panel.add(selectionBox, gbc);
 
     gbc.gridx = 0;
     gbc.gridy++;
-    panel.add(new JLabel("Cruce monopunto"), gbc);
+    panel.add(new JLabel("Est. Cruce:"), gbc);
 
     gbc.gridx = 1;
-    panel.add(monopointBox, gbc);
+    panel.add(cruceBox, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Est. Mutacion"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(mutaBox, gbc);
 
 
     gbc.gridx = 0;
@@ -177,12 +192,33 @@ public class EvolutionFullGUI extends JFrame{
     double elitismo = (double) elitismoSpinner.getValue();
  
     boolean importancia = importanciaBox.isSelected();
-    boolean monopunto = monopointBox.isSelected();
+    Cruce cruce = (Cruce)cruceBox.getSelectedItem();
+    Mutacion m = (Mutacion)mutaBox.getSelectedItem();
     int escenario = escenarioBox.getSelectedIndex();
-
+    bin = !isReal;
+    n_mapa = escenario + 1;
     Selection selection =
       (Selection) selectionBox.getSelectedItem();
 
+
+      if(bin && (cruce == Cruce.BLX_ALFA || cruce == Cruce.ARITMETICO)){
+        JOptionPane.showMessageDialog(
+            null, 
+            "El metodo de Cruce no es aplicable a una ejecucion binaria",
+            "Error de tipo de Cruce",
+            JOptionPane.ERROR_MESSAGE
+        );
+        return;
+      }
+      if(bin && m == Mutacion.GAUSSIANA){
+        JOptionPane.showMessageDialog(
+            null, 
+            "El metodo Mutacion no es aplicable a una ejecucion binaria",
+            "Error de tipo de Mutacion",
+            JOptionPane.ERROR_MESSAGE
+        );
+        return;
+      }
     Controller controller = new Controller(
       this,
       generations,
@@ -191,9 +227,11 @@ public class EvolutionFullGUI extends JFrame{
       crossover,
       mutation,
       importancia,
-      monopunto,
+      cruce,
       elitismo,
-      selection);
+      selection,
+      bin,
+    m);
 
     new Thread(() -> controller.start()).start();
   }
@@ -209,8 +247,13 @@ public class EvolutionFullGUI extends JFrame{
     fitnessChart.reset();
   }
 
-  public void updateMap(int[][] visitado) {
-    SwingUtilities.invokeLater(() -> bd.initialize(visitado));
+  public void updateMap(int[][] visitado, Cromosoma c) {
+    if(bin){
+      SwingUtilities.invokeLater(() -> bd.updateBinary(visitado));
+    }else{
+      MapaCamaras mc = new MapaCamaras(n_mapa);
+      SwingUtilities.invokeLater(() ->bd.updateReal(mc.mapa, visitado, c.decode(), mc.getAngulo(), mc.getDist()));
+    }
   }
 
 }

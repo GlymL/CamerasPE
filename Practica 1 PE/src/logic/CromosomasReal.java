@@ -65,13 +65,19 @@ public class CromosomasReal extends Cromosoma{
          CromosomasReal otro = (CromosomasReal) other;
 
         for (int i = 0; i < cromosoma.length; i++) {
-            if (Math.random() < crossRatio) {
-                c1[i] = this.cromosoma[i];
-                c2[i] = otro.cromosoma[i];
-            } else {
-                c1[i] = otro.cromosoma[i];
-                c2[i] = this.cromosoma[i];
+            double cMin, cMax;
+            cMin = Math.min(this.cromosoma[i], otro.cromosoma[i]);
+            cMax = Math.max(this.cromosoma[i], otro.cromosoma[i]);
+            double diff = Math.max(0, cMax - cMin);
+            if(cMax == cMin){
+                diff = 0.1;
             }
+            double alfa = 0.5;
+
+            double rand = new Random().nextDouble((cMin - diff*alfa), (cMax + diff*alfa));
+            c1[i] = rand;
+            c2[i] = rand;
+
         }
 
         return new CromosomasReal[] {
@@ -104,7 +110,7 @@ public class CromosomasReal extends Cromosoma{
     }
 
     @Override
-    public void mutarCromosoma(Double mutationRate) {
+    public void mutarBitgen(Double mutationRate) {
         Random r = new Random();
         for(int i = 0; i < cromosoma.length; i++){
             if(r.nextDouble() < mutationRate){

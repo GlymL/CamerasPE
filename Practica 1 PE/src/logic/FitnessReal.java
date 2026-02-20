@@ -24,11 +24,12 @@ public class FitnessReal extends Fitness{
         mapa = m;
         this.c = c;
         double[][] cams = c.decode();
-        camaras = new double[cams.length][2];
+        camaras = new double[cams.length][3];
         ponderado = ponder;
         for (int i = 0; i < cams.length; i++) {
             camaras[i][0] = cams[i][0];
             camaras[i][1] = cams[i][1];
+            camaras[i][2] = cams[i][2];
         }
         visitado = new int[m.getFilas()][m.getCols()];
         valid = new boolean[cams.length];
@@ -39,40 +40,47 @@ public class FitnessReal extends Fitness{
 
     private void validate(){
         for (int i = 0; i < mapa.getNumCams(); i++){
-            valid[i] = (inside((int)Math.floor(camaras[i][0]) - 1, (int)Math.floor(camaras[i][1]) - 1) && 
-            !mapa.esObstaculo((int)Math.floor(camaras[i][0]) - 1, (int)Math.floor(camaras[i][1]) - 1));
+            valid[i] = (inside((int)Math.floor(camaras[i][0]), (int)Math.floor(camaras[i][1])) && 
+            !mapa.esObstaculo((int)Math.floor(camaras[i][0]), (int)Math.floor(camaras[i][1])));
         }
     }
 
     private void putCamaras() {
        for(int i = 0; i < mapa.getNumCams(); i++){
         if(valid[i])
-            visitado[(int)Math.floor(camaras[i][0] - 1)][(int)Math.floor(camaras[i][1] - 1)] = 7;
+            visitado[(int)Math.floor(camaras[i][0])][(int)Math.floor(camaras[i][1])] = 7;
        }
     }
 
     private int evaluar(){
         int fitness = 0;
         for(int i = 0; i < mapa.getNumCams(); i++){
-            Integer camx, camy;
-            camx = (int)(Math.floor(camaras[i][0]) - 1);
-            camy =  (int)(Math.floor(camaras[i][1])  - 1);
+            double camx, camy;
+            camx = camaras[i][0];
+            camy = camaras[i][1];
             if(!valid[i]){
                 fitness -=100;
             }
             else{
-                double[][] posible = circle(camaras[i][0] - 1, camaras[i][1] - 1);
+
+                double dirRad = Math.toRadians(camaras[i][2]);
+                double dirY = Math.cos(dirRad);
+                double dirX = Math.sin(dirRad);
+                double[][] posible = cone(camaras[i][0] - 1, camaras[i][1] - 1, dirX,
+                    dirY, mapa.getAngulo());
                 for(int j = 0; j < posible.length - 1; j++){
-                    int posx = (int)Math.floor(posible[j][0]);
-                    int posy = (int)Math.floor(posible[j][1]);
+                    double posx = (posible[j][0]);
+                    double posy = (posible[j][1]);
+                    int posTileX = (int)Math.floor(posible[j][0]);
+                    int posTileY = (int)Math.floor(posible[j][1]);
                     if(posible[j][0] == -1)
                         break;
-                    if(lineaLibre(camx, camy,  posx,  posy) && visitado[posx][posy] == 0){
+                    if(lineaLibre(camx, camy,  posx + 0.5,  posy + 0.5) && visitado[posTileX][posTileY] == 0){
                         if (ponderado)
-                            fitness += mapa.prioridad(posx, posy);
+                            fitness += mapa.prioridad(posTileX, posTileY);
                         else
                             fitness++;
-                        visitado[posx][posy] = CUBIERTO;
+                        visitado[posTileX][posTileY] = CUBIERTO;
                     }
                 }
             }
@@ -87,21 +95,21 @@ public class FitnessReal extends Fitness{
                 if(mapa.esObstaculo(i, j)){
                     ret[i][j] = 2;
                     visitado[i][j] = 2;
-                    //System.out.print(ANSI_RED + 2 + " " + ANSI_RESET);
+                    System.out.print(ANSI_RED + 2 + " " + ANSI_RESET);
                 }else if (visitado[i][j] == CUBIERTO){
                     ret[i][j] = CUBIERTO;
-                    //System.out.print(ANSI_GREEN + visitado[i][j] + " " + ANSI_RESET);
+                    System.out.print(ANSI_GREEN + visitado[i][j] + " " + ANSI_RESET);
                 } else if (visitado[i][j] == CAMARA){
                     ret[i][j] = CAMARA;
-                    //System.out.print(ANSI_BLUE + visitado[i][j] + " " + ANSI_RESET);
+                    System.out.print(ANSI_BLUE + visitado[i][j] + " " + ANSI_RESET);
                 }else{
                     ret[i][j] = 0;
-                    //System.out.print(visitado[i][j] + " ");
+                    System.out.print(visitado[i][j] + " ");
                 }
             }
-            //System.out.println("");
+            System.out.println("");
         }
-        //System.out.println("");
+        System.out.println("");
         //double[][] dec = c.decode();
         //for(int i = 0; i < dec.length; i++)
             //System.out.println(dec[i][0] + " " + dec[i][1]);
@@ -175,21 +183,47 @@ public class FitnessReal extends Fitness{
         return true;
     }
 
-    private double[][] circle(double camx, double camy){
+    private double[][] cone(double camx, double camy,
+                        double dirX, double dirY,
+                        double angle) {
+
         int rad = mapa.getDist();
         int iter = 0;
-        double[][] ret = new double[rad*rad*4 + 1][2];
-        for(int i = 0; i < mapa.getFilas(); i++){
-            for(int j = 0; j < mapa.getCols(); j++){
-                if(Math.sqrt(Math.pow(camx - i, 2) + Math.pow(camy - j, 2)) < rad){
-                    ret[iter][0] = i;
-                    ret[iter][1] = j;
-                    iter++;
+
+        double[][] ret = new double[rad * rad * 4 + 1][2];
+
+        // Precompute once
+        double radSq = rad * rad;
+        double limit = Math.cos(Math.toRadians(angle / 2.0));
+
+        for (int i = 0; i < mapa.getFilas(); i++) {
+            for (int j = 0; j < mapa.getCols(); j++) {
+
+                double dx = i - camx;
+                double dy = j - camy;
+
+                double distSq = dx * dx + dy * dy;
+
+                // 1️⃣ Check circle
+                if (distSq <= radSq) {
+
+                    // 2️⃣ Dot product (NO sqrt needed)
+                    double dot = dx * dirX + dy * dirY;
+
+                    // Compare without normalizing
+                    if (dot >= limit * Math.sqrt(distSq)) {
+
+                        ret[iter][0] = i;
+                        ret[iter][1] = j;
+                        iter++;
+                    }
                 }
             }
         }
+
         ret[iter][0] = -1;
         ret[iter][1] = -1;
+
         return ret;
     }
 }
