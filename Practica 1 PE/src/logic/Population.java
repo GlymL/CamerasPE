@@ -73,7 +73,7 @@ public class Population {
 
     public void calculateAptitudes() {
         for (CromFit cf : population) {
-            cf.calculateAptitude(fTotal);
+            cf.calculateAptitude(Math.max(fTotal, 1));
         }
     }
 
