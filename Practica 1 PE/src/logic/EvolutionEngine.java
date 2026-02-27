@@ -8,15 +8,19 @@ import controller.Controller;
 
 public class EvolutionEngine {
 
-    private final Population population;
-    private final Selection mutationStrategy;
-    private final int generations;
-    private final Controller controller;
+    private Population population;
+    private Selection mutationStrategy;
+    private int generations;
+    private Controller controller;
 
     private ArrayList<Double> avgFitnessHistory = new ArrayList<>();
     private ArrayList<Double> bestFitnessHistory = new ArrayList<>();
 
-    public EvolutionEngine(Controller controller,
+    public EvolutionEngine(){
+
+    }
+
+    public void start(Controller controller,
                            Population population,
                            Selection mutationStrategy,
                            int generations) {
@@ -24,6 +28,8 @@ public class EvolutionEngine {
         this.mutationStrategy = mutationStrategy;
         this.generations = generations;
         this.controller = controller;
+
+        this.run(null);
     }
 
     public void run(EvolutionListener listener) {

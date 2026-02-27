@@ -48,8 +48,9 @@ public class EvolutionFullGUI extends JFrame{
 
   private JButton runBinaryButton = new JButton("Ejecutar Binario");
   private JButton runRealButton = new JButton("Ejecutar Real");
+  private Controller c;
 
-  public EvolutionFullGUI() {
+  public EvolutionFullGUI(Controller c) {
     setTitle("Algoritmo Genético - Cámaras");
     setSize(1100, 600);
     setLocationRelativeTo(null);
@@ -59,6 +60,7 @@ public class EvolutionFullGUI extends JFrame{
 
     add(createTopPanel(), BorderLayout.NORTH);
     add(createCenterPanel(), BorderLayout.CENTER);
+    this.c = c;
   }
 
   private JPanel createTopPanel() {
@@ -219,8 +221,7 @@ public class EvolutionFullGUI extends JFrame{
         );
         return;
       }
-    Controller controller = new Controller(
-      this,
+    new Thread(() -> c.execute(
       generations,
       escenario + 1,
       population,
@@ -231,9 +232,7 @@ public class EvolutionFullGUI extends JFrame{
       elitismo,
       selection,
       bin,
-    m);
-
-    new Thread(() -> controller.start()).start();
+      m)).start();
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {

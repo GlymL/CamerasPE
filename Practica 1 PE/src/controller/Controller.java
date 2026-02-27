@@ -3,7 +3,6 @@ package controller;
 
 import logic.*;
 import mapaApp.MapaCamaras;
-import view.ConsoleEvolutionListener;
 import view.EvolutionFullGUI;
 
 public class Controller {
@@ -12,7 +11,13 @@ public class Controller {
     private final EvolutionFullGUI gui;
 
  
-    public Controller(EvolutionFullGUI gui,
+    public Controller(){
+        this.engine = new EvolutionEngine();
+        this.gui = new EvolutionFullGUI(this);
+        gui.setVisible(true);
+    }
+
+    public void execute(
                     int generations,
                     int mapa,
                     int popSize,
@@ -26,7 +31,6 @@ public class Controller {
                     Mutacion m) {
 
         MapaCamaras mapaCamaras = new MapaCamaras(mapa);
-
         Population population = new Population(
                 mapaCamaras,
                 popSize,
@@ -39,18 +43,10 @@ public class Controller {
                 m
         );
 
-        this.engine = new EvolutionEngine(
-                this,
+        this.engine.start(this,
                 population,
                 mutationStrategy,
-                generations
-        );
-
-        this.gui = gui;
-    }
-
-    public void start() {
-        engine.run(new ConsoleEvolutionListener());
+                generations);
     }
 
     public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
