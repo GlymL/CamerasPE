@@ -2,7 +2,6 @@ package logic;
 
 import java.util.ArrayList;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import controller.Controller;

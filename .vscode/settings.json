@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": [
+        "Practica 1 PE\\src"
+    ],
+    "java.project.referencedLibraries": [
+        "Practica 1 PE\\lib\\junit-platform-console-standalone-1.13.0-M3.jar",
+        "Practica 1 PE\\lib\\jmathplot.jar"
+    ]
+}
