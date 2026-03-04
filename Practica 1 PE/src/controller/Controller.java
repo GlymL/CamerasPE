@@ -7,14 +7,18 @@ import view.EvolutionFullGUI;
 
 public class Controller {
 
-    private final EvolutionEngine engine;
-    private final EvolutionFullGUI gui;
+    private EvolutionEngine engine;
+    private EvolutionFullGUI gui;
+    private Controller inst;
 
  
     public Controller(){
-        this.engine = new EvolutionEngine();
-        this.gui = new EvolutionFullGUI(this);
-        gui.setVisible(true);
+        if(inst == null){
+            this.engine = new EvolutionEngine();
+            this.gui = new EvolutionFullGUI(this);
+            inst = this;
+        }
+        this.gui.setVisible(true);
     }
 
     public void execute(

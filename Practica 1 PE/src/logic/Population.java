@@ -11,7 +11,7 @@ public class Population {
 
     private double crossoverRatio;
     private double mutationRatio;
-    private Random rand = new Random();
+    private Random rand = new Random(3000);
     private boolean ponderado;
     private Cruce cruce;
     private Mutacion mut;
