@@ -1,4 +1,4 @@
-package logic_2;
+package logic;
 
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -130,7 +130,7 @@ public class AEstrella {
 
 // A main method, A* Search algorithm to find the shortest path
 
-   void aStarSearch(Pair src,
+   double aStarSearch(Pair src,
                     Pair dest)
    {
     
@@ -139,26 +139,26 @@ public class AEstrella {
 
        if (!isValid(mapa, rows, cols, src)) {
            System.out.println("Source is invalid...");
-           return;
+           return -1.0;
        }
 
 
        if (!isValid(mapa, rows, cols, dest)) {
            System.out.println("Destination is invalid...");
-           return;
+           return -1.0;
        }
 
 
        if (!isUnBlocked(mapa, rows, cols, src)
                || !isUnBlocked(mapa, rows, cols, dest)) {
            System.out.println("Source or destination is blocked...");
-           return;
+           return -1.0;
        }
 
 
        if (isDestination(src, dest)) {
            System.out.println("We're already (t)here...");
-           return;
+           return -1.0;
        }
 
 
@@ -211,7 +211,7 @@ public class AEstrella {
                            cellDetails[neighbour.first][neighbour.second].parent = new Pair ( i, j );
                            System.out.println("The destination cell is found");
                            tracePath(cellDetails, rows, cols, dest);
-                           return;
+                           return cellDetails[i][j].g;
                        }
 
                        else if (!closedList[neighbour.first][neighbour.second]
@@ -240,38 +240,6 @@ public class AEstrella {
        }
 
        System.out.println("Failed to find the Destination Cell");
-   }
-
-   // test
-   public static void main(String[] args) {
-
-
-   //0: The cell is blocked
-  // 1: The cell is not blocked
-
-        int[][] priority = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 5, 5, 5, 1, 1, 1, 1, 1}, // Pasillo Norte
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 5, 5, 5, 1, 1, 1}, // Pasillo Centro
-            {1, 1, 1, 1, 1, 10, 1, 1, 1, 1}, // <--- JOYA (10)
-            {1, 1, 1, 1, 1, 10, 1, 1, 1, 1}, // Conexión
-            {1, 1, 1, 1, 1, 5, 0, 0, 0, 0}, // Conexión
-            {1, 1, 1, 1, 1, 0, 1, 1, 1, 1},
-            {1, 1, 5, 5, 5, 0, 5, 5, 5, 1}, // Pasillo Sur
-            {1, 1, 1, 1, 1, 0, 1, 1, 1, 1}
-        };
-
-
-       // Start is the left-most upper-most corner
-       Pair src = new Pair(0,0);
-               //(8, 0);
-
-       // Destination is the right-most bottom-most corner
-       Pair dest = new Pair(9, 9);
-
-       AEstrella app = new AEstrella(priority);
-       app.aStarSearch(src, dest);
-
+       return -1.0;
    }
 }

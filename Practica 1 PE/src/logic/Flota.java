@@ -1,4 +1,4 @@
-package logic_2;
+package logic;
 
 public enum Flota {
     VELOZ(1.5), ESTANDAR(1.0), PESADO(0.7), AGIL(1.2), TANQUE(0.5);

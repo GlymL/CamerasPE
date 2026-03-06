@@ -1,14 +1,19 @@
 package logic;
 
+import java.lang.module.FindException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Random;
+
+import logic.FitnessDron;
+import mapaApp.GeneradorCamaras;
 import mapaApp.MapaCamaras;
 
 public class Population {
-    private ArrayList<CromFit> population;
     private MapaCamaras mapa;
     private double fTotal;
 
+    private ArrayList<FitnessDron> population;
     private double crossoverRatio;
     private double mutationRatio;
     private Random rand = new Random(3000);
@@ -20,11 +25,10 @@ public class Population {
 
 
     public Population(MapaCamaras mapa, int popSize, 
-        double crossRatio, double mutRatio, boolean ponder, Cruce monop, double elitismo, boolean binario, Mutacion m) {
+        double crossRatio, double mutRatio, boolean ponder, Cruce cruce, double elitismo, boolean binario, Mutacion m) {
         this.mapa = mapa;
-        this.population = new ArrayList<>();
         this.ponderado = ponder;
-        this.cruce = monop;
+        this.cruce = cruce;
         this.elitismo = elitismo;
         this.binario = binario;
         this.mut = m;
@@ -32,38 +36,24 @@ public class Population {
         mutationRatio = mutRatio;
         initializeRandom(popSize, this.binario);
         evaluateAll();
-        calculateAptitudes();
         sortByFitness();
     }
 
     private void initializeRandom(int popSize, boolean binario) {
+        GeneradorCamaras gc = new GeneradorCamaras(3000, mapa);
         for (int i = 0; i < popSize; i++) {
-            System.out.println("Map size: " + mapa.getFilas() + " x " + mapa.getCols() + ", NumCams: " + mapa.getNumCams());
-            Cromosoma c;
-            if(binario)
-                c = new CromosomasBinario(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
-            else
-                c = new CromosomasReal(mapa.getFilas(), mapa.getCols(), mapa.getNumCams());
+            CromosomasDron c;
+            c = new CromosomasDron(mapa.getNumCams(), 0);
             c.randomInitialize();
-            Fitness f;
-            if(binario){
-                f = new FitnessBinario(mapa, c, ponderado);
-            }else
-                f = new FitnessReal(mapa, c, ponderado);
-            population.add(new CromFit(c, f));
+            FitnessDron f = new FitnessDron(c, gc);
+            population.add(f);
         }
     }
 
     public void evaluateAll() {
         fTotal = 0.0;
-        for (CromFit cf : population) {
-            if(binario)
-                cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
-            else
-                cf.setFit(new FitnessReal(mapa, cf.getCrom(), ponderado));
-
-            if(cf.getFit().getPunt() > 0)
-                fTotal += cf.getFit().getPunt();
+        for (FitnessDron cf : population) {
+            cf.calculateFitness();
         }
     }
 
@@ -71,19 +61,14 @@ public class Population {
         return fTotal;
     }
 
-    public void calculateAptitudes() {
-        for (CromFit cf : population) {
-            cf.calculateAptitude(Math.max(fTotal, 1));
-        }
-    }
 
     public void sortByFitness() {
         population.sort((a, b) -> b.compareTo(a));
     }
 
 
-    public ArrayList<CromFit> rouletteSelection(int size) {
-        ArrayList<CromFit> selected = new ArrayList<>();
+    public ArrayList<FitnessDron> rouletteSelection(int size) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
         ArrayList<Double> cumulative = new ArrayList<>();
         double minFit = population.stream()
                                 .mapToDouble(cf -> cf.getFit().getPunt())
@@ -93,7 +78,7 @@ public class Population {
         double shift = (minFit < 0) ? -minFit : 0.0;
         double sum = 0;
 
-        for (CromFit cf : population) {
+        for (FitnessDron cf : population) {
             double value = cf.getFit().getPunt() + shift;  // all >= 0
             sum += value;
             cumulative.add(sum);
@@ -120,8 +105,8 @@ public class Population {
         return selected;
     }
 
-    public ArrayList<CromFit> truncSelection(int size, int elements) {
-        ArrayList<CromFit> selected = new ArrayList<>();
+    public ArrayList<FitnessDron> truncSelection(int size, int elements) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
         sortByFitness();
         while(selected.size() < size){
             int i = 0;
@@ -133,15 +118,15 @@ public class Population {
         return selected;
     }
 
-    public ArrayList<CromFit> torneoSelection(int size) {
-        ArrayList<CromFit> selected = new ArrayList<>();
+    public ArrayList<FitnessDron> torneoSelection(int size) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
         for(int i = 0; i < size; i++){
-            ArrayList<CromFit> torneo = new ArrayList<>();
-            CromFit c1 = population.get(rand.nextInt(population.size()));
+            ArrayList<FitnessDron> torneo = new ArrayList<>();
+            FitnessDron c1 = population.get(rand.nextInt(population.size()));
             torneo.add(c1);
-            CromFit c2 = population.get(rand.nextInt(population.size()));
+            FitnessDron c2 = population.get(rand.nextInt(population.size()));
             torneo.add(c2);
-            CromFit c3 = population.get(rand.nextInt(population.size()));
+            FitnessDron c3 = population.get(rand.nextInt(population.size()));
             torneo.add(c3);
             torneo.sort((a, b) -> b.compareTo(a));
             selected.add(torneo.get(0).clone());
@@ -149,12 +134,12 @@ public class Population {
         return selected;
     }
 
-    public ArrayList<CromFit> estocasticoSelection(int size){
-        ArrayList<CromFit> selected = new ArrayList<>();
+    public ArrayList<FitnessDron> estocasticoSelection(int size){
+        ArrayList<FitnessDron> selected = new ArrayList<>();
         ArrayList<Double> cumulative = new ArrayList<>();
         
         double sum = 0;
-        for (CromFit cf : population) {
+        for (FitnessDron cf : population) {
             sum += Math.max(0, cf.getApt());
             cumulative.add(sum);
         }
@@ -181,8 +166,8 @@ public class Population {
         return selected;
     }
 
-    public ArrayList<CromFit> restosSelection(int size) {
-        ArrayList<CromFit> selected = new ArrayList<>();
+    public ArrayList<FitnessDron> restosSelection(int size) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
 
         for(int i = 0; i < size; i++){
             int copias = (int)Math.floor(population.get(i).getApt()*size);
@@ -190,8 +175,8 @@ public class Population {
                 selected.add(population.get(i).clone());
             }
         }
-        ArrayList<CromFit> trunc = torneoSelection(size - selected.size());
-        for(CromFit cf : trunc){
+        ArrayList<FitnessDron> trunc = torneoSelection(size - selected.size());
+        for(FitnessDron cf : trunc){
             selected.add(cf.clone());
         }
         return selected;
@@ -204,11 +189,11 @@ public class Population {
                 int c2 = rand.nextInt(population.size());
                 Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceMonop(population.get(c2).getCrom(), crossoverRatio);
                 if(binario){
-                    population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
-                    population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                    population.set(c1, new FitnessDron(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                    population.set(c2, new FitnessDron(children[1], new FitnessBinario(mapa, children[1], ponderado)));
                 } else{
-                    population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
-                    population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                    population.set(c1, new FitnessDron(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                    population.set(c2, new FitnessDron(children[1], new FitnessReal(mapa, children[1], ponderado)));
                 }
             }else if (cruce == Cruce.UNIFICADO){
                 if (rand.nextDouble() < crossoverRatio) {
@@ -216,37 +201,37 @@ public class Population {
                     int c2 = rand.nextInt(population.size());
                     Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceUnif(population.get(c2).getCrom());
                     if(binario){
-                        population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
-                        population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                        population.set(c1, new FitnessDron(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                        population.set(c2, new FitnessDron(children[1], new FitnessBinario(mapa, children[1], ponderado)));
                     } else{
-                        population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
-                        population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                        population.set(c1, new FitnessDron(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                        population.set(c2, new FitnessDron(children[1], new FitnessReal(mapa, children[1], ponderado)));
                     }
                 }
             } else if (cruce == Cruce.ARITMETICO){
                 int c1 = rand.nextInt(population.size());
                 int c2 = rand.nextInt(population.size());
                 Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceArit(population.get(c2).getCrom(), crossoverRatio);
-                population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
-                population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                population.set(c1, new FitnessDron(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                population.set(c2, new FitnessDron(children[1], new FitnessReal(mapa, children[1], ponderado)));
             }
             else{
                 int c1 = rand.nextInt(population.size());
                 int c2 = rand.nextInt(population.size());
                 Cromosoma[] children = (Cromosoma[])population.get(c1).getCrom().cruceBLX(population.get(c2).getCrom(), crossoverRatio);
                 if(binario){
-                    population.set(c1, new CromFit(children[0], new FitnessBinario(mapa, children[0], ponderado)));
-                    population.set(c2, new CromFit(children[1], new FitnessBinario(mapa, children[1], ponderado)));
+                    population.set(c1, new FitnessDron(children[0], new FitnessBinario(mapa, children[0], ponderado)));
+                    population.set(c2, new FitnessDron(children[1], new FitnessBinario(mapa, children[1], ponderado)));
                 } else{
-                    population.set(c1, new CromFit(children[0], new FitnessReal(mapa, children[0], ponderado)));
-                    population.set(c2, new CromFit(children[1], new FitnessReal(mapa, children[1], ponderado)));
+                    population.set(c1, new FitnessDron(children[0], new FitnessReal(mapa, children[0], ponderado)));
+                    population.set(c2, new FitnessDron(children[1], new FitnessReal(mapa, children[1], ponderado)));
                 }
             }
         }
     }
 
     public void applyMutation() {
-        for (CromFit cf : population) {
+        for (FitnessDron cf : population) {
             if(mut == Mutacion.BITGEN)
                 cf.getCrom().mutarBitgen(mutationRatio);
             else
@@ -261,8 +246,8 @@ public class Population {
 
     public void evolve(Selection m) {
 
-        ArrayList<CromFit> selected = new ArrayList<>();
-        ArrayList<CromFit> elite = new ArrayList<>();
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+        ArrayList<FitnessDron> elite = new ArrayList<>();
 
         sortByFitness();
         if(elitismo > 0){
@@ -293,8 +278,6 @@ public class Population {
         
         evaluateAll();
         
-        calculateAptitudes();
-        
         sortByFitness();
 
         for(int i = 0; i < elite.size(); i++){
@@ -302,8 +285,6 @@ public class Population {
         }
         
         evaluateAll();
-        
-        calculateAptitudes();
         
         sortByFitness();
 
@@ -315,7 +296,7 @@ public class Population {
             System.out.println("Population is empty!");
             return;
         }
-        CromFit best = population.get(0);
+        FitnessDron best = population.get(0);
         System.out.println("Best fitness: " + best.getFit().getPunt());
         best.getFit().print();
     }
@@ -327,7 +308,7 @@ public class Population {
 
     public double averageFitness() {
         double sum = 0;
-        for (CromFit cf : population) 
+        for (FitnessDron cf : population) 
             sum += cf.getFit().getPunt();
         return sum / population.size();
     }
