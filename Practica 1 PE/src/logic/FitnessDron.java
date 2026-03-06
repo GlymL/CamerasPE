@@ -6,9 +6,9 @@ import mapaApp.GeneradorCamaras;
 import mapaApp.MapaCamaras;
 
 public class FitnessDron implements Comparable<FitnessDron>{
-    AEstrella a;
-    CromosomasDron c;
-    GeneradorCamaras gc;
+    private AEstrella a;
+    private CromosomasDron c;
+    private GeneradorCamaras gc;
     private double fitness;
 
 
@@ -17,6 +17,13 @@ public class FitnessDron implements Comparable<FitnessDron>{
         this.c = c;
         this.gc = gc;
         this.a = new AEstrella(gc.getMapa());
+    }
+
+    private FitnessDron(CromosomasDron c, GeneradorCamaras gc, AEstrella a){
+
+        this.c = c;
+        this.gc = gc;
+        this.a = a;
     }
 
     public void calculateFitness(){
@@ -34,7 +41,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
                     coste += a.aStarSearch(camPos[rutas[i][j-1]], camPos[rutas[i][j]]);
                 j++;
             }
-            ret = Math.max(ret, coste/Flota.values()[1].getVel());
+            ret = Math.max(ret, coste/EnumFlota.values()[1].getVel());
         }
         System.out.println(ret);
         fitness = ret;
@@ -51,5 +58,18 @@ public class FitnessDron implements Comparable<FitnessDron>{
 
     public int compareTo(FitnessDron a2) {
         return Double.compare(fitness, a2.fitness);
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public CromosomasDron getCrom(){
+        return c.clone();
+    }
+
+    public FitnessDron clone(){
+        return new FitnessDron(c, gc, a);
+
     }
 }

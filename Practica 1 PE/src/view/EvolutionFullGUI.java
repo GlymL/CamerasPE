@@ -6,10 +6,9 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 
-import logic.Cromosoma;
-import logic.Cruce;
-import logic.Mutacion;
-import logic.Selection;
+import logic.EnumCruce;
+import logic.EnumMutacion;
+import logic.EnumSelection;
 import mapaApp.MapaCamaras;
 import controller.Controller;
 
@@ -28,12 +27,12 @@ public class EvolutionFullGUI extends JFrame{
     });
   private JCheckBox importanciaBox =
     new JCheckBox("Modo Importancia");
-  private JComboBox < Cruce > cruceBox =
-    new JComboBox<>(Cruce.values());
-     private JComboBox < Mutacion > mutaBox =
-    new JComboBox<>(Mutacion.values());
-  private JComboBox < Selection > selectionBox =
-    new JComboBox < > (Selection.values());
+  private JComboBox < EnumCruce > cruceBox =
+    new JComboBox<>(EnumCruce.values());
+     private JComboBox < EnumMutacion > mutaBox =
+    new JComboBox<>(EnumMutacion.values());
+  private JComboBox < EnumSelection > selectionBox =
+    new JComboBox < > (EnumSelection.values());
 
   private JSpinner populationSpinner =
     new JSpinner(new SpinnerNumberModel(100, 1, 10000, 10));
@@ -194,16 +193,16 @@ public class EvolutionFullGUI extends JFrame{
     double elitismo = (double) elitismoSpinner.getValue();
  
     boolean importancia = importanciaBox.isSelected();
-    Cruce cruce = (Cruce)cruceBox.getSelectedItem();
-    Mutacion m = (Mutacion)mutaBox.getSelectedItem();
+    EnumCruce cruce = (EnumCruce)cruceBox.getSelectedItem();
+    EnumMutacion m = (EnumMutacion)mutaBox.getSelectedItem();
     int escenario = escenarioBox.getSelectedIndex();
     bin = !isReal;
     n_mapa = escenario + 1;
-    Selection selection =
-      (Selection) selectionBox.getSelectedItem();
+    EnumSelection selection =
+      (EnumSelection) selectionBox.getSelectedItem();
 
 
-      if(bin && (cruce == Cruce.BLX_ALFA || cruce == Cruce.ARITMETICO)){
+      if(bin && (cruce == EnumCruce.BLX_ALFA || cruce == EnumCruce.ARITMETICO)){
         JOptionPane.showMessageDialog(
             null, 
             "El metodo de Cruce no es aplicable a una ejecucion binaria",
@@ -212,7 +211,7 @@ public class EvolutionFullGUI extends JFrame{
         );
         return;
       }
-      if(bin && m == Mutacion.GAUSSIANA){
+      if(bin && m == EnumMutacion.GAUSSIANA){
         JOptionPane.showMessageDialog(
             null, 
             "El metodo Mutacion no es aplicable a una ejecucion binaria",

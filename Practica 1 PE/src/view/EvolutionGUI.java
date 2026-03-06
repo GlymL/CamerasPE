@@ -1,7 +1,7 @@
 package view;
 
 // import controller.Controller;
-import logic.Selection;
+import logic.EnumSelection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,8 +13,8 @@ public class EvolutionGUI extends JFrame {
     private JTextField populationField = new JTextField("100");
     private JTextField crossoverField = new JTextField("0.8");
     private JTextField mutationField = new JTextField("0.02");
-    private JComboBox<Selection> selectionBox =
-        new JComboBox<>(Selection.values());
+    private JComboBox<EnumSelection> selectionBox =
+        new JComboBox<>(EnumSelection.values());
 
     private JCheckBox ponderBox = new JCheckBox("Ponder", true);
     private JCheckBox monopointBox = new JCheckBox("Monopoint", false);

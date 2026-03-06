@@ -28,11 +28,11 @@ public class Controller {
                     double crossRatio,
                     double mutRatio,
                     boolean ponder,
-                    Cruce monopoint,
+                    EnumCruce monopoint,
                     double elitismo,
-                    Selection mutationStrategy,
+                    EnumSelection mutationStrategy,
                     boolean binario,
-                    Mutacion m) {
+                    EnumMutacion m) {
 
         MapaCamaras mapaCamaras = new MapaCamaras(mapa);
         Population population = new Population(

@@ -58,4 +58,39 @@ public class CromosomasDron{
     public CromosomasDron clone() {
        return new CromosomasDron(camaras, drones, cromosoma);
     }
+
+    public CromosomasDron[] crucePMX(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'crucePMX'");
+    }
+
+    public CromosomasDron[] cruceOP(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cruceOP'");
+    }
+
+    public CromosomasDron[] cruceOXPP(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cruceOXPP'");
+    }
+
+    public CromosomasDron[] cruceCX(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cruceCX'");
+    }
+
+    public CromosomasDron[] cruceCO(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cruceCO'");
+    }
+
+    public CromosomasDron[] cruceERX(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cruceERX'");
+    }
+
+    public CromosomasDron[] cruceCUSTOM(CromosomasDron crom, double mutRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cruceCUSTOM'");
+    }
 }

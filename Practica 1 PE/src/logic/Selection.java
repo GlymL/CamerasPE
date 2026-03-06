@@ -1,0 +1,167 @@
+package logic;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Selection {
+    
+    private EnumSelection es;
+    private Random rand = new Random();
+
+    public Selection(EnumSelection es){
+        this.es = es;
+    }
+
+    public ArrayList<FitnessDron> select(ArrayList<FitnessDron> population){
+        
+        ArrayList<FitnessDron> ret = new ArrayList<FitnessDron>();
+
+        switch (es){
+        case EnumSelection.RULETA:
+            ret = rouletteSelection(population);
+            break;
+        case EnumSelection.TRUNCAMIENTO:
+            ret = truncSelection(population);
+            break;
+        case EnumSelection.TORNEO:
+            ret = torneoSelection(population);
+            break;
+        case EnumSelection.RESTOS:
+            ret = restosSelection(population);
+            break;
+        case EnumSelection.ESTOCASTICO:
+            ret = estocasticoSelection(population);
+            break;
+        case EnumSelection.RANKING:
+            ret = rankingSelection(population);
+            break;
+        default:
+            System.err.println(("es en Selection es nulo"));
+            return null;
+
+        }
+        return ret;
+
+    }
+
+    
+    private ArrayList<FitnessDron> rouletteSelection(ArrayList<FitnessDron> population) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+        ArrayList<Double> cumulative = new ArrayList<>();
+        double sum = 0;
+
+        for (FitnessDron cf : population) {
+            sum += cf.getFitness();
+            cumulative.add(sum);
+        }
+
+        // fallback if sum == 0
+        if (sum == 0) {
+            for (int i = 0; i < population.size(); i++) {
+                selected.add(population.get(rand.nextInt(population.size())).clone());
+            }
+            return selected;
+        }
+
+        // now do standard roulette selection
+        for (int i = 0; i < population.size(); i++) {
+            double r = rand.nextDouble() * sum;
+            for (int j = 0; j < cumulative.size(); j++) {
+                if (r <= cumulative.get(j)) {
+                    selected.add(population.get(j).clone());
+                    break;
+                }
+            }
+        }
+        return selected;
+    }
+
+
+    private ArrayList<FitnessDron> truncSelection(ArrayList<FitnessDron> population) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+        while(selected.size() < population.size()){
+            int i = 0;
+            while(selected.size() < population.size() && i < population.size()/10){
+                    selected.add(population.get(i).clone());
+                    i++;
+                }
+            }
+        return selected;
+    }
+
+    private ArrayList<FitnessDron> torneoSelection(ArrayList<FitnessDron> population) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+        for(int i = 0; i < population.size(); i++){
+            ArrayList<FitnessDron> torneo = new ArrayList<>();
+            FitnessDron c1 = population.get(rand.nextInt(population.size()));
+            torneo.add(c1);
+            FitnessDron c2 = population.get(rand.nextInt(population.size()));
+            torneo.add(c2);
+            FitnessDron c3 = population.get(rand.nextInt(population.size()));
+            torneo.add(c3);
+            torneo.sort((a, b) -> b.compareTo(a));
+            selected.add(torneo.get(0).clone());
+        }
+        return selected;
+    }
+
+    private ArrayList<FitnessDron> estocasticoSelection(ArrayList<FitnessDron> population){
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+        ArrayList<Double> cumulative = new ArrayList<>();
+        
+        double sum = 0;
+        for (FitnessDron cf : population) {
+            sum += Math.max(0, cf.getFitness());
+            cumulative.add(sum);
+        }
+
+        if (sum == 0) {
+            for (int i = 0; i < population.size(); i++) {
+                selected.add(population.get(rand.nextInt(population.size())).clone());
+            }
+            return selected;
+        }
+
+        double r = rand.nextDouble();
+        int inicio = 0;
+        for (int i = 0; i < population.size(); i++) {
+            double a = (r + i)/population.size();
+            for (int j = inicio; j < cumulative.size(); j++) {
+                if (a <= cumulative.get(j)) {
+                    selected.add(population.get(j).clone());
+                    inicio = j;
+                    break;
+                }
+            }
+        }
+        return selected;
+    }
+
+    private ArrayList<FitnessDron> restosSelection(ArrayList<FitnessDron> population) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+
+        for(int i = 0; i < population.size(); i++){
+            int copias = (int)Math.floor(population.get(i).getFitness()*population.size());
+            for(int j = 0; j < copias; j++){
+                selected.add(population.get(i).clone());
+            }
+        }
+        ArrayList<FitnessDron> trunc = torneoSelection(population);
+
+        trunc.sort((a,b) -> b.compareTo(a));
+
+        while(selected.size() <= population.size() && trunc.size() > 0){
+            selected.add(trunc.get(0));
+            trunc.remove(0);
+        }
+        for(FitnessDron cf : trunc){
+            selected.add(cf.clone());
+        }
+        return selected;
+    }
+
+    private ArrayList<FitnessDron> rankingSelection(ArrayList<FitnessDron> population) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'rankingSelection'");
+    }
+}
