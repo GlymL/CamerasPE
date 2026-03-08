@@ -1,34 +1,30 @@
 package logic;
 
-import java.lang.module.FindException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Random;
 
-import logic.FitnessDron;
 import mapaApp.GeneradorCamaras;
 import mapaApp.MapaCamaras;
 
 public class Population {
-    private double mutationRatio;
-    private EnumMutacion mut;
     
     private double fTotal;
-    private ArrayList<FitnessDron> population;
+    private ArrayList<FitnessDron> generation;
     private Cruce cr;
     private double elitismo;
     private Selection s;
+    private Mutacion m;
     private GeneradorCamaras gc;
 
 
     public Population(MapaCamaras mapa, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
-        double elitismo, boolean binario, EnumMutacion m, EnumSelection enumS) {
+        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones) {
+            generation = new ArrayList<FitnessDron>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
-        this.mut = m;
-        mutationRatio = mutRatio;
+        m = new Mutacion(mut, mutRatio);
         s = new Selection(enumS);
+
         initializeRandom(popSize, mapa);
         evaluateAll();
         sortByFitness();
@@ -38,16 +34,16 @@ public class Population {
         gc = new GeneradorCamaras(3000, mc);
         for (int i = 0; i < popSize; i++) {
             CromosomasDron c;
-            c = new CromosomasDron(mc.getNumCams(), 0);
+            c = new CromosomasDron(mc.getNumCams(), 3);
             c.randomInitialize();
             FitnessDron f = new FitnessDron(c, gc);
-            population.add(f);
+            generation.add(f);
         }
     }
 
     public void evaluateAll() {
         fTotal = 0.0;
-        for (FitnessDron cf : population) {
+        for (FitnessDron cf : generation) {
             cf.calculateFitness();
         }
     }
@@ -58,51 +54,39 @@ public class Population {
 
 
     public void sortByFitness() {
-        population.sort((a, b) -> b.compareTo(a));
+        generation.sort((a, b) -> b.compareTo(a));
     }
 
 
-    public void applyMutation() {
-        for (FitnessDron cf : population) {
-            if(mut == EnumMutacion.BITGEN)
-                cf.getCrom().mutarBitgen(mutationRatio);
-            else
-                cf.getCrom().mutarGauss(mutationRatio);
-            if(binario)
-                cf.setFit(new FitnessBinario(mapa, cf.getCrom(), ponderado));
-            else
-                cf.setFit(new FitnessReal(mapa, cf.getCrom(), ponderado));
-        }
-    }
 
 
-    public void evolve(EnumSelection m) {
+    public void evolve() {
 
         ArrayList<FitnessDron> selected = new ArrayList<>();
         ArrayList<FitnessDron> elite = new ArrayList<>();
 
         sortByFitness();
         if(elitismo > 0){
-            for(int i = 0; i < elitismo*population.size(); i++){
-                elite.add(population.get(i).clone());
+            for(int i = 0; i < elitismo*generation.size(); i++){
+                elite.add(generation.get(i).clone());
             }
         }
 
-        selected = s.select(population);
+        selected = s.select(generation);
         
-        population.clear();
-        population.addAll(selected);
+        generation.clear();
+        generation.addAll(selected);
 
-        cr.cruzar(population, gc);
+        cr.cruzar(generation, gc);
         
-        applyMutation();
+        m.mutar(generation, gc);
         
         evaluateAll();
         
         sortByFitness();
 
         for(int i = 0; i < elite.size(); i++){
-            population.set(population.size() - i - 1, elite.get(i).clone());
+            generation.set(generation.size() - i - 1, elite.get(i).clone());
         }
         
         evaluateAll();
@@ -113,35 +97,35 @@ public class Population {
 
 
     public void reportBest() {
-        if (population.isEmpty()) {
-            System.out.println("Population is empty!");
+        if (generation.isEmpty()) {
+            System.out.println("generation is empty!");
             return;
         }
-        FitnessDron best = population.get(0);
+        FitnessDron best = generation.get(0);
         System.out.println("Best fitness: " + best.getFitness());
     }
 
     public int[][] mapBest(){
         sortByFitness();
-        return null /*population.get(0).getFit().print*/ ;
+        return null /*generation.get(0).getFit().print*/ ;
     }
 
     public double averageFitness() {
         double sum = 0;
-        for (FitnessDron cf : population) 
+        for (FitnessDron cf : generation) 
             sum += cf.getFitness();
-        return sum / population.size();
+        return sum / generation.size();
     }
     
     public double bestFitness(){
         sortByFitness();
-        return population.get(0).getFitness();
+        return generation.get(0).getFitness();
     }
 
-    // public Cromosoma bestCrom(){
-    //     sortByFitness(); 
-    //     return population.get(0).getCrom();
-    // }
+    public FitnessDron best() {
+        sortByFitness();
+        return generation.get(0);
+    }
 
 
 }

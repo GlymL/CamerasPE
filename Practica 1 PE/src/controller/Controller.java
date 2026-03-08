@@ -27,29 +27,28 @@ public class Controller {
                     int popSize,
                     double crossRatio,
                     double mutRatio,
-                    boolean ponder,
-                    EnumCruce monopoint,
+                    EnumCruce enumCr,
+                    EnumMutacion enumMut,
+                    EnumSelection enumSel,
                     double elitismo,
-                    EnumSelection mutationStrategy,
-                    boolean binario,
-                    EnumMutacion m) {
+                    int n_drones
+                    ) {
 
         MapaCamaras mapaCamaras = new MapaCamaras(mapa);
         Population population = new Population(
-                mapaCamaras,
-                popSize,
-                crossRatio,
-                mutRatio,
-                ponder,
-                monopoint,
-                elitismo,
-                binario,
-                m
+            mapaCamaras,
+            popSize,
+            crossRatio,
+            mutRatio,
+            enumCr,
+            enumMut,
+            enumSel,
+            elitismo,
+            n_drones
         );
 
         this.engine.start(this,
                 population,
-                mutationStrategy,
                 generations);
     }
 
@@ -61,8 +60,8 @@ public class Controller {
         gui.clearChart();
     }
 
-    public void updateMap(int[][] visitado, Cromosoma c){
-        gui.updateMap(visitado, c);
+    public void updateMap(int[][] visitado, FitnessDron c){
+        //gui.updateMap(visitado, c);
 
     }
 }

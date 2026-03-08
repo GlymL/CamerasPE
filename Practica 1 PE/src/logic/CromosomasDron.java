@@ -93,4 +93,29 @@ public class CromosomasDron{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceCUSTOM'");
     }
+
+    public CromosomasDron mutacionInsercion(double mut) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mutacionInsercion'");
+    }
+
+    public CromosomasDron mutacionIntercambio(double mut) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mutacionIntercambio'");
+    }
+
+    public CromosomasDron mutacionInversion(double mut) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mutacionInversion'");
+    }
+
+    public CromosomasDron mutacionHeuristica(double mut) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mutacionHeuristica'");
+    }
+
+    public CromosomasDron mutacionCustom(double mut) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mutacionCustom'");
+    }
 }

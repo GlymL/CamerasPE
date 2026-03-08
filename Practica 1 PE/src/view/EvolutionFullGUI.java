@@ -9,6 +9,7 @@ import java.awt.*;
 import logic.EnumCruce;
 import logic.EnumMutacion;
 import logic.EnumSelection;
+import logic.FitnessDron;
 import mapaApp.MapaCamaras;
 import controller.Controller;
 
@@ -25,8 +26,6 @@ public class EvolutionFullGUI extends JFrame{
       "Escenario 2 - Pasillos",
       "Escenario 3 - Supermercado"
     });
-  private JCheckBox importanciaBox =
-    new JCheckBox("Modo Importancia");
   private JComboBox < EnumCruce > cruceBox =
     new JComboBox<>(EnumCruce.values());
      private JComboBox < EnumMutacion > mutaBox =
@@ -42,11 +41,11 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05));
   private JSpinner mutationSpinner =
     new JSpinner(new SpinnerNumberModel(0.01, 0.0, 1.0, 0.01));
-     private JSpinner elitismoSpinner =
+  private JSpinner elitismoSpinner =
     new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1.0, 0.01));
-
-  private JButton runBinaryButton = new JButton("Ejecutar Binario");
-  private JButton runRealButton = new JButton("Ejecutar Real");
+  private JSpinner dronesSpinner =
+    new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
+  private JButton runButton = new JButton("Ejecutar generaciones");
   private Controller c;
 
   public EvolutionFullGUI(Controller c) {
@@ -67,7 +66,6 @@ public class EvolutionFullGUI extends JFrame{
 
     panel.add(new JLabel("Escenario:"));
     panel.add(escenarioBox);
-    panel.add(importanciaBox);
 
     return panel;
   }
@@ -154,12 +152,10 @@ public class EvolutionFullGUI extends JFrame{
     gbc.gridx = 0;
     gbc.gridy++;
     gbc.gridwidth = 2;
-    runBinaryButton.addActionListener((e) -> runAlgorithm(false));
-    panel.add(runBinaryButton, gbc);
 
     gbc.gridy++;
-     runRealButton.addActionListener((e) -> runAlgorithm(true));
-    panel.add(runRealButton, gbc);
+     runButton.addActionListener((e) -> runAlgorithm());
+    panel.add(runButton, gbc);
 
     return panel;
   }
@@ -184,54 +180,33 @@ public class EvolutionFullGUI extends JFrame{
     return fitnessChart;
   }
 
-  private void runAlgorithm(boolean isReal) {
+  private void runAlgorithm() {
 
     int population = (int) populationSpinner.getValue();
     int generations = (int) generationsSpinner.getValue();
     double crossover = (double) crossoverSpinner.getValue();
     double mutation = (double) mutationSpinner.getValue();
     double elitismo = (double) elitismoSpinner.getValue();
+    int n_drones = (int) dronesSpinner.getValue();
  
-    boolean importancia = importanciaBox.isSelected();
-    EnumCruce cruce = (EnumCruce)cruceBox.getSelectedItem();
-    EnumMutacion m = (EnumMutacion)mutaBox.getSelectedItem();
+    EnumCruce enumCruce = (EnumCruce)cruceBox.getSelectedItem();
+    EnumMutacion enumMut = (EnumMutacion)mutaBox.getSelectedItem();
+    EnumSelection selection = (EnumSelection) selectionBox.getSelectedItem();
     int escenario = escenarioBox.getSelectedIndex();
-    bin = !isReal;
     n_mapa = escenario + 1;
-    EnumSelection selection =
-      (EnumSelection) selectionBox.getSelectedItem();
 
 
-      if(bin && (cruce == EnumCruce.BLX_ALFA || cruce == EnumCruce.ARITMETICO)){
-        JOptionPane.showMessageDialog(
-            null, 
-            "El metodo de Cruce no es aplicable a una ejecucion binaria",
-            "Error de tipo de Cruce",
-            JOptionPane.ERROR_MESSAGE
-        );
-        return;
-      }
-      if(bin && m == EnumMutacion.GAUSSIANA){
-        JOptionPane.showMessageDialog(
-            null, 
-            "El metodo Mutacion no es aplicable a una ejecucion binaria",
-            "Error de tipo de Mutacion",
-            JOptionPane.ERROR_MESSAGE
-        );
-        return;
-      }
     new Thread(() -> c.execute(
       generations,
       escenario + 1,
       population,
       crossover,
       mutation,
-      importancia,
-      cruce,
-      elitismo,
+      enumCruce,
+      enumMut,
       selection,
-      bin,
-      m)).start();
+      elitismo,
+      n_drones)).start();
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
@@ -245,12 +220,12 @@ public class EvolutionFullGUI extends JFrame{
     fitnessChart.reset();
   }
 
-  public void updateMap(int[][] visitado, Cromosoma c) {
+  public void updateMap(int[][] visitado, FitnessDron fd) {
     if(bin){
       SwingUtilities.invokeLater(() -> bd.updateBinary(visitado));
     }else{
-      MapaCamaras mc = new MapaCamaras(n_mapa);
-      SwingUtilities.invokeLater(() ->bd.updateReal(mc.mapa, visitado, c.decode(), mc.getAngulo(), mc.getDist()));
+      //MapaCamaras mc = new MapaCamaras(n_mapa);
+      //SwingUtilities.invokeLater(() ->bd.updateReal(mc.mapa, visitado, c.decode(), mc.getAngulo(), mc.getDist()));
     }
   }
 
