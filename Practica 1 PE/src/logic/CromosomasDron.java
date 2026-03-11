@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 public class CromosomasDron{
 
@@ -20,7 +21,7 @@ public class CromosomasDron{
     private CromosomasDron(int camaras, int drones, Integer[] cromosoma){
         this.drones = drones;
         this.camaras = camaras;
-        cromosoma = cromosoma.clone();
+        this.cromosoma = cromosoma.clone();
     }
 
     public void randomInitialize() {
@@ -60,8 +61,58 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] crucePMX(CromosomasDron crom, double mutRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crucePMX'");
+        int c1, c2;
+        Random r = new Random();
+        c1 = r.nextInt(cromosoma.length);
+        c2 = r.nextInt(cromosoma.length);
+        Integer[] arr1 = new Integer[cromosoma.length];
+         Arrays.fill(arr1, -1);
+        Integer[] arr2 = new Integer[cromosoma.length];
+         Arrays.fill(arr2, -1);
+        int iter1 = Math.min(c1, c2);
+        int iter2 = Math.max(c1, c2);
+        ArrayList<Integer> hs1 = new ArrayList<Integer>(cromosoma.length);
+        ArrayList<Integer> hs2 = new ArrayList<Integer>(cromosoma.length);
+        for(int i = iter1; i < iter2; i++){
+            hs1.set(i, this.cromosoma[i]);
+            hs2.set(i, crom.cromosoma[i]);
+        }
+
+        for(int i = 0; i < this.cromosoma[i]; i++){
+            if(iter1 < i && i < iter2){
+                continue;
+            }
+            Integer cand1 = crom.cromosoma[i];
+            while(hs1.contains(cand1)){
+                int indexNuevo = hs2.indexOf(cand1);
+                cand1 = this.cromosoma[indexNuevo];
+            }
+            hs1.set(i, cand1);
+
+            Integer cand2 = this.cromosoma[i];
+            while(hs2.contains(cand2)){
+                int indexNuevo = hs1.indexOf(cand2);
+                cand2 = this.cromosoma[indexNuevo];
+            }
+            hs2.set(i, cand2);
+        }
+
+        CromosomasDron[] cd = new CromosomasDron[2];
+
+        int index1 = 0;
+        for (final Integer value: hs1) {
+            arr1[index1++] = value;
+        }
+
+        int index2 = 0;
+        for (final Integer value: hs2) {
+            arr2[index2++] = value;
+        }
+
+        cd[0] = new CromosomasDron(camaras, drones, arr1);
+        cd[1] = new CromosomasDron(camaras, drones, arr2);
+        return cd;
+
     }
 
     public CromosomasDron[] cruceOP(CromosomasDron crom, double mutRatio) {
