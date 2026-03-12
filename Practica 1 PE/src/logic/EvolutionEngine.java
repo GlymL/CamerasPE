@@ -32,12 +32,12 @@ public class EvolutionEngine {
     public void run(EvolutionListener listener) {
         controller.clearChart();
 
-        double max_fitness = 0;
+        double min_fitness = 0;
         for (int gen = 0; gen < generations; gen++) {
             population.evolve();
             avgFitnessHistory.add(population.averageFitness());
             bestFitnessHistory.add(population.bestFitness());
-            max_fitness = Math.max(max_fitness, population.bestFitness());
+            min_fitness = Math.min(min_fitness, population.bestFitness());
             if (listener != null) {
                 listener.onGeneration(gen, population);
             }
@@ -45,14 +45,14 @@ public class EvolutionEngine {
             double bf = bestFitnessHistory.size() > 0 ? bestFitnessHistory.getLast() : 0;
             double af = avgFitnessHistory.size() > 0 ? avgFitnessHistory.getLast() : 0;
             double pEv = bf/af > 0 ? bf/af : 0;
-            controller.updateChart(max_fitness, pEv, bf, af);
+            controller.updateChart(min_fitness, pEv, bf, af);
             controller.updateMap(getBestMap(), population.best());
         }
-        System.out.println(max_fitness);
+        System.out.println(min_fitness);
 
         JOptionPane.showMessageDialog(
             null, 
-            "El mejor fitness es: " + max_fitness,
+            "El mejor fitness es: " + min_fitness,
             "Mejor Fitness",
             JOptionPane.INFORMATION_MESSAGE
         );

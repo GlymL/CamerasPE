@@ -3,13 +3,17 @@ package logic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class CromosomasDron{
 
     private Integer[] cromosoma;
     private int drones;
     private int camaras;
+
+    private static final Random r = new Random();
 
     public CromosomasDron(int camaras, int drones){
         this.camaras = camaras;
@@ -62,7 +66,6 @@ public class CromosomasDron{
 
     public CromosomasDron[] crucePMX(CromosomasDron crom, double mutRatio) {
         int c1, c2;
-        Random r = new Random();
         c1 = r.nextInt(cromosoma.length);
         c2 = r.nextInt(cromosoma.length);
         Integer[] arr1 = new Integer[cromosoma.length];
@@ -108,8 +111,79 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] cruceOP(CromosomasDron crom, double mutRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cruceOP'");
+        int c1 = 0, c2 = 0;
+        while (Math.abs(c1 - c2) <= 2){
+            c1 = r.nextInt(cromosoma.length);
+            c2 = r.nextInt(cromosoma.length);
+        }
+        int iter1 = Math.min(c1, c2);
+        int iter2 = Math.max(c1, c2);
+        Integer[] arr1 = new Integer[cromosoma.length];
+        Integer[] arr2 = new Integer[cromosoma.length];
+        for(int i = iter1; i < iter2; i++){
+            arr1[i] = cromosoma[i];
+            arr2[i] = crom.cromosoma[i];
+        }
+
+        // Paso 2: Extraer elementos en orden circular (desde corte2 + 1)
+        Integer[] arraux1 = new Integer[cromosoma.length - (iter2-iter1)];
+        Integer[] arraux2 = new Integer[cromosoma.length - (iter2-iter1)];
+        Set<Integer> set1 = new HashSet<>();
+        for(int i = iter1; i < iter2; i++){
+            set1.add(arr1[i]);
+        }
+        Set<Integer> set2 = new HashSet<>();
+        for(int i = iter1; i < iter2; i++){
+            set2.add(arr2[i]);
+        }
+        int iter = 0;
+        int i = 1;
+        while(iter < arraux1.length){
+            int index = (iter2 + i) % cromosoma.length;
+
+            if(iter < arraux1.length && !set1.contains(crom.cromosoma[index])){
+                arraux1[iter++] = crom.cromosoma[index];
+            }
+            i++;
+        }
+
+        i = 1; iter = 0;
+
+        while(iter < arraux2.length){
+            int index = (iter2 + i) % cromosoma.length;
+            if(iter < arraux2.length && !set2.contains(cromosoma[index])){
+                arraux2[iter++] = cromosoma[index];
+            }
+            i++;
+        }
+
+        // Paso 3: Rellenar los huecos en orden circular
+        int index_rell1 = 0;
+        int index_rell2 = 0;
+
+        int pos = iter2 % cromosoma.length;
+
+        while(index_rell1 < arraux1.length){
+            if(arr1[pos] == null){
+                arr1[pos] = arraux1[index_rell1++];
+            }
+            pos = (pos + 1) % cromosoma.length;
+        }
+
+        pos = iter2 % cromosoma.length;
+        
+        while(index_rell2 < arraux2.length){
+            if(arr2[pos] == null){
+                arr2[pos] = arraux2[index_rell2++];
+            }
+            pos = (pos + 1) % cromosoma.length;
+        }
+
+        CromosomasDron[] ret = new CromosomasDron[2];
+        ret[0] = new CromosomasDron(camaras, drones, arr1);
+        ret[1] = new CromosomasDron(camaras, drones, arr2);  
+
+        return ret;
     }
 
     public CromosomasDron[] cruceOXPP(CromosomasDron crom, double mutRatio) {
@@ -138,8 +212,20 @@ public class CromosomasDron{
     }
 
     public CromosomasDron mutacionInsercion(double mut) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mutacionInsercion'");
+        Integer[] copy = cromosoma.clone();
+        for(int i = 0; i < cromosoma.length; i++){
+            if(r.nextDouble() < mut){
+                int index;
+                do{
+                    index = r.nextInt(cromosoma.length);
+
+                }while(index != i);
+                int aux = copy[i];
+                copy[i] = copy[index];
+                copy[index] = aux;
+            }
+        }
+        return new CromosomasDron(camaras, drones, copy);
     }
 
     public CromosomasDron mutacionIntercambio(double mut) {

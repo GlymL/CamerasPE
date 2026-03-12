@@ -54,7 +54,7 @@ public class Population {
 
 
     public void sortByFitness() {
-        generation.sort((a, b) -> b.compareTo(a));
+        generation.sort((a, b) -> a.compareTo(b));
     }
 
 

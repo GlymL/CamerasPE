@@ -67,6 +67,9 @@ public class EvolutionFullGUI extends JFrame{
     panel.add(new JLabel("Escenario:"));
     panel.add(escenarioBox);
 
+    panel.add(new JLabel("Numero drones:"));
+    panel.add(dronesSpinner);
+
     return panel;
   }
 

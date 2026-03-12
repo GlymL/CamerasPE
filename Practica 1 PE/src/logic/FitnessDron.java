@@ -41,7 +41,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
                     coste += a.aStarSearch(camPos[rutas[i][j-1]], camPos[rutas[i][j]]);
                 j++;
             }
-            ret = Math.max(ret, coste/EnumFlota.values()[1].getVel());
+            ret = Math.max(ret, coste/EnumFlota.values()[i].getVel());
         }
         System.out.println(ret);
         fitness = ret;
@@ -57,7 +57,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
     }
 
     public int compareTo(FitnessDron a2) {
-        return Double.compare(fitness, a2.fitness);
+        return Double.compare(a2.fitness, fitness);
     }
 
     public double getFitness() {

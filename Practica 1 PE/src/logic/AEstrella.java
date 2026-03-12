@@ -1,5 +1,6 @@
 package logic;
 
+
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -10,7 +11,9 @@ public class AEstrella {
    //Here we're creating a shortcut for (int, int) pair
 
     public AEstrella(int[][] mapa){
-        this.mapa = mapa.clone();
+        this.mapa = new int[mapa.length][mapa[0].length];
+        for (int r = 0; r < mapa.length; r++)
+            this.mapa[r] = mapa[r].clone();
     }
 
    public static class Pair {
@@ -101,11 +104,11 @@ public class AEstrella {
 
    void tracePath(
            Cell[][] cellDetails,
-           int cols,
            int rows,
+           int cols,
            Pair dest)
    {   //A* Search algorithm path
-       System.out.println("The Path:  ");
+       //!System.out.println("The Path:  ");
 
        Stack<Pair> path = new Stack<>();
 
@@ -121,11 +124,11 @@ public class AEstrella {
        } while (cellDetails[row][col].parent != nextNode); // until src
 
 
-       while (!path.empty()) {
-           Pair p = path.peek();
-           path.pop();
-           System.out.println("-> (" + p.first + "," + p.second + ") ");
-       }
+       //!while (!path.empty()) {
+           //!Pair p = path.peek();
+           //!path.pop();
+           //!System.out.println("-> (" + p.first + "," + p.second + ") ");
+       //!}
    }
 
 // A main method, A* Search algorithm to find the shortest path
@@ -138,26 +141,26 @@ public class AEstrella {
         int cols = mapa[0].length;
 
        if (!isValid(mapa, rows, cols, src)) {
-           System.out.println("Source is invalid...");
+           //!System.out.println("Source is invalid...");
            return -1.0;
        }
 
 
        if (!isValid(mapa, rows, cols, dest)) {
-           System.out.println("Destination is invalid...");
+           //!System.out.println("Destination is invalid...");
            return -1.0;
        }
 
 
        if (!isUnBlocked(mapa, rows, cols, src)
                || !isUnBlocked(mapa, rows, cols, dest)) {
-           System.out.println("Source or destination is blocked...");
+           //!System.out.println("Source or destination is blocked...");
            return -1.0;
        }
 
 
        if (isDestination(src, dest)) {
-           System.out.println("We're already (t)here...");
+           //!System.out.println("We're already (t)here...");
            return -1.0;
        }
 
@@ -180,7 +183,7 @@ public class AEstrella {
   // Creating an open list
 
 
-       PriorityQueue<Details> openList = new PriorityQueue<>((o1, o2) -> (int) Math.round(o1.value - o2.value));
+       PriorityQueue<Details> openList = new PriorityQueue<>((o1, o2) -> Double.compare(o1.value, o2.value));
 
        // Put the starting cell on the open list,   set f.startCell = 0
 
@@ -200,6 +203,13 @@ public class AEstrella {
 
            for (int addX = -1; addX <= 1; addX++) {
                for (int addY = -1; addY <= 1; addY++) {
+                if (addX == 0 && addY == 0) continue;
+                   if (addX != 0 && addY != 0) {
+                            if (!isUnBlocked(mapa, rows, cols, new Pair(i, j + addY)) ||
+                            !isUnBlocked(mapa, rows, cols, new Pair(i + addX, j))) {
+                            continue;
+                        }
+                   }
                    Pair neighbour = new Pair(i + addX, j + addY);
                    if (isValid(mapa, rows, cols, neighbour)) {
                        if(cellDetails[neighbour.first] == null){ cellDetails[neighbour.first] = new Cell[cols]; }
@@ -209,7 +219,7 @@ public class AEstrella {
 
                        if (isDestination(neighbour, dest)) {
                            cellDetails[neighbour.first][neighbour.second].parent = new Pair ( i, j );
-                           System.out.println("The destination cell is found");
+                           //!System.out.println("The destination cell is found");
                            tracePath(cellDetails, rows, cols, dest);
                            return cellDetails[i][j].g;
                        }
@@ -229,7 +239,7 @@ public class AEstrella {
                                // Update the details of this
                                // cell
                                cellDetails[neighbour.first][neighbour.second].g = gNew;
-//heuristic function                               cellDetails[neighbour.first][neighbour.second].h = hNew;
+//heuristic function           cellDetails[neighbour.first][neighbour.second].h = hNew;
                                cellDetails[neighbour.first][neighbour.second].f = fNew;
                                cellDetails[neighbour.first][neighbour.second].parent = new Pair( i, j );
                            }
