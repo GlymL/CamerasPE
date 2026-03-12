@@ -3,7 +3,7 @@ package logic;
 public enum EnumFlota {
     VELOZ(1.5), ESTANDAR(1.0), PESADO(0.7), AGIL(1.2), TANQUE(0.5);
 
-    private double vel;
+    private final double vel;
 
     EnumFlota(double d){
         vel = d;

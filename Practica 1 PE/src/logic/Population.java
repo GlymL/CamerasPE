@@ -1,42 +1,44 @@
 package logic;
 
 import java.util.ArrayList;
-
 import mapaApp.GeneradorCamaras;
 import mapaApp.MapaCamaras;
 
 public class Population {
     
     private double fTotal;
-    private ArrayList<FitnessDron> generation;
-    private Cruce cr;
-    private double elitismo;
-    private Selection s;
-    private Mutacion m;
-    private GeneradorCamaras gc;
+    private final ArrayList<FitnessDron> generation;
+    private final Cruce cr;
+    private final double elitismo;
+    private final Selection s;
+    private final Mutacion m;
+    private final AEstrellaPrecalc precalc;
+    private final GeneradorCamaras gc;
 
 
     public Population(MapaCamaras mapa, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
         EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones) {
-            generation = new ArrayList<FitnessDron>();
+            generation = new ArrayList<>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
         m = new Mutacion(mut, mutRatio);
         s = new Selection(enumS);
-
-        initializeRandom(popSize, mapa);
+        gc = new GeneradorCamaras(3000, mapa);
+        precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
+        initializeRandom(popSize, precalc, mapa, n_drones);
         evaluateAll();
         sortByFitness();
     }
 
-    private void initializeRandom(int popSize, MapaCamaras mc) {
-        gc = new GeneradorCamaras(3000, mc);
+    private void initializeRandom(int popSize, AEstrellaPrecalc precalc, MapaCamaras mc, int n_drones) {
+        
         for (int i = 0; i < popSize; i++) {
             CromosomasDron c;
-            c = new CromosomasDron(mc.getNumCams(), 3);
+            c = new CromosomasDron(mc.getNumCams(), n_drones);
             c.randomInitialize();
-            FitnessDron f = new FitnessDron(c, gc);
+
+            FitnessDron f = new FitnessDron(c, precalc);
             generation.add(f);
         }
     }
@@ -62,7 +64,7 @@ public class Population {
 
     public void evolve() {
 
-        ArrayList<FitnessDron> selected = new ArrayList<>();
+        ArrayList<FitnessDron> selected;
         ArrayList<FitnessDron> elite = new ArrayList<>();
 
         sortByFitness();
@@ -77,9 +79,9 @@ public class Population {
         generation.clear();
         generation.addAll(selected);
 
-        cr.cruzar(generation, gc);
+        cr.cruzar(generation, precalc);
         
-        m.mutar(generation, gc);
+        m.mutar(generation, precalc);
         
         evaluateAll();
         

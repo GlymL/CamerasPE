@@ -1,46 +1,32 @@
 package logic;
 
-
-import logic.AEstrella.Pair;
-import mapaApp.GeneradorCamaras;
-import mapaApp.MapaCamaras;
-
 public class FitnessDron implements Comparable<FitnessDron>{
-    private AEstrella a;
-    private CromosomasDron c;
-    private GeneradorCamaras gc;
+    private final CromosomasDron c;
+    private final AEstrellaPrecalc a;
     private double fitness;
 
 
-    public FitnessDron (CromosomasDron c, GeneradorCamaras gc){
-
+    public FitnessDron(CromosomasDron c, AEstrellaPrecalc a){
         this.c = c;
-        this.gc = gc;
-        this.a = new AEstrella(gc.getMapa());
-    }
-
-    private FitnessDron(CromosomasDron c, GeneradorCamaras gc, AEstrella a){
-
-        this.c = c;
-        this.gc = gc;
         this.a = a;
     }
 
     public void calculateFitness(){
         int[][] rutas = c.rutas();
-        Pair[] camPos = gc.getCameras();
         double ret = 0;
         for(int i = 0; i < rutas.length; i++){
             double coste = 0;
             int j = 0;
             while(j < rutas[i].length && rutas[i][j] != -1){
                 if(j == 0){
-                    coste += a.aStarSearch(new Pair(1, 1), camPos[rutas[i][j]]);
+                    coste += a.getInit(rutas[i][j]);
                 }
                 else
-                    coste += a.aStarSearch(camPos[rutas[i][j-1]], camPos[rutas[i][j]]);
+                    coste += a.getPrecalc(rutas[i][j-1], rutas[i][j]);
                 j++;
             }
+            if(rutas[i][0] != -1)
+                coste += a.getInit(rutas[i][Math.max(0,  j - 1)]);
             ret = Math.max(ret, coste/EnumFlota.values()[i].getVel());
         }
         System.out.println(ret);
@@ -48,14 +34,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
 
     }
 
-    public static void main(String [] args){
-
-        FitnessDron f = new FitnessDron(new CromosomasDron(40, 3), 
-        new GeneradorCamaras(3000, new MapaCamaras(3)));
-
-        f.calculateFitness();
-    }
-
+    @Override
     public int compareTo(FitnessDron a2) {
         return Double.compare(a2.fitness, fitness);
     }
@@ -69,7 +48,6 @@ public class FitnessDron implements Comparable<FitnessDron>{
     }
 
     public FitnessDron clone(){
-        return new FitnessDron(c, gc, a);
-
+        return new FitnessDron(c, a);
     }
 }

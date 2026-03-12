@@ -1,14 +1,14 @@
 package mapaApp;
 
 import java.util.Random;
-
 import logic.AEstrella.Pair;
 
 
 public class GeneradorCamaras {
     
-    private Pair[] listaCamaras;
-    private int[][] mapa;
+    private final Pair[] listaCamaras;
+    private final int[][] mapa;
+    private final Pair base;
     private static final int PENALIZACION = 500;
 
     public GeneradorCamaras(int seed, MapaCamaras mc){
@@ -19,6 +19,7 @@ public class GeneradorCamaras {
         Random rand = new Random(seed);
         int numCamaras = mc.getNumCams();
         listaCamaras = new Pair[numCamaras];
+        base = mc.getBase();
         //La semilla se selecciona de la interfaz
         
         // Lista para guardar las posiciones (asumiendo una clase simple Punto(x,y))
@@ -41,6 +42,10 @@ public class GeneradorCamaras {
 
     public Pair[] getCameras(){
         return listaCamaras.clone();
+    }
+
+    public Pair getBase() {
+        return base;
     }
 
 }

@@ -136,7 +136,8 @@ public class AEstrella {
    double aStarSearch(Pair src,
                     Pair dest)
    {
-    
+        if(src.equals(dest))
+            return 0.0;
         int rows = mapa.length;
         int cols = mapa[0].length;
 

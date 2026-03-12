@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class Selection {
     
-    private EnumSelection es;
-    private Random rand = new Random();
+    private final EnumSelection es;
+    private final Random rand = new Random();
 
     public Selection(EnumSelection es){
         this.es = es;
@@ -14,30 +14,19 @@ public class Selection {
 
     public ArrayList<FitnessDron> select(ArrayList<FitnessDron> population){
         
-        ArrayList<FitnessDron> ret = new ArrayList<FitnessDron>();
+        ArrayList<FitnessDron> ret;
 
         switch (es){
-        case EnumSelection.RULETA:
-            ret = rouletteSelection(population);
-            break;
-        case EnumSelection.TRUNCAMIENTO:
-            ret = truncSelection(population);
-            break;
-        case EnumSelection.TORNEO:
-            ret = torneoSelection(population);
-            break;
-        case EnumSelection.RESTOS:
-            ret = restosSelection(population);
-            break;
-        case EnumSelection.ESTOCASTICO:
-            ret = estocasticoSelection(population);
-            break;
-        case EnumSelection.RANKING:
-            ret = rankingSelection(population);
-            break;
-        default:
+        case EnumSelection.RULETA -> ret = rouletteSelection(population);
+        case EnumSelection.TRUNCAMIENTO -> ret = truncSelection(population);
+        case EnumSelection.TORNEO -> ret = torneoSelection(population);
+        case EnumSelection.RESTOS -> ret = restosSelection(population);
+        case EnumSelection.ESTOCASTICO -> ret = estocasticoSelection(population);
+        case EnumSelection.RANKING -> ret = rankingSelection(population);
+        default -> {
             System.err.println(("es en Selection es nulo"));
             return null;
+            }
 
         }
         return ret;
@@ -150,7 +139,7 @@ public class Selection {
 
         trunc.sort((a,b) -> b.compareTo(a));
 
-        while(selected.size() <= population.size() && trunc.size() > 0){
+        while(selected.size() <= population.size() && !trunc.isEmpty()){
             selected.add(trunc.get(0));
             trunc.remove(0);
         }

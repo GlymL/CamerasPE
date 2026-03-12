@@ -10,11 +10,11 @@ import org.math.plot.*;
 
 
 public class FitnessChartPanel extends Plot2DPanel {
-    ArrayList<Double> maxGeneration = new ArrayList<Double>();
-    ArrayList<Double> EvolutivePressure = new ArrayList<Double>();
-    ArrayList<Double> generations = new ArrayList<Double>();
-    ArrayList<Double> bestFitness = new ArrayList<Double>();
-    ArrayList<Double> avgFitness = new ArrayList<Double>();
+    ArrayList<Double> maxGeneration = new ArrayList<>();
+    ArrayList<Double> EvolutivePressure = new ArrayList<>();
+    ArrayList<Double> generations = new ArrayList<>();
+    ArrayList<Double> bestFitness = new ArrayList<>();
+    ArrayList<Double> avgFitness = new ArrayList<>();
     //JFrame frame = new JFrame("a plot panel");
     // Plot2DPanel plot = new Plot2DPanel();
     
@@ -31,7 +31,6 @@ public class FitnessChartPanel extends Plot2DPanel {
     //frame.setVisible(true);
 
   }catch(Exception e) {
-    e.printStackTrace();
   }
  }
 

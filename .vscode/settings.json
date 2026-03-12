@@ -1,0 +1,13 @@
+{
+    "java.project.referencedLibraries": [
+        "Practica 1 PE/lib/jmathplot.jar",
+        "Practica 1 PE/lib/junit-platform-console-standalone-1.13.0-M3.jar"
+    ],
+    "java.project.sorucePaths":[
+        "Practica 1 PE/src"
+
+    ] 
+
+
+
+}

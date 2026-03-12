@@ -9,9 +9,9 @@ import java.util.Set;
 
 public class CromosomasDron{
 
-    private Integer[] cromosoma;
-    private int drones;
-    private int camaras;
+    private final Integer[] cromosoma;
+    private final int drones;
+    private final int camaras;
 
     private static final Random r = new Random();
 
@@ -32,7 +32,7 @@ public class CromosomasDron{
         for(int i = 0; i < cromosoma.length; i++){
             cromosoma[i] = i;
         }
-       ArrayList<Integer> al = new ArrayList<Integer>(Arrays.asList(cromosoma));
+       ArrayList<Integer> al = new ArrayList<>(Arrays.asList(cromosoma));
 
         Collections.shuffle(al);
 
@@ -47,12 +47,12 @@ public class CromosomasDron{
             Arrays.fill(ret[i], -1);
         }
         int dron = 0, iter = 0;
-        for(int i = 0; i < cromosoma.length; i++){
-            if(cromosoma[i] >= camaras){
+        for (Integer cromosoma1 : cromosoma) {
+            if (cromosoma1 >= camaras) {
                 dron++;
                 iter = 0;
-            }else{
-                ret[dron][iter] = cromosoma[i];
+            } else {
+                ret[dron][iter] = cromosoma1;
                 iter++;
             }
         }

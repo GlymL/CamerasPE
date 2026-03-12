@@ -1,11 +1,14 @@
 package mapaApp;
 
+import logic.AEstrella.Pair;
+
 
 public class MapaCamaras {
     private int[][] priority;
     private int n_cameras;
     private int filas;
     private int cols;
+    private Pair base;
 
     public MapaCamaras(int i){
         if(i == 1){
@@ -36,6 +39,7 @@ public class MapaCamaras {
         filas = 10;
         cols = 10;
         n_cameras = 4;
+        base = new Pair(0, 0);
 
     };
 
@@ -59,6 +63,7 @@ public class MapaCamaras {
         filas = 12;
         cols = 15;
         n_cameras = 7;
+        base = new Pair(0, 0);
     };
 
 
@@ -86,6 +91,7 @@ public class MapaCamaras {
         filas = 18;
         cols = 20;
         n_cameras = 40;
+        base = new Pair(1, 1);
     };
 
     public boolean esObstaculo(int x, int y){
@@ -107,6 +113,10 @@ public class MapaCamaras {
 
     public int[][] getMapa() {
         return priority;
+    }
+
+    public Pair getBase() {
+        return base;
     }
 
 }

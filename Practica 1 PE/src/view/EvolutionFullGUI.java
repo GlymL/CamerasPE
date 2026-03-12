@@ -20,33 +20,33 @@ public class EvolutionFullGUI extends JFrame{
   private boolean bin;
   private int n_mapa;
 
-  private JComboBox < String > escenarioBox =
+  private final JComboBox < String > escenarioBox =
     new JComboBox < > (new String[] {
       "Escenario 1 - Museo",
       "Escenario 2 - Pasillos",
       "Escenario 3 - Supermercado"
     });
-  private JComboBox < EnumCruce > cruceBox =
+  private final JComboBox < EnumCruce > cruceBox =
     new JComboBox<>(EnumCruce.values());
-     private JComboBox < EnumMutacion > mutaBox =
+     private final JComboBox < EnumMutacion > mutaBox =
     new JComboBox<>(EnumMutacion.values());
-  private JComboBox < EnumSelection > selectionBox =
+  private final JComboBox < EnumSelection > selectionBox =
     new JComboBox < > (EnumSelection.values());
 
-  private JSpinner populationSpinner =
+  private final JSpinner populationSpinner =
     new JSpinner(new SpinnerNumberModel(100, 1, 10000, 10));
-  private JSpinner generationsSpinner =
+  private final JSpinner generationsSpinner =
     new JSpinner(new SpinnerNumberModel(500, 1, 10000, 50));
-  private JSpinner crossoverSpinner =
+  private final JSpinner crossoverSpinner =
     new JSpinner(new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05));
-  private JSpinner mutationSpinner =
+  private final JSpinner mutationSpinner =
     new JSpinner(new SpinnerNumberModel(0.01, 0.0, 1.0, 0.01));
-  private JSpinner elitismoSpinner =
+  private final JSpinner elitismoSpinner =
     new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1.0, 0.01));
-  private JSpinner dronesSpinner =
+  private final JSpinner dronesSpinner =
     new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
-  private JButton runButton = new JButton("Ejecutar generaciones");
-  private Controller c;
+  private final JButton runButton = new JButton("Ejecutar generaciones");
+  private final Controller c;
 
   public EvolutionFullGUI(Controller c) {
     setTitle("Algoritmo Genético - Cámaras");
