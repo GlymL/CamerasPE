@@ -108,7 +108,7 @@ public class Selection {
         }
 
         if (sum == 0) {
-            for (FitnessDron population1 : population) {
+            for (FitnessDron _ : population) {
                 selected.add(population.get(rand.nextInt(population.size())).clone());
             }
             return selected;

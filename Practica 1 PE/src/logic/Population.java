@@ -12,19 +12,17 @@ public class Population {
     private final Selection s;
     private final Mutacion m;
     private final AEstrellaPrecalc precalc;
-    private final GeneradorCamaras gc;
 
 
     public Population(GeneradorCamaras gc, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
-        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones) {
+        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, AEstrellaPrecalc ae) {
             generation = new ArrayList<>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
-        this.gc = gc;
+        this.precalc = ae;
         m = new Mutacion(mut, mutRatio);
         s = new Selection(enumS);
-        precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
         initializeRandom(popSize, precalc, gc, n_drones);
         evaluateAll();
         sortByFitness();
@@ -109,7 +107,7 @@ public class Population {
 
     public int[][] mapBest(){
         sortByFitness();
-        return null /*generation.get(0).getFit().print*/ ;
+        return generation.get(0).getCrom().rutas();
     }
 
     public double averageFitness() {

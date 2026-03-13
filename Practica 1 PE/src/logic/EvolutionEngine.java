@@ -46,9 +46,8 @@ public class EvolutionEngine {
 
             double currentMin = min_fitness;
             controller.updateChart(currentMin, pEv, bf, af);
-            controller.updateMap(getBestMap(), population.best());
+            controller.updateMap(getBestMap());
         }
-        System.out.println(min_fitness);
 
         JOptionPane.showMessageDialog(
             null, 

@@ -211,18 +211,25 @@ public class CromosomasDron{
         throw new UnsupportedOperationException("Unimplemented method 'cruceCUSTOM'");
     }
 
+    //TODO Rehacer, es insertar y mover, no cambiar 
     public CromosomasDron mutacionInsercion(double mut) {
         Integer[] copy = cromosoma.clone();
-        for(int i = 0; i < cromosoma.length; i++){
-            if(r.nextDouble() < mut){
-                int index;
-                do{
-                    index = r.nextInt(cromosoma.length);
+        if(r.nextDouble() < mut){
+            int c1 = r.nextInt(cromosoma.length);
+            int c2 = r.nextInt(cromosoma.length);
+            int iter1 = Math.min(c1, c2);
+            int iter2 = Math.max(c1, c2);
 
-                }while(index != i);
-                int aux = copy[i];
-                copy[i] = copy[index];
-                copy[index] = aux;
+            int aux = 0;
+            for(int i = iter1; i < iter2; i ++){
+                if(i == iter1){
+                    aux = copy[i];
+                    copy[i] = copy[iter2];
+                }else{
+                    int aux2 = aux;
+                    aux = copy[i];
+                    copy[i] = aux2;
+                }
             }
         }
         return new CromosomasDron(camaras, drones, copy);

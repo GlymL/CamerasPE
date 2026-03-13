@@ -6,10 +6,11 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 
+import logic.AEstrella;
+import logic.AEstrellaPrecalc;
 import logic.EnumCruce;
 import logic.EnumMutacion;
 import logic.EnumSelection;
-import logic.FitnessDron;
 import mapaApp.MapaCamaras;
 import controller.Controller;
 import mapaApp.GeneradorCamaras;
@@ -47,6 +48,7 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
   private final JButton runButton = new JButton("Ejecutar generaciones");
   private final Controller c;
+  private GeneradorCamaras gc;
 
   public EvolutionFullGUI(Controller c) {
     setTitle("Algoritmo Genético - Cámaras");
@@ -198,9 +200,11 @@ public class EvolutionFullGUI extends JFrame{
     int escenario = escenarioBox.getSelectedIndex();
     n_mapa = escenario + 1;
 
-    GeneradorCamaras gc = new GeneradorCamaras(3000, new MapaCamaras( n_mapa));
+    gc = new GeneradorCamaras(3000, new MapaCamaras(n_mapa));
 
-    bd.updateMap(gc.getMapa());
+    AEstrellaPrecalc precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
+
+    bd.updateMap(gc, precalc);
     new Thread(() -> c.execute(
       generations,
       gc,
@@ -211,7 +215,7 @@ public class EvolutionFullGUI extends JFrame{
       enumMut,
       selection,
       elitismo,
-      n_drones)).start();
+      n_drones, precalc)).start();
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
@@ -225,8 +229,8 @@ public class EvolutionFullGUI extends JFrame{
     fitnessChart.reset();
   }
 
-  public void updateMap(int[][] visitado, FitnessDron fd) {
-
+  public void updateMap(int[][] bestCrom) {
+        bd.setRoutes(bestCrom);
   }
 
 }

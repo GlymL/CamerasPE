@@ -29,7 +29,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
                 coste += a.getInit(rutas[i][Math.max(0,  j - 1)]);
             ret = Math.max(ret, coste/EnumFlota.values()[i].getVel());
         }
-        System.out.println(ret);
+        //? System.out.println(ret);
         fitness = ret;
     }
 

@@ -4,6 +4,7 @@ package logic;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
+
 public class AEstrella {
 
     private int[][] mapa;
@@ -24,11 +25,30 @@ public class AEstrella {
            this.second = second;
        }
 
+       public int getFirst(){
+            return first;
+       }
+       public int getSecond(){
+            return second;
+       }
+
        @Override
        public boolean equals(Object obj) {
            return obj instanceof Pair && this.first == ((Pair)obj).first && this.second == ((Pair)obj).second;
        }
    }
+    public static class Ret {
+
+        double p1;
+        Pair[] p2;
+        public Ret(double first, Pair[] second){
+           this.p1 = first;
+           this.p2 = second;
+       }
+
+    }
+    
+   
 
    // Creating a shortcut for tuple<int, int, int> type
    public static class Details {
@@ -102,7 +122,7 @@ public class AEstrella {
 
    // Method for tracking the path from source to destination
 
-   void tracePath(
+   Pair[] tracePath(
            Cell[][] cellDetails,
            int rows,
            int cols,
@@ -123,46 +143,51 @@ public class AEstrella {
            col = nextNode.second;
        } while (cellDetails[row][col].parent != nextNode); // until src
 
-
-       //!while (!path.empty()) {
-           //!Pair p = path.peek();
-           //!path.pop();
-           //!System.out.println("-> (" + p.first + "," + p.second + ") ");
-       //!}
+       Pair[] ret = new Pair[path.size()];
+       int i = 0;
+       while (!path.empty()) {
+           Pair p = path.peek();
+           ret[i++] = p;
+           path.pop();
+       }
+       return ret;
    }
 
 // A main method, A* Search algorithm to find the shortest path
 
-   double aStarSearch(Pair src,
+   Ret aStarSearch(Pair src,
                     Pair dest)
    {
-        if(src.equals(dest))
-            return 0.0;
+        if(src.equals(dest)){
+            Pair[] path = new Pair[1];
+            path[0] = src;
+            return new Ret(0.0, path);
+        }
         int rows = mapa.length;
         int cols = mapa[0].length;
 
        if (!isValid(mapa, rows, cols, src)) {
            //!System.out.println("Source is invalid...");
-           return -1.0;
+           return new Ret(-1.0, null);
        }
 
 
        if (!isValid(mapa, rows, cols, dest)) {
            //!System.out.println("Destination is invalid...");
-           return -1.0;
+           return new Ret(-1.0, null);
        }
 
 
        if (!isUnBlocked(mapa, rows, cols, src)
                || !isUnBlocked(mapa, rows, cols, dest)) {
            //!System.out.println("Source or destination is blocked...");
-           return -1.0;
+           return new Ret(-1.0, null);
        }
 
 
        if (isDestination(src, dest)) {
            //!System.out.println("We're already (t)here...");
-           return -1.0;
+           return new Ret(-1.0, null);
        }
 
 
@@ -221,8 +246,7 @@ public class AEstrella {
                        if (isDestination(neighbour, dest)) {
                            cellDetails[neighbour.first][neighbour.second].parent = new Pair ( i, j );
                            //!System.out.println("The destination cell is found");
-                           tracePath(cellDetails, rows, cols, dest);
-                           return cellDetails[i][j].g;
+                           return new Ret(cellDetails[i][j].g, tracePath(cellDetails, rows, cols, dest).clone());
                        }
 
                        else if (!closedList[neighbour.first][neighbour.second]
@@ -251,6 +275,6 @@ public class AEstrella {
        }
 
        System.out.println("Failed to find the Destination Cell");
-       return -1.0;
+       return new Ret(-1.0, null);
    }
 }

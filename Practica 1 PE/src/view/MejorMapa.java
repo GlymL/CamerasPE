@@ -5,43 +5,86 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import logic.AEstrellaPrecalc;
+import logic.AEstrella.Pair;
+import mapaApp.GeneradorCamaras;
+
 public class MejorMapa extends JPanel {
 
     private int[][] map; // 0 = free, 1 = obstacle
-    private List<List<Point>> paths = new ArrayList<>(); // multiple A* paths
+    private Pair init;
+    private Pair[] listaCamaras;
+    private AEstrellaPrecalc ae;
+
+    private List<List<Point>> dronePaths = new ArrayList<>(); // each drone's full path
+    private List<Color> pathColors = new ArrayList<>();       // color per drone
 
     public MejorMapa() {
         setBackground(Color.WHITE);
     }
 
-    // Update the grid map
-    public void updateMap(int[][] map) {
-        this.map = map;
+    // Update the map
+    public void updateMap(GeneradorCamaras gc, AEstrellaPrecalc ae) {
+        this.map = gc.getMapa();
+        this.init = gc.getBase();
+        this.listaCamaras = gc.getCameras();
+        this.ae = ae;
         repaint();
     }
 
-    // Add a new A* path
-    public void addPath(List<Point> path) {
-        if (path != null && !path.isEmpty()) {
-            paths.add(path);
-            repaint();
+    /**
+     * Set routes using int[][] rutas (camera indices per drone)
+     * This will draw the full precalculated A* paths for each drone
+     */
+    public void setRoutes(int[][] rutas) {
+        dronePaths.clear();
+        pathColors.clear();
+
+        for (int d = 0; d < rutas.length; d++) {
+            List<Point> fullDronePath = new ArrayList<>();
+            Pair last = init; // start from base
+
+            for (int i = 0; i < rutas[d].length; i++) {
+                int camIndex = rutas[d][i];
+                if (camIndex < 0 || camIndex >= listaCamaras.length) continue;
+
+                Pair target = listaCamaras[camIndex];
+                Pair[] pathPairs;
+
+                // Get path from AEstrellaPrecalc
+                pathPairs = ae.getPathBetween(last, target); // camera -> camera
+
+                // Add all points to full path
+                for (Pair p : pathPairs) {
+                    fullDronePath.add(new Point(p.getFirst(), p.getSecond()));
+                }
+                last = target;
+            }
+
+            if (!fullDronePath.isEmpty()) {
+                dronePaths.add(fullDronePath);
+                pathColors.add(Color.getHSBColor((float) Math.random(), 0.8f, 0.9f));
+            }
         }
+        repaint();
     }
 
     // Clear all paths
     public void clearPaths() {
-        paths.clear();
+        dronePaths.clear();
+        pathColors.clear();
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        
         if (map == null) return;
 
         int panelWidth = getWidth();
         int panelHeight = getHeight();
-
         int rows = map.length;
         int cols = map[0].length;
 
@@ -51,6 +94,8 @@ public class MejorMapa extends JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
 
+
+
         // Draw grid
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -58,42 +103,45 @@ public class MejorMapa extends JPanel {
                 int y = row * tileSize;
 
                 g2.setColor(map[row][col] == 0 ? Color.BLACK : Color.WHITE);
+                if(map[row][col] > 500)
+                    g2.setColor(Color.GREEN);
+                if(row == init.getSecond() && col == init.getFirst())
+                    g2.setColor(Color.MAGENTA);
                 g2.fillRect(x, y, tileSize, tileSize);
+
                 g2.setColor(Color.GRAY);
                 g2.drawRect(x, y, tileSize, tileSize);
             }
         }
 
-        // Draw all paths
-        g2.setColor(Color.BLUE);
-        for (List<Point> path : paths) {
-            for (int i = 0; i < path.size() - 1; i++) {
-                Point a = path.get(i);
-                Point b = path.get(i + 1);
+        // Draw each drone's full path
+        for (int d = 0; d < dronePaths.size(); d++) {
+            List<Point> path = dronePaths.get(d);
+            Color c = pathColors.get(d);
+            g2.setColor(c);
+
+            if (path.isEmpty()) continue;
+
+            // Start from the base to the first path point
+            Point prev = new Point(init.getSecond(), init.getFirst());
+
+            for (Point curr : path) {
                 g2.drawLine(
-                        a.y * tileSize + tileSize / 2, a.x * tileSize + tileSize / 2,
-                        b.y * tileSize + tileSize / 2, b.x * tileSize + tileSize / 2
+                        prev.y * tileSize + tileSize / 2, prev.x * tileSize + tileSize / 2,
+                        curr.y * tileSize + tileSize / 2, curr.x * tileSize + tileSize / 2
                 );
+                prev = curr;
             }
-            // Optionally mark start/end
-            if (!path.isEmpty()) {
-                Point start = path.get(0);
-                Point end = path.get(path.size() - 1);
-                g2.setColor(Color.GREEN);
-                g2.fillRect(start.y * tileSize, start.x * tileSize, tileSize, tileSize);
-                g2.setColor(Color.RED);
-                g2.fillRect(end.y * tileSize, end.x * tileSize, tileSize, tileSize);
-                g2.setColor(Color.BLUE); // reset for next path
-            }
+            
         }
     }
 
     @Override
     public Dimension getPreferredSize() {
         if (map == null) return new Dimension(400, 400);
+
         int rows = map.length;
         int cols = map[0].length;
-
         int panelWidth = 800;
         int panelHeight = 600;
         int tileWidth = Math.max(1, panelWidth / cols);

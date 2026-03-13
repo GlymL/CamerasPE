@@ -3,7 +3,6 @@ package controller;
 
 import logic.*;
 import mapaApp.GeneradorCamaras;
-import mapaApp.MapaCamaras;
 import view.EvolutionFullGUI;
 
 public class Controller {
@@ -32,7 +31,7 @@ public class Controller {
                     EnumMutacion enumMut,
                     EnumSelection enumSel,
                     double elitismo,
-                    int n_drones
+                    int n_drones, AEstrellaPrecalc ae
                     ) {
 
         Population population = new Population(
@@ -44,7 +43,7 @@ public class Controller {
             enumMut,
             enumSel,
             elitismo,
-            n_drones
+            n_drones, ae
         );
 
         this.engine.start(this,
@@ -60,8 +59,8 @@ public class Controller {
         gui.clearChart();
     }
 
-    public void updateMap(int[][] visitado, FitnessDron c){
-        //gui.updateMap(visitado, c);
+    public void updateMap(int[][] bestCrom){
+        gui.updateMap(bestCrom);
 
     }
 }
