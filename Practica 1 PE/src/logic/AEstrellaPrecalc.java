@@ -9,6 +9,7 @@ public class AEstrellaPrecalc {
     private final GeneradorCamaras gc;
     private final AEstrella ae; 
     private final Double[][] precalc;
+    private final Pair[][][] paths;
     private final Double[] precalcBase;
 
     public AEstrellaPrecalc(GeneradorCamaras gc, AEstrella aEstrella) {
@@ -16,6 +17,7 @@ public class AEstrellaPrecalc {
         this.ae = aEstrella;
         precalc = new Double[gc.getCameras().length][gc.getCameras().length];
         precalcBase = new Double[gc.getCameras().length];
+        paths = new Pair[gc.getCameras().length][gc.getCameras().length][];
         fill();
     }
 
@@ -26,8 +28,10 @@ public class AEstrellaPrecalc {
             for(int j = 0; j < precalc[i].length; j++){
                 if(precalc[j][i] != null){
                     precalc[i][j] = precalc[j][i];
+                    paths[i][j] = paths[j][i].clone();
                 }else{
                     precalc[i][j] = ae.aStarSearch(gc.getCameras()[i], gc.getCameras()[j]);
+                    paths[i][j] = ae.pat
                 }
                 System.out.print(precalc[i][j] + " ");
             }

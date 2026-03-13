@@ -97,21 +97,24 @@ public class Selection {
     private ArrayList<FitnessDron> estocasticoSelection(ArrayList<FitnessDron> population){
         ArrayList<FitnessDron> selected = new ArrayList<>();
         ArrayList<Double> cumulative = new ArrayList<>();
-        
         double sum = 0;
         for (FitnessDron cf : population) {
-            sum += Math.max(0, cf.getFitness());
-            cumulative.add(sum);
+            sum += 1/Math.max(1, cf.getFitness());
+        }
+        double cumsum = 0;
+        for (FitnessDron cf : population) {
+            cumsum += (1/Math.max(1, cf.getFitness())) / sum;
+            cumulative.add(cumsum);
         }
 
         if (sum == 0) {
-            for (int i = 0; i < population.size(); i++) {
+            for (FitnessDron population1 : population) {
                 selected.add(population.get(rand.nextInt(population.size())).clone());
             }
             return selected;
         }
 
-        double r = rand.nextDouble();
+        double r = rand.nextDouble() / population.size();
         int inicio = 0;
         for (int i = 0; i < population.size(); i++) {
             double a = (r + i)/population.size();

@@ -2,6 +2,7 @@ package controller;
 
 
 import logic.*;
+import mapaApp.GeneradorCamaras;
 import mapaApp.MapaCamaras;
 import view.EvolutionFullGUI;
 
@@ -23,7 +24,7 @@ public class Controller {
 
     public void execute(
                     int generations,
-                    int mapa,
+                    GeneradorCamaras gc,
                     int popSize,
                     double crossRatio,
                     double mutRatio,
@@ -34,9 +35,8 @@ public class Controller {
                     int n_drones
                     ) {
 
-        MapaCamaras mapaCamaras = new MapaCamaras(mapa);
         Population population = new Population(
-            mapaCamaras,
+            gc,
             popSize,
             crossRatio,
             mutRatio,

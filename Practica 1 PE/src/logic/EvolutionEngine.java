@@ -23,27 +23,29 @@ public class EvolutionEngine {
         this.population = population;
         this.generations = generations;
         this.controller = controller;
-
-        this.run(null);
+        
+        run(null);
     }
 
     public void run(EvolutionListener listener) {
         controller.clearChart();
-
+        
         double min_fitness = Double.MAX_VALUE;
         for (int gen = 0; gen < generations; gen++) {
             population.evolve();
             avgFitnessHistory.add(population.averageFitness());
             bestFitnessHistory.add(population.bestFitness());
-            min_fitness = Math.min(min_fitness, population.bestFitness());
+            double best = population.bestFitness();
+            min_fitness = Math.min(min_fitness, best);
             if (listener != null) {
                 listener.onGeneration(gen, population);
             }
-
             double bf = !bestFitnessHistory.isEmpty() ? bestFitnessHistory.getLast() : 0;
             double af = !avgFitnessHistory.isEmpty() ? avgFitnessHistory.getLast() : 0;
             double pEv = bf/af > 0 ? bf/af : 0;
-            controller.updateChart(min_fitness, pEv, bf, af);
+
+            double currentMin = min_fitness;
+            controller.updateChart(currentMin, pEv, bf, af);
             controller.updateMap(getBestMap(), population.best());
         }
         System.out.println(min_fitness);

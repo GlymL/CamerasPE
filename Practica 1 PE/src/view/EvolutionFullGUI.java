@@ -12,12 +12,12 @@ import logic.EnumSelection;
 import logic.FitnessDron;
 import mapaApp.MapaCamaras;
 import controller.Controller;
+import mapaApp.GeneradorCamaras;
 
 public class EvolutionFullGUI extends JFrame{
 
   FitnessChartPanel fitnessChart;
   MejorMapa bd;
-  private boolean bin;
   private int n_mapa;
 
   private final JComboBox < String > escenarioBox =
@@ -198,10 +198,12 @@ public class EvolutionFullGUI extends JFrame{
     int escenario = escenarioBox.getSelectedIndex();
     n_mapa = escenario + 1;
 
+    GeneradorCamaras gc = new GeneradorCamaras(3000, new MapaCamaras( n_mapa));
 
+    bd.updateMap(gc.getMapa());
     new Thread(() -> c.execute(
       generations,
-      escenario + 1,
+      gc,
       population,
       crossover,
       mutation,
@@ -224,12 +226,7 @@ public class EvolutionFullGUI extends JFrame{
   }
 
   public void updateMap(int[][] visitado, FitnessDron fd) {
-    if(bin){
-      SwingUtilities.invokeLater(() -> bd.updateBinary(visitado));
-    }else{
-      //MapaCamaras mc = new MapaCamaras(n_mapa);
-      //SwingUtilities.invokeLater(() ->bd.updateReal(mc.mapa, visitado, c.decode(), mc.getAngulo(), mc.getDist()));
-    }
+
   }
 
 }

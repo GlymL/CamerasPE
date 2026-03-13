@@ -2,7 +2,6 @@ package logic;
 
 import java.util.ArrayList;
 import mapaApp.GeneradorCamaras;
-import mapaApp.MapaCamaras;
 
 public class Population {
     
@@ -16,26 +15,26 @@ public class Population {
     private final GeneradorCamaras gc;
 
 
-    public Population(MapaCamaras mapa, int popSize, 
+    public Population(GeneradorCamaras gc, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
         EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones) {
             generation = new ArrayList<>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
+        this.gc = gc;
         m = new Mutacion(mut, mutRatio);
         s = new Selection(enumS);
-        gc = new GeneradorCamaras(3000, mapa);
         precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
-        initializeRandom(popSize, precalc, mapa, n_drones);
+        initializeRandom(popSize, precalc, gc, n_drones);
         evaluateAll();
         sortByFitness();
     }
 
-    private void initializeRandom(int popSize, AEstrellaPrecalc precalc, MapaCamaras mc, int n_drones) {
+    private void initializeRandom(int popSize, AEstrellaPrecalc precalc, GeneradorCamaras gc, int n_drones) {
         
         for (int i = 0; i < popSize; i++) {
             CromosomasDron c;
-            c = new CromosomasDron(mc.getNumCams(), n_drones);
+            c = new CromosomasDron(gc.getCameras().length, n_drones);
             c.randomInitialize();
 
             FitnessDron f = new FitnessDron(c, precalc);
@@ -55,8 +54,8 @@ public class Population {
     }
 
 
-    public void sortByFitness() {
-        generation.sort((a, b) -> a.compareTo(b));
+    public synchronized void sortByFitness() {
+        generation.sort((a, b) -> b.compareTo(a));
     }
 
 
@@ -71,6 +70,7 @@ public class Population {
         if(elitismo > 0){
             for(int i = 0; i < elitismo*generation.size(); i++){
                 elite.add(generation.get(i).clone());
+                System.out.println("Elite: " + generation.get(i).getFitness());
             }
         }
 

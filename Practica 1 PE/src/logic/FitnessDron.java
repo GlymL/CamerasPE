@@ -31,7 +31,6 @@ public class FitnessDron implements Comparable<FitnessDron>{
         }
         System.out.println(ret);
         fitness = ret;
-
     }
 
     @Override
