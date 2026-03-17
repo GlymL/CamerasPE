@@ -227,51 +227,52 @@ public class AEstrella {
 
               // Generating all the 8 neighbors of the cell
 
-           for (int addX = -1; addX <= 1; addX++) {
-               for (int addY = -1; addY <= 1; addY++) {
-                if (addX == 0 && addY == 0) continue;
-                   if (addX != 0 && addY != 0) {
-                            if (!isUnBlocked(mapa, rows, cols, new Pair(i, j + addY)) ||
-                            !isUnBlocked(mapa, rows, cols, new Pair(i + addX, j))) {
-                            continue;
+          int[] dx = {-1, 1, 0, 0};
+            int[] dy = {0, 0, -1, 1};
+
+            for (int dir = 0; dir < 4; dir++) {
+
+                int addX = dx[dir];
+                int addY = dy[dir];
+
+                Pair neighbour = new Pair(i + addX, j + addY);
+
+                if (isValid(mapa, rows, cols, neighbour)) {
+
+                    if(cellDetails[neighbour.first] == null){
+                        cellDetails[neighbour.first] = new Cell[cols];
+                    }
+
+                    if (cellDetails[neighbour.first][neighbour.second] == null) {
+                        cellDetails[neighbour.first][neighbour.second] = new Cell();
+                    }
+
+                    if (isDestination(neighbour, dest)) {
+                        cellDetails[neighbour.first][neighbour.second].parent = new Pair(i, j);
+                        return new Ret(cellDetails[i][j].g, tracePath(cellDetails, rows, cols, dest).clone());
+                    }
+
+                    else if (!closedList[neighbour.first][neighbour.second]
+                            && isUnBlocked(mapa, rows, cols, neighbour)) {
+
+                        double gNew, hNew, fNew;
+
+                        gNew = cellDetails[i][j].g + mapa[neighbour.first][neighbour.second];
+                        hNew = calculateHValue(neighbour, dest);
+                        fNew = gNew + hNew;
+
+                        if (cellDetails[neighbour.first][neighbour.second].f == -1
+                                || cellDetails[neighbour.first][neighbour.second].f > fNew) {
+
+                            openList.add(new Details(fNew, neighbour.first, neighbour.second));
+
+                            cellDetails[neighbour.first][neighbour.second].g = gNew;
+                            cellDetails[neighbour.first][neighbour.second].f = fNew;
+                            cellDetails[neighbour.first][neighbour.second].parent = new Pair(i, j);
                         }
-                   }
-                   Pair neighbour = new Pair(i + addX, j + addY);
-                   if (isValid(mapa, rows, cols, neighbour)) {
-                       if(cellDetails[neighbour.first] == null){ cellDetails[neighbour.first] = new Cell[cols]; }
-                       if (cellDetails[neighbour.first][neighbour.second] == null) {
-                           cellDetails[neighbour.first][neighbour.second] = new Cell();
-                       }
-
-                       if (isDestination(neighbour, dest)) {
-                           cellDetails[neighbour.first][neighbour.second].parent = new Pair ( i, j );
-                           //!System.out.println("The destination cell is found");
-                           return new Ret(cellDetails[i][j].g, tracePath(cellDetails, rows, cols, dest).clone());
-                       }
-
-                       else if (!closedList[neighbour.first][neighbour.second]
-                               && isUnBlocked(mapa, rows, cols, neighbour)) {
-                           double gNew, hNew, fNew;
-                           gNew = cellDetails[i][j].g + mapa[neighbour.first][neighbour.second];
-                           hNew = calculateHValue(neighbour, dest);
-                           fNew = gNew + hNew;
-
-                           if (cellDetails[neighbour.first][neighbour.second].f == -1
-                                   || cellDetails[neighbour.first][neighbour.second].f > fNew) {
-
-                               openList.add(new Details(fNew, neighbour.first, neighbour.second));
-
-                               // Update the details of this
-                               // cell
-                               cellDetails[neighbour.first][neighbour.second].g = gNew;
-//heuristic function           cellDetails[neighbour.first][neighbour.second].h = hNew;
-                               cellDetails[neighbour.first][neighbour.second].f = fNew;
-                               cellDetails[neighbour.first][neighbour.second].parent = new Pair( i, j );
-                           }
-                       }
-                   }
-               }
-           }
+                    }
+                }
+            }
        }
 
        System.out.println("Failed to find the Destination Cell");

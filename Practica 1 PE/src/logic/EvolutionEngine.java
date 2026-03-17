@@ -48,6 +48,14 @@ public class EvolutionEngine {
             controller.updateChart(currentMin, pEv, bf, af);
             controller.updateMap(getBestMap());
         }
+        int[][] ret = getBestMap();
+        for (int[] re : ret) {
+            for (int r : re) {
+                System.out.print(r + " ");
+            }
+            System.out.println();
+            
+        }
 
         JOptionPane.showMessageDialog(
             null, 

@@ -1,7 +1,6 @@
 package logic;
 
 import java.util.Arrays;
-
 import logic.AEstrella.Pair;
 import logic.AEstrella.Ret;
 import mapaApp.GeneradorCamaras;
@@ -71,18 +70,48 @@ public class AEstrellaPrecalc {
     }
 
     public Pair[] getPathBetween(Pair from, Pair to) {
-        // Find indices
-        Pair[] listaCamaras = gc.getCameras();
-        int i = Arrays.asList(listaCamaras).indexOf(from);
-        int j = Arrays.asList(listaCamaras).indexOf(to);
 
+        Pair[] cams = gc.getCameras();
+        int i = Arrays.asList(cams).indexOf(from);
+        int j = Arrays.asList(cams).indexOf(to);
+
+        if(i == -1 && j == -1)
+            return null;
+        Pair[] path;
+
+        // FROM BASE
         if (from.equals(gc.getBase())) {
-            j = Arrays.asList(listaCamaras).indexOf(to);
-            return pathsBase[j];
-        } else {
-            return paths[i][j];
+            path = pathsBase[j]; // camera → base
+            if (path == null) return null;
+
+            return reverse(path); // make it base → camera
         }
+
+        // TO BASE
+        if (to.equals(gc.getBase())) {
+            path = pathsBase[i]; // already camera → base
+            return path;
+        }
+
+        // CAMERA → CAMERA
+        path = paths[i][j];
+
+        if (path == null) return null;
+
+        // 🔥 CRITICAL: ensure correct direction
+        if (!path[0].equals(from)) {
+            return reverse(path);
+        }
+
+        return path;
     }
 
+    private Pair[] reverse(Pair[] original) {
+    Pair[] reversed = new Pair[original.length];
+    for (int k = 0; k < original.length; k++) {
+        reversed[k] = original[original.length - 1 - k];
+    }
+    return reversed;
+}
 
 }
