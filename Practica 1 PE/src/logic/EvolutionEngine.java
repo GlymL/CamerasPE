@@ -37,12 +37,14 @@ public class EvolutionEngine {
             bestFitnessHistory.add(population.bestFitness());
             double best = population.bestFitness();
             min_fitness = Math.min(min_fitness, best);
+            double bestapt = population.bestAptitude();
+            double avgapt = population.averageAptitude();
             if (listener != null) {
                 listener.onGeneration(gen, population);
             }
             double bf = !bestFitnessHistory.isEmpty() ? bestFitnessHistory.getLast() : 0;
             double af = !avgFitnessHistory.isEmpty() ? avgFitnessHistory.getLast() : 0;
-            double pEv = bf/af > 0 ? bf/af : 0;
+            double pEv = bestapt/avgapt > 0 ? bestapt/avgapt : 0;
 
             double currentMin = min_fitness;
             controller.updateChart(currentMin, pEv, bf, af);

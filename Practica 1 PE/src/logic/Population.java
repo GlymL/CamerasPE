@@ -44,6 +44,15 @@ public class Population {
         fTotal = 0.0;
         for (FitnessDron cf : generation) {
             cf.calculateFitness();
+            fTotal += cf.getFitness();
+        }
+        calculateAptitudes();
+    }
+
+    private void calculateAptitudes(){
+        for(FitnessDron cf : generation){
+            double apt = fTotal/cf.getFitness();
+            cf.setAptitude(apt);
         }
     }
 
@@ -122,9 +131,23 @@ public class Population {
         return generation.get(0).getFitness();
     }
 
+    public double bestAptitude(){
+        sortByFitness();
+        return generation.get(0).getAptitude();
+    }
+
+    
+
     public FitnessDron best() {
         sortByFitness();
         return generation.get(0);
+    }
+
+    double averageAptitude() {
+        double sum = 0;
+        for (FitnessDron cf : generation) 
+            sum += cf.getAptitude();
+        return sum / generation.size();
     }
 
 

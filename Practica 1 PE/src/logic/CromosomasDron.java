@@ -50,6 +50,8 @@ public class CromosomasDron{
         for (Integer cromosoma1 : cromosoma) {
             if (cromosoma1 >= camaras) {
                 dron++;
+                if(dron >= drones)
+                    break;
                 iter = 0;
             } else {
                 ret[dron][iter] = cromosoma1;
@@ -137,21 +139,21 @@ public class CromosomasDron{
             set2.add(arr2[i]);
         }
         int iter = 0;
-        int i = 1;
-        while(iter < arraux1.length){
+        int i = 0;
+        while(i < arr1.length){
             int index = (iter2 + i) % cromosoma.length;
 
-            if(iter < arraux1.length && !set1.contains(crom.cromosoma[index])){
+            if(!set1.contains(crom.cromosoma[index])){
                 arraux1[iter++] = crom.cromosoma[index];
             }
             i++;
         }
 
-        i = 1; iter = 0;
+        i = 0; iter = 0;
 
-        while(iter < arraux2.length){
+        while(i < arr1.length){
             int index = (iter2 + i) % cromosoma.length;
-            if(iter < arraux2.length && !set2.contains(cromosoma[index])){
+            if(!set2.contains(cromosoma[index])){
                 arraux2[iter++] = cromosoma[index];
             }
             i++;
@@ -161,7 +163,7 @@ public class CromosomasDron{
         int index_rell1 = 0;
         int index_rell2 = 0;
 
-        int pos = iter2 % cromosoma.length;
+        int pos = iter2;
 
         while(index_rell1 < arraux1.length){
             if(arr1[pos] == null){
@@ -170,7 +172,7 @@ public class CromosomasDron{
             pos = (pos + 1) % cromosoma.length;
         }
 
-        pos = iter2 % cromosoma.length;
+        pos = iter2;
         
         while(index_rell2 < arraux2.length){
             if(arr2[pos] == null){
@@ -211,7 +213,6 @@ public class CromosomasDron{
         throw new UnsupportedOperationException("Unimplemented method 'cruceCUSTOM'");
     }
 
-    //TODO Rehacer, es insertar y mover, no cambiar 
     public CromosomasDron mutacionInsercion(double mut) {
         Integer[] copy = cromosoma.clone();
         if(r.nextDouble() < mut){
@@ -221,7 +222,7 @@ public class CromosomasDron{
             int iter2 = Math.max(c1, c2);
 
             int aux = 0;
-            for(int i = iter1; i < iter2; i ++){
+            for(int i = iter1; i <= iter2; i ++){
                 if(i == iter1){
                     aux = copy[i];
                     copy[i] = copy[iter2];

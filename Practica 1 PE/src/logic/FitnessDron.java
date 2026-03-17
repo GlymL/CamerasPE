@@ -4,6 +4,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
     private final CromosomasDron c;
     private final AEstrellaPrecalc a;
     private double fitness;
+    private double aptitude;
 
 
     public FitnessDron(CromosomasDron c, AEstrellaPrecalc a){
@@ -14,6 +15,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
     public void calculateFitness(){
         int[][] rutas = c.rutas();
         double ret = 0;
+        double minSpd = Double.MAX_VALUE;
         for(int i = 0; i < rutas.length; i++){
             double coste = 0;
             int j = 0;
@@ -28,24 +30,10 @@ public class FitnessDron implements Comparable<FitnessDron>{
             if(rutas[i][0] != -1)
                 coste += a.getInit(rutas[i][Math.max(0,  j - 1)]);
             ret = Math.max(ret, coste/EnumFlota.values()[i].getVel());
+            minSpd =  Math.min(minSpd, coste/EnumFlota.values()[i].getVel());
+
         }
-        int min = Integer.MAX_VALUE, max = 0;
-        for(int[] r : rutas){
-            int iter = 0;
-            int s = 0;
-            while(iter < r.length && r[iter] != -1){
-                s++;
-                iter++;
-            }
-            if (s > max) {
-                max = s;
-            }
-            if (s < min) {
-                min = s;
-            }
-            
-        }
-        ret += 0.5*(max-min); 
+        ret += 0.5*(ret-minSpd); 
         fitness = ret;
     }
 
@@ -64,5 +52,12 @@ public class FitnessDron implements Comparable<FitnessDron>{
 
     public FitnessDron clone(){
         return new FitnessDron(c, a);
+    }
+    public void setAptitude(double apt){
+        this.aptitude = apt;
+    }
+
+    public double getAptitude(){
+        return aptitude;
     }
 }
