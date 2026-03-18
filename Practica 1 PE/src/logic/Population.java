@@ -50,6 +50,10 @@ public class Population {
     }
 
     private void calculateAptitudes(){
+        fTotal = 0.0;
+        for (FitnessDron cf : generation) {
+            fTotal += cf.getFitness();
+        }
         for(FitnessDron cf : generation){
             double apt = fTotal/cf.getFitness();
             cf.setAptitude(apt);
@@ -62,7 +66,7 @@ public class Population {
 
 
     public synchronized void sortByFitness() {
-        generation.sort((a, b) -> b.compareTo(a));
+        generation.sort((a, b) -> a.compareTo(b));
     }
 
 
@@ -77,7 +81,6 @@ public class Population {
         if(elitismo > 0){
             for(int i = 0; i < elitismo*generation.size(); i++){
                 elite.add(generation.get(i).clone());
-                System.out.println("Elite: " + generation.get(i).getFitness());
             }
         }
 
@@ -97,9 +100,8 @@ public class Population {
         for(int i = 0; i < elite.size(); i++){
             generation.set(generation.size() - i - 1, elite.get(i).clone());
         }
-        
-        evaluateAll();
-        
+
+        calculateAptitudes();
         sortByFitness();
 
     }

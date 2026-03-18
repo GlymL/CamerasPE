@@ -21,7 +21,7 @@ public class Cruce {
             FitnessDron f2 = pop.get(r2);
             switch(ec){
             case EnumCruce.PMX -> crom = f1.getCrom().crucePMX(f2.getCrom(), cross);
-            case EnumCruce.OP -> crom = f1.getCrom().cruceOP(f2.getCrom(), cross);
+            case EnumCruce.OX -> crom = f1.getCrom().cruceOX(f2.getCrom(), cross);
             case EnumCruce.OXPP -> crom = f1.getCrom().cruceOXPP(f2.getCrom(), cross);
             case EnumCruce.CX -> crom = f1.getCrom().cruceCX(f2.getCrom(), cross);
             case EnumCruce.CO -> crom = f1.getCrom().cruceCO(f2.getCrom(), cross);

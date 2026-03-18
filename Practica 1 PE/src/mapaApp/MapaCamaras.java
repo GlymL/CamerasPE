@@ -63,7 +63,7 @@ public class MapaCamaras {
         filas = 12;
         cols = 15;
         n_cameras = 7;
-        base = new Pair(0, 0);
+        base = new Pair(1, 1);
     };
 
 

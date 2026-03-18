@@ -121,7 +121,7 @@
                         colorTile = Color.BLACK; // free
                     }
                     else {
-                        colorTile = Color.WHITE; // obstacle
+                        colorTile = new Color(255, 0, 0, map[row][col]*10); // obstacle
                     }
 
                     g2.setColor(colorTile);

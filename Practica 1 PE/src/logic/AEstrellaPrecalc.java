@@ -98,7 +98,6 @@ public class AEstrellaPrecalc {
 
         if (path == null) return null;
 
-        // 🔥 CRITICAL: ensure correct direction
         if (!path[0].equals(from)) {
             return reverse(path);
         }

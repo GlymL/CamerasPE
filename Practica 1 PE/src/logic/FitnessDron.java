@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Random;
+
 public class FitnessDron implements Comparable<FitnessDron>{
     private final CromosomasDron c;
     private final AEstrellaPrecalc a;
@@ -10,6 +12,13 @@ public class FitnessDron implements Comparable<FitnessDron>{
     public FitnessDron(CromosomasDron c, AEstrellaPrecalc a){
         this.c = c;
         this.a = a;
+    }
+
+    public FitnessDron(CromosomasDron c, AEstrellaPrecalc a, double fitness, double aptitude) {
+        this.c = c;
+        this.a = a;
+        this.fitness = fitness;
+        this.aptitude = aptitude;
     }
 
     public void calculateFitness(){
@@ -33,13 +42,14 @@ public class FitnessDron implements Comparable<FitnessDron>{
             minSpd =  Math.min(minSpd, coste/EnumFlota.values()[i].getVel());
 
         }
+        System.out.println(0.5*(ret-minSpd));
         ret += 0.5*(ret-minSpd); 
         fitness = ret;
     }
 
     @Override
     public int compareTo(FitnessDron a2) {
-        return Double.compare(a2.fitness, fitness);
+        return Double.compare(a2.aptitude, aptitude);
     }
 
     public double getFitness() {
@@ -51,7 +61,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
     }
 
     public FitnessDron clone(){
-        return new FitnessDron(c, a);
+        return new FitnessDron(c, a, fitness, aptitude);
     }
     public void setAptitude(double apt){
         this.aptitude = apt;

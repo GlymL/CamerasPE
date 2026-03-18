@@ -88,7 +88,7 @@ public class Selection {
             torneo.add(c2);
             FitnessDron c3 = population.get(rand.nextInt(population.size()));
             torneo.add(c3);
-            torneo.sort((a, b) -> b.compareTo(a));
+            torneo.sort((a, b) -> a.compareTo(b));
             selected.add(torneo.get(0).clone());
         }
         return selected;
@@ -140,7 +140,7 @@ public class Selection {
         }
         ArrayList<FitnessDron> trunc = torneoSelection(population);
 
-        trunc.sort((a,b) -> b.compareTo(a));
+        trunc.sort((a,b) -> a.compareTo(b));
 
         while(selected.size() <= population.size() && !trunc.isEmpty()){
             selected.add(trunc.get(0));

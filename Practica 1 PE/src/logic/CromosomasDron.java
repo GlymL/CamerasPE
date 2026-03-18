@@ -66,20 +66,21 @@ public class CromosomasDron{
        return new CromosomasDron(camaras, drones, cromosoma);
     }
 
-    public CromosomasDron[] crucePMX(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] crucePMX(CromosomasDron crom, double crossRatio) {
         int c1, c2;
-        c1 = r.nextInt(cromosoma.length);
-        c2 = r.nextInt(cromosoma.length);
+        c1 = r.nextInt(cromosoma.length - 1);
+        c2 = r.nextInt(cromosoma.length - 1);
         Integer[] arr1 = new Integer[cromosoma.length];
         Integer[] arr2 = new Integer[cromosoma.length];
         int iter1 = Math.min(c1, c2);
         int iter2 = Math.max(c1, c2);
         ArrayList<Integer> padre1 = new ArrayList<>(Arrays.asList(cromosoma));
         ArrayList<Integer> padre2 = new ArrayList<>(Arrays.asList(crom.cromosoma));
-        for(int i = iter1; i < iter2; i++){
-            arr1[i] = this.cromosoma[i];
+        for(int i = iter1; i <= iter2; i++){
+            arr1[i] = crom.cromosoma[i];
             arr2[i] = this.cromosoma[i];
         }
+
         ArrayList<Integer> hijo1 = new ArrayList<>(Arrays.asList(arr1));
         ArrayList<Integer> hijo2 = new ArrayList<>(Arrays.asList(arr2));
 
@@ -112,7 +113,10 @@ public class CromosomasDron{
 
     }
 
-    public CromosomasDron[] cruceOP(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] cruceOX(CromosomasDron crom, double crossRatio) {
+        if(r.nextDouble() > crossRatio){
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
         int c1 = 0, c2 = 0;
         while (Math.abs(c1 - c2) <= 2){
             c1 = r.nextInt(cromosoma.length);
@@ -188,27 +192,27 @@ public class CromosomasDron{
         return ret;
     }
 
-    public CromosomasDron[] cruceOXPP(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] cruceOXPP(CromosomasDron crom, double crossRatio) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceOXPP'");
     }
 
-    public CromosomasDron[] cruceCX(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] cruceCX(CromosomasDron crom, double crossRatio) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceCX'");
     }
 
-    public CromosomasDron[] cruceCO(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] cruceCO(CromosomasDron crom, double crossRatio) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceCO'");
     }
 
-    public CromosomasDron[] cruceERX(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] cruceERX(CromosomasDron crom, double crossRatio) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceERX'");
     }
 
-    public CromosomasDron[] cruceCUSTOM(CromosomasDron crom, double mutRatio) {
+    public CromosomasDron[] cruceCUSTOM(CromosomasDron crom, double crossRatio) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceCUSTOM'");
     }
