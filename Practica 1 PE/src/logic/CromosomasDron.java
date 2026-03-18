@@ -67,6 +67,9 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] crucePMX(CromosomasDron crom, double crossRatio) {
+        if(r.nextDouble() > crossRatio){
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
         int c1, c2;
         c1 = r.nextInt(cromosoma.length - 1);
         c2 = r.nextInt(cromosoma.length - 1);
@@ -198,8 +201,33 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] cruceCX(CromosomasDron crom, double crossRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cruceCX'");
+        if(r.nextDouble() > crossRatio){
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
+        Integer[] hijo1 = new Integer[cromosoma.length];
+        Integer[] hijo2 = new Integer[cromosoma.length];
+        ArrayList<Integer> padre1 = new ArrayList<>(Arrays.asList(cromosoma));
+        int indexActual = 0;
+        while(hijo1[indexActual] == null){
+            hijo1[indexActual] = this.cromosoma[indexActual];
+            hijo2[indexActual] = crom.cromosoma[indexActual];
+
+            int valor = crom.cromosoma[indexActual];
+            indexActual = padre1.indexOf(valor);
+        }
+
+        for(int i = 0; i < cromosoma.length; i++){
+            if(hijo1[i] == null){
+                hijo1[i] = crom.cromosoma[i];
+                hijo2[i] = cromosoma[i];
+            }
+        }
+
+        CromosomasDron[] ret = new CromosomasDron[2];
+        ret[0] = new CromosomasDron(camaras, drones, hijo1);
+        ret[1] = new CromosomasDron(camaras, drones, hijo2);  
+
+        return ret;
     }
 
     public CromosomasDron[] cruceCO(CromosomasDron crom, double crossRatio) {
@@ -208,8 +236,16 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] cruceERX(CromosomasDron crom, double crossRatio) {
+
+        if(r.nextDouble() > crossRatio){
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
+
+        Integer[] hijo1 = new Integer[cromosoma.length];
+        Integer[] hijo2 = new Integer[cromosoma.length];
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cruceERX'");
+        
     }
 
     public CromosomasDron[] cruceCUSTOM(CromosomasDron crom, double crossRatio) {
@@ -241,13 +277,35 @@ public class CromosomasDron{
     }
 
     public CromosomasDron mutacionIntercambio(double mut) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mutacionIntercambio'");
+        Integer[] copy = cromosoma.clone();
+        if(r.nextDouble() < mut){
+            int c1 = r.nextInt(cromosoma.length);
+            int c2 = r.nextInt(cromosoma.length);
+            int aux = copy[c1];
+            copy[c1] = copy[c2];
+            copy[c2] = aux;
+        }
+        return new CromosomasDron(camaras, drones, copy);
     }
 
     public CromosomasDron mutacionInversion(double mut) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mutacionInversion'");
+         Integer[] copy = cromosoma.clone();
+        if(r.nextDouble() < mut){
+            int c1 = r.nextInt(cromosoma.length);
+            int c2 = r.nextInt(cromosoma.length);
+            int iter1 = Math.min(c1, c2);
+            int iter2 = Math.max(c1, c2);
+            Integer[] arraux = new Integer[iter2 - iter1 + 1];
+            int aux = 0;
+            for(int i = iter1; i <= iter2; i ++){
+                arraux[aux++] = copy[i];
+            }
+
+            for(int i = 0; i < arraux.length; i++){
+                copy[iter2--] = arraux[i];
+            }
+        }
+        return new CromosomasDron(camaras, drones, copy);
     }
 
     public CromosomasDron mutacionHeuristica(double mut) {

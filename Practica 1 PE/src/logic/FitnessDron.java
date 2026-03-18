@@ -43,7 +43,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
 
         }
         System.out.println(0.5*(ret-minSpd));
-        ret += 0.5*(ret-minSpd); 
+        //ret += 0.5*(ret-minSpd); 
         fitness = ret;
     }
 
