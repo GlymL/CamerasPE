@@ -5,6 +5,8 @@ import javax.swing.border.TitledBorder;
 
 
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import logic.AEstrella;
 import logic.AEstrellaPrecalc;
@@ -16,6 +18,23 @@ import controller.Controller;
 import mapaApp.GeneradorCamaras;
 
 public class EvolutionFullGUI extends JFrame{
+
+  private class OnlyIntVerifier extends InputVerifier {
+    @Override
+    public boolean verify(JComponent input) {
+      JTextField tf = (JTextField) input;
+      Pattern pattern = Pattern.compile("^[0-9]+$");
+      Matcher matcher = pattern.matcher(tf.getText());
+      boolean onlyints = matcher.find();
+
+      if (!onlyints) {
+        tf.setText("3000");
+      }
+
+      return onlyints;
+    }
+    
+  }
 
   FitnessChartPanel fitnessChart;
   MejorMapa bd;
@@ -47,6 +66,8 @@ public class EvolutionFullGUI extends JFrame{
   private final JSpinner dronesSpinner =
     new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
   private final JButton runButton = new JButton("Ejecutar generaciones");
+  private final JTextField seedfield = new JTextField("3000", 5);
+
   private final Controller c;
   private GeneradorCamaras gc;
 
@@ -71,6 +92,10 @@ public class EvolutionFullGUI extends JFrame{
 
     panel.add(new JLabel("Numero drones:"));
     panel.add(dronesSpinner);
+
+    panel.add(new JLabel("Semilla:"));
+    seedfield.setInputVerifier(new OnlyIntVerifier());
+    panel.add(seedfield);
 
     return panel;
   }
@@ -193,6 +218,7 @@ public class EvolutionFullGUI extends JFrame{
     double mutation = (double) mutationSpinner.getValue();
     double elitismo = (double) elitismoSpinner.getValue();
     int n_drones = (int) dronesSpinner.getValue();
+    int seed = Integer.parseInt(seedfield.getText());
  
     EnumCruce enumCruce = (EnumCruce)cruceBox.getSelectedItem();
     EnumMutacion enumMut = (EnumMutacion)mutaBox.getSelectedItem();
