@@ -446,7 +446,38 @@ public class CromosomasDron{
 }
 
     public CromosomasDron mutacionCustom(double mut) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mutacionCustom'");
+        Integer[] copy = cromosoma.clone();
+
+        if(r.nextDouble() < mut){
+            double forSwapRatio = 0.4, whileSwapRatio = Math.min(0.9, forSwapRatio * 1.5);
+
+            int i = 0, j = 0;
+
+            while (i < copy.length) {
+                double rand1 = r.nextDouble();
+
+                if (rand1 < forSwapRatio) {
+                    j = i + 1;
+
+                    while (j < copy.length) {
+                        double rand2 = r.nextDouble();
+
+                        if (rand2 < whileSwapRatio) {
+                            int aux = copy[i];
+                            copy[i] = copy[j];
+                            copy[j] = aux;
+
+                            break;
+                        }
+
+                        j++;
+                    }
+                }
+
+                i++;
+            }
+        }
+        return new CromosomasDron(camaras, drones, copy);
+        //throw new UnsupportedOperationException("Unimplemented method 'mutacionCustom'");
     }
 }
