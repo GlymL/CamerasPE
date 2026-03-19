@@ -1,7 +1,5 @@
 package logic;
 
-import java.util.Random;
-
 public class FitnessDron implements Comparable<FitnessDron>{
     private final CromosomasDron c;
     private final AEstrellaPrecalc a;

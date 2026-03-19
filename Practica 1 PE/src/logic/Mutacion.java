@@ -23,7 +23,7 @@ public class Mutacion {
             case EnumMutacion.INSERCION -> crom = f.getCrom().mutacionInsercion(mut);
             case EnumMutacion.INTERCAMBIO -> crom = f.getCrom().mutacionIntercambio(mut);
             case EnumMutacion.INVERSION -> crom = f.getCrom().mutacionInversion(mut);
-            case EnumMutacion.HEURISTICA -> crom = f.getCrom().mutacionHeuristica(mut);
+            case EnumMutacion.HEURISTICA -> crom = f.getCrom().mutacionHeuristica(mut, ae);
             case EnumMutacion.CUSTOM -> crom = f.getCrom().mutacionCustom(mut);
             default -> {
                 System.err.println();

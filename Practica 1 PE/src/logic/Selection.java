@@ -40,20 +40,18 @@ public class Selection {
         double sum = 0;
 
         for (FitnessDron cf : population) {
-            sum += cf.getFitness();
+            sum += cf.getAptitude();
             cumulative.add(sum);
         }
 
-        // fallback if sum == 0
         if (sum == 0) {
-            for (int i = 0; i < population.size(); i++) {
+            for (FitnessDron _ : population) {
                 selected.add(population.get(rand.nextInt(population.size())).clone());
             }
             return selected;
         }
 
-        // now do standard roulette selection
-        for (int i = 0; i < population.size(); i++) {
+        for (FitnessDron _ : population) {
             double r = rand.nextDouble() * sum;
             for (int j = 0; j < cumulative.size(); j++) {
                 if (r <= cumulative.get(j)) {
@@ -80,7 +78,7 @@ public class Selection {
 
     private ArrayList<FitnessDron> torneoSelection(ArrayList<FitnessDron> population) {
         ArrayList<FitnessDron> selected = new ArrayList<>();
-        for(int i = 0; i < population.size(); i++){
+        for (FitnessDron _ : population) {
             ArrayList<FitnessDron> torneo = new ArrayList<>();
             FitnessDron c1 = population.get(rand.nextInt(population.size()));
             torneo.add(c1);
@@ -94,61 +92,70 @@ public class Selection {
         return selected;
     }
 
-    private ArrayList<FitnessDron> estocasticoSelection(ArrayList<FitnessDron> population){
+    private ArrayList<FitnessDron> estocasticoSelection(ArrayList<FitnessDron> population) {
         ArrayList<FitnessDron> selected = new ArrayList<>();
         ArrayList<Double> cumulative = new ArrayList<>();
-        double sum = 0;
+
+        double sum = 0.0;
         for (FitnessDron cf : population) {
-            sum += 1/Math.max(1, cf.getFitness());
+            sum += cf.getAptitude();
         }
-        double cumsum = 0;
+
+        double cumsum = 0.0;
         for (FitnessDron cf : population) {
-            cumsum += (1/Math.max(1, cf.getFitness())) / sum;
+            cumsum += Math.max(1.0, cf.getAptitude()) / sum;
             cumulative.add(cumsum);
         }
 
-        if (sum == 0) {
-            for (FitnessDron _ : population) {
-                selected.add(population.get(rand.nextInt(population.size())).clone());
+        int n = population.size();
+        double step = 1.0 / n;
+        double r = rand.nextDouble() * step;
+
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            double a = r + i * step;
+            while (a > cumulative.get(j)) {
+                j++;
             }
-            return selected;
+            selected.add(population.get(j).clone());
         }
 
-        double r = rand.nextDouble() / population.size();
-        int inicio = 0;
-        for (int i = 0; i < population.size(); i++) {
-            double a = (r + i)/population.size();
-            for (int j = inicio; j < cumulative.size(); j++) {
-                if (a <= cumulative.get(j)) {
-                    selected.add(population.get(j).clone());
-                    inicio = j;
+        return selected;
+    }
+
+   private ArrayList<FitnessDron> restosSelection(ArrayList<FitnessDron> population) {
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+        int n = population.size();
+        double sum = 0.0;
+        for (FitnessDron cf : population) {
+            sum += cf.getAptitude();
+        }
+
+        ArrayList<Double> fractional = new ArrayList<>();
+
+        for (FitnessDron cf : population) {
+            double expected = (cf.getAptitude() / sum) * n;
+            int copies = (int) Math.floor(expected);
+
+            for (int j = 0; j < copies; j++) {
+                selected.add(cf.clone());
+            }
+
+            fractional.add(expected - copies);
+        }
+
+        while (selected.size() < n) {
+            double r = rand.nextDouble();
+            double acc = 0.0;
+            for (int i = 0; i < population.size(); i++) {
+                acc += fractional.get(i);
+                if (r <= acc) {
+                    selected.add(population.get(i).clone());
                     break;
                 }
             }
         }
-        return selected;
-    }
 
-    private ArrayList<FitnessDron> restosSelection(ArrayList<FitnessDron> population) {
-        ArrayList<FitnessDron> selected = new ArrayList<>();
-
-        for(int i = 0; i < population.size(); i++){
-            int copias = (int)Math.floor(population.get(i).getFitness()*population.size());
-            for(int j = 0; j < copias; j++){
-                selected.add(population.get(i).clone());
-            }
-        }
-        ArrayList<FitnessDron> trunc = torneoSelection(population);
-
-        trunc.sort((a,b) -> a.compareTo(b));
-
-        while(selected.size() <= population.size() && !trunc.isEmpty()){
-            selected.add(trunc.get(0));
-            trunc.remove(0);
-        }
-        for(FitnessDron cf : trunc){
-            selected.add(cf.clone());
-        }
         return selected;
     }
 

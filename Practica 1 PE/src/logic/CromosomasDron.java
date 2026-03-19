@@ -301,17 +301,62 @@ public class CromosomasDron{
                 arraux[aux++] = copy[i];
             }
 
-            for(int i = 0; i < arraux.length; i++){
-                copy[iter2--] = arraux[i];
-            }
+             for (Integer arraux1 : arraux) {
+                 copy[iter2--] = arraux1;
+             }
         }
         return new CromosomasDron(camaras, drones, copy);
     }
 
-    public CromosomasDron mutacionHeuristica(double mut) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mutacionHeuristica'");
+    public CromosomasDron mutacionHeuristica(double mut, AEstrellaPrecalc ae) {
+        int n = 3;
+        int[] individuals = new int[n];
+        for(int i = 0; i < n; i++){
+            int posible = r.nextInt(cromosoma.length);
+            while(individuals[0] == posible || individuals[1] == posible){
+                posible = r.nextInt(cromosoma.length);
+            }
+            individuals[i] = posible;
+        }
+        Integer[][] permutations = permutaciones(individuals);
+        FitnessDron[] cd = new FitnessDron[permutations.length];
+        int iter = 0;
+        for (Integer[] elem : permutations) {
+            Integer[] crom = new Integer[cromosoma.length];
+            for(int i = 0; i < cromosoma.length; i++){
+                if(i == individuals[0]){
+                    crom[i] = elem[0];
+                }else if (i == individuals[1]){
+                    crom[i] = elem[1];
+                }else if (i == individuals[2]){
+                    crom[i] = elem[2];
+                }else{
+                    crom[i] = cromosoma[i];
+                }
+            }
+            cd[iter++] = new FitnessDron(new CromosomasDron(camaras, drones, crom), ae);
+        }
+        FitnessDron best = null;
+        for(FitnessDron f : cd){
+            f.calculateFitness();
+            if(best == null)
+                best = f;
+            if(best.getFitness() > f.getFitness())
+                best = f;
+        }
+        return best.getCrom();
     }
+
+    public Integer[][] permutaciones(int[] individuals) {
+    return new Integer[][] {
+        {cromosoma[individuals[0]], cromosoma[individuals[1]], cromosoma[individuals[2]]},
+        {cromosoma[individuals[0]], cromosoma[individuals[2]], cromosoma[individuals[1]]},
+        {cromosoma[individuals[1]], cromosoma[individuals[0]], cromosoma[individuals[2]]},
+        {cromosoma[individuals[1]], cromosoma[individuals[2]], cromosoma[individuals[0]]},
+        {cromosoma[individuals[2]], cromosoma[individuals[0]], cromosoma[individuals[1]]},
+        {cromosoma[individuals[2]], cromosoma[individuals[1]], cromosoma[individuals[0]]}
+    };
+}
 
     public CromosomasDron mutacionCustom(double mut) {
         // TODO Auto-generated method stub
