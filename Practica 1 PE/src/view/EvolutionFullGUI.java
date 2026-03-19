@@ -226,7 +226,7 @@ public class EvolutionFullGUI extends JFrame{
     int escenario = escenarioBox.getSelectedIndex();
     n_mapa = escenario + 1;
 
-    gc = new GeneradorCamaras(3000, new MapaCamaras(n_mapa));
+    gc = new GeneradorCamaras(seed, new MapaCamaras(n_mapa));
 
     AEstrellaPrecalc precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
 
