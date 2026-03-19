@@ -231,8 +231,95 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] cruceCO(CromosomasDron crom, double crossRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cruceCO'");
+        if(r.nextDouble() > crossRatio){
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
+
+        class Ordinal {
+            private static Integer[] toOrdinal(Integer[] arr) {
+                Integer[] res = new Integer[arr.length];
+                ArrayList<Integer> indexGiver = new ArrayList<>(arr.length);
+
+                for (int i = 0; i < arr.length; i++) {
+                    indexGiver.add(i);
+                }
+
+                int i = 0;
+
+                while (i < res.length && !indexGiver.isEmpty()) {
+                    Integer elem = arr[i];
+
+                    if (!indexGiver.contains(elem)) {
+                        throw new UnsupportedOperationException("|||||  Trouble with IndexGiver found");
+                    }
+                    
+                    int index = indexGiver.indexOf(elem);
+
+                    res[i] = index;
+                    indexGiver.remove((int) index);
+
+                    i++;
+                }
+
+                return res;
+            }
+
+            private static Integer[] toPerm(Integer[] arr) {
+                Integer[] res = new Integer[arr.length];
+                ArrayList<Integer> indexGiver = new ArrayList<>(arr.length);
+
+                for (int i = 0; i < arr.length; i++) {
+                    indexGiver.add(i);
+                }
+
+                int i = 0;
+
+                while (i < res.length && !indexGiver.isEmpty()) {
+                    Integer index = arr[i];
+
+                    if (indexGiver.size() < index) {
+                        throw new UnsupportedOperationException("|||||  Trouble with IndexGiver perm");
+                    }
+                    
+                    int elem = indexGiver.get(index);
+
+                    res[i] = elem;
+                    indexGiver.remove((int) index);
+
+                    i++;
+                }
+
+                return res;
+            }
+        }
+
+        Integer[] padre1Ordinal = Ordinal.toOrdinal(this.cromosoma);
+        Integer[] padre2Ordinal = Ordinal.toOrdinal(crom.cromosoma);
+        Integer[] hijo1Ordinal = new Integer[cromosoma.length];
+        Integer[] hijo2Ordinal = new Integer[cromosoma.length];
+
+        int cross_point = r.nextInt(cromosoma.length);
+
+        for (int i = 0; i < cross_point; i++) {
+            hijo1Ordinal[i] = padre1Ordinal[i];
+            hijo2Ordinal[i] = padre2Ordinal[i];
+        }
+
+        for (int i = cross_point; i < cromosoma.length; i++) {
+            hijo1Ordinal[i] = padre2Ordinal[i];
+            hijo2Ordinal[i] = padre1Ordinal[i];
+        }
+
+        Integer[] hijo1 = Ordinal.toPerm(hijo1Ordinal);
+        Integer[] hijo2 = Ordinal.toPerm(hijo2Ordinal);
+
+        //throw new UnsupportedOperationException("Unimplemented method 'cruceCO'");
+        CromosomasDron[] ret = new CromosomasDron[2];
+        ret[0] = new CromosomasDron(camaras, drones, hijo1);
+        ret[1] = new CromosomasDron(camaras, drones, hijo2);  
+
+
+        return ret;
     }
 
     public CromosomasDron[] cruceERX(CromosomasDron crom, double crossRatio) {
