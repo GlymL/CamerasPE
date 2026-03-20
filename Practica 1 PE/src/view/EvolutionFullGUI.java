@@ -13,6 +13,7 @@ import logic.AEstrellaPrecalc;
 import logic.EnumCruce;
 import logic.EnumMutacion;
 import logic.EnumSelection;
+import logic.FitnessDron;
 import mapaApp.MapaCamaras;
 import controller.Controller;
 import mapaApp.GeneradorCamaras;
@@ -67,6 +68,7 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
   private final JButton runButton = new JButton("Ejecutar generaciones");
   private final JTextField seedfield = new JTextField("3000", 5);
+  private ResultPanel resultPanel;
 
   private final Controller c;
   private GeneradorCamaras gc;
@@ -100,17 +102,42 @@ public class EvolutionFullGUI extends JFrame{
     return panel;
   }
 
-  private JPanel createCenterPanel() {
-    JPanel panel = new JPanel(new GridLayout(1, 3, 10, 10));
-
+private JPanel createCenterPanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
     panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-    panel.add(createConfigPanel());
-    panel.add(createMapPanel());
-    panel.add(createFitnessPanel());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.BOTH;
+    gbc.weighty = 0.2;
+
+    JPanel leftContainer = new JPanel(new GridBagLayout());
+    GridBagConstraints leftGbc = new GridBagConstraints();
+    leftGbc.gridx = 0;
+    leftGbc.weightx = 0.3;
+    leftGbc.fill = GridBagConstraints.BOTH;
+
+    leftGbc.gridy = 0;
+    leftGbc.weighty = 0.7;
+    leftContainer.add(createConfigPanel(), leftGbc);
+
+    leftGbc.gridy = 1;
+    leftGbc.weighty = 0.3;
+    resultPanel = new ResultPanel();
+    leftContainer.add(resultPanel, leftGbc);
+
+    panel.add(leftContainer, gbc);
+
+    gbc.gridx = 1;
+    gbc.weightx = 0.5;
+    panel.add(createMapPanel(), gbc);
+
+    gbc.gridx = 2;
+    gbc.weightx = 0.3;
+    panel.add(createFitnessPanel(), gbc);
 
     return panel;
-  }
+}
 
   private JPanel createConfigPanel() {
 
@@ -248,7 +275,6 @@ public class EvolutionFullGUI extends JFrame{
     SwingUtilities.invokeLater(() -> {
       fitnessChart.update(maxGen, pEv, bestFitness, avgFitness);
     });
-    
   }
 
   public void clearChart() {
@@ -257,6 +283,11 @@ public class EvolutionFullGUI extends JFrame{
 
   public void updateMap(int[][] bestCrom) {
         bd.setRoutes(bestCrom);
+  }
+
+  public void result(FitnessDron best){
+
+    resultPanel.displayFitnessDron(best, WIDTH);
   }
 
 }

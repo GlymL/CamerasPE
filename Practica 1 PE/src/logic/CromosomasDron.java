@@ -195,9 +195,69 @@ public class CromosomasDron{
         return ret;
     }
 
-    public CromosomasDron[] cruceOXPP(CromosomasDron crom, double crossRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cruceOXPP'");
+    public CromosomasDron[] cruceOXOP(CromosomasDron crom, double crossRatio) {
+        if (r.nextDouble() > crossRatio) {
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
+
+        int n = cromosoma.length;
+
+        Integer[] hijo1 = new Integer[n];
+        Integer[] hijo2 = new Integer[n];
+
+        boolean[] selected = new boolean[n];
+
+        for (int i = 0; i < n / 2; i++) {
+            int pos;
+            do {
+                pos = r.nextInt(n);
+            } while (selected[pos]);
+            selected[pos] = true;
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (selected[i]) {
+                hijo1[i] = cromosoma[i];
+            }
+        }
+
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            if (hijo1[i] == null) {
+                while (contains(hijo1, crom.cromosoma[j])) {
+                    j++;
+                }
+                hijo1[i] = crom.cromosoma[j++];
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (selected[i]) {
+                hijo2[i] = crom.cromosoma[i];
+            }
+        }
+
+        j = 0;
+        for (int i = 0; i < n; i++) {
+            if (hijo2[i] == null) {
+                while (contains(hijo2, cromosoma[j])) {
+                    j++;
+                }
+                hijo2[i] = cromosoma[j++];
+            }
+        }
+
+        return new CromosomasDron[]{
+            new CromosomasDron(camaras, drones, hijo1),
+            new CromosomasDron(camaras, drones, hijo2)
+        };
+    }
+
+    private boolean contains(Integer[] arr, int val) {
+        for (Integer x : arr) {
+            if (x != null && x == val) return true;
+        }
+        return false;
     }
 
     public CromosomasDron[] cruceCX(CromosomasDron crom, double crossRatio) {
@@ -336,10 +396,54 @@ public class CromosomasDron{
     }
 
     public CromosomasDron[] cruceCUSTOM(CromosomasDron crom, double crossRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cruceCUSTOM'");
-    }
+        if (r.nextDouble() > crossRatio) {
+            return new CromosomasDron[]{ this.clone(), crom.clone() };
+        }
 
+        int n = cromosoma.length;
+
+        Integer[] hijo1 = new Integer[n];
+        Integer[] hijo2 = new Integer[n];
+
+        boolean[] visited = new boolean[n];
+
+        ArrayList<Integer> padre1 = new ArrayList<>(Arrays.asList(this.cromosoma));
+        ArrayList<Integer> padre2 = new ArrayList<>(Arrays.asList(crom.cromosoma));
+
+        boolean takeFromParent1 = true;
+
+        for (int start = 0; start < n; start++) {
+
+            if (visited[start]) continue;
+
+            int index = start;
+
+            // Traverse one cycle
+            do {
+                visited[index] = true;
+
+                if (takeFromParent1) {
+                    hijo1[index] = this.cromosoma[index];
+                    hijo2[index] = crom.cromosoma[index];
+                } else {
+                    hijo1[index] = crom.cromosoma[index];
+                    hijo2[index] = this.cromosoma[index];
+                }
+
+                int value = crom.cromosoma[index];
+                index = padre1.indexOf(value);
+
+            } while (index != start);
+
+            // Alternate parent for next cycle
+            takeFromParent1 = !takeFromParent1;
+        }
+
+        return new CromosomasDron[]{
+            new CromosomasDron(camaras, drones, hijo1),
+            new CromosomasDron(camaras, drones, hijo2)
+        };
+    }
     public CromosomasDron mutacionInsercion(double mut) {
         Integer[] copy = cromosoma.clone();
         if(r.nextDouble() < mut){
@@ -398,40 +502,43 @@ public class CromosomasDron{
     public CromosomasDron mutacionHeuristica(double mut, AEstrellaPrecalc ae) {
         int n = 3;
         int[] individuals = new int[n];
-        for(int i = 0; i < n; i++){
-            int posible = r.nextInt(cromosoma.length);
-            while(individuals[0] == posible || individuals[1] == posible){
-                posible = r.nextInt(cromosoma.length);
-            }
-            individuals[i] = posible;
-        }
-        Integer[][] permutations = permutaciones(individuals);
-        FitnessDron[] cd = new FitnessDron[permutations.length];
-        int iter = 0;
-        for (Integer[] elem : permutations) {
-            Integer[] crom = new Integer[cromosoma.length];
-            for(int i = 0; i < cromosoma.length; i++){
-                if(i == individuals[0]){
-                    crom[i] = elem[0];
-                }else if (i == individuals[1]){
-                    crom[i] = elem[1];
-                }else if (i == individuals[2]){
-                    crom[i] = elem[2];
-                }else{
-                    crom[i] = cromosoma[i];
+        if(r.nextDouble() < mut){
+            for(int i = 0; i < n; i++){
+                int posible = r.nextInt(cromosoma.length);
+                while(individuals[0] == posible || individuals[1] == posible){
+                    posible = r.nextInt(cromosoma.length);
                 }
+                individuals[i] = posible;
             }
-            cd[iter++] = new FitnessDron(new CromosomasDron(camaras, drones, crom), ae);
+            Integer[][] permutations = permutaciones(individuals);
+            FitnessDron[] cd = new FitnessDron[permutations.length];
+            int iter = 0;
+            for (Integer[] elem : permutations) {
+                Integer[] crom = new Integer[cromosoma.length];
+                for(int i = 0; i < cromosoma.length; i++){
+                    if(i == individuals[0]){
+                        crom[i] = elem[0];
+                    }else if (i == individuals[1]){
+                        crom[i] = elem[1];
+                    }else if (i == individuals[2]){
+                        crom[i] = elem[2];
+                    }else{
+                        crom[i] = cromosoma[i];
+                    }
+                }
+                cd[iter++] = new FitnessDron(new CromosomasDron(camaras, drones, crom), ae);
+            }
+            FitnessDron best = null;
+            for(FitnessDron f : cd){
+                f.calculateFitness();
+                if(best == null)
+                    best = f;
+                if(best.getFitness() > f.getFitness())
+                    best = f;
+            }
+            return best.getCrom();
         }
-        FitnessDron best = null;
-        for(FitnessDron f : cd){
-            f.calculateFitness();
-            if(best == null)
-                best = f;
-            if(best.getFitness() > f.getFitness())
-                best = f;
-        }
-        return best.getCrom();
+        return this.clone();
     }
 
     public Integer[][] permutaciones(int[] individuals) {

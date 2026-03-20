@@ -19,30 +19,38 @@ public class FitnessDron implements Comparable<FitnessDron>{
         this.aptitude = aptitude;
     }
 
-    public void calculateFitness(){
+    public void calculateFitness() {
         int[][] rutas = c.rutas();
-        double ret = 0;
-        double minSpd = Double.MAX_VALUE;
-        for(int i = 0; i < rutas.length; i++){
-            double coste = 0;
+        double makespan = 0;
+        double minTime = Double.MAX_VALUE;
+
+        for (int i = 0; i < rutas.length; i++) {
+            int[] ruta = rutas[i];
+
+            if (ruta[0] == -1) continue;
+
+            double tiempo = 0;
             int j = 0;
-            while(j < rutas[i].length && rutas[i][j] != -1){
-                if(j == 0){
-                    coste += a.getInit(rutas[i][j]);
+
+            while (j < ruta.length && ruta[j] != -1) {
+                if (j == 0) {
+                    tiempo += a.getInit(ruta[j]);
+                } else {
+                    tiempo += a.getPrecalc(ruta[j - 1], ruta[j]);
                 }
-                else
-                    coste += a.getPrecalc(rutas[i][j-1], rutas[i][j]);
                 j++;
             }
-            if(rutas[i][0] != -1)
-                coste += a.getInit(rutas[i][Math.max(0,  j - 1)]);
-            ret = Math.max(ret, coste/EnumFlota.values()[i].getVel());
-            minSpd =  Math.min(minSpd, coste/EnumFlota.values()[i].getVel());
 
+            tiempo += a.getInit(ruta[j - 1]);  
+            double timeWithSpeed = tiempo / EnumFlota.values()[i].getVel();
+
+            makespan = Math.max(makespan, timeWithSpeed);
+            minTime = Math.min(minTime, timeWithSpeed);
         }
-        System.out.println(0.5*(ret-minSpd));
-        //ret += 0.5*(ret-minSpd); 
-        fitness = ret;
+
+        fitness = makespan;
+
+        //fitness += 0.5 * (makespan - minTime);
     }
 
     @Override
@@ -67,5 +75,9 @@ public class FitnessDron implements Comparable<FitnessDron>{
 
     public double getAptitude(){
         return aptitude;
+    }
+
+    public AEstrellaPrecalc getPrecalc() {
+        return a;
     }
 }

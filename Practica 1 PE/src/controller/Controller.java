@@ -63,4 +63,8 @@ public class Controller {
         gui.updateMap(bestCrom);
 
     }
+
+    public void best(FitnessDron best) {
+        gui.result(best);
+    }
 }

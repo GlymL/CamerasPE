@@ -22,7 +22,7 @@ public class Cruce {
             switch(ec){
             case EnumCruce.PMX -> crom = f1.getCrom().crucePMX(f2.getCrom(), cross);
             case EnumCruce.OX -> crom = f1.getCrom().cruceOX(f2.getCrom(), cross);
-            case EnumCruce.OXPP -> crom = f1.getCrom().cruceOXPP(f2.getCrom(), cross);
+            case EnumCruce.OXOP -> crom = f1.getCrom().cruceOXOP(f2.getCrom(), cross);
             case EnumCruce.CX -> crom = f1.getCrom().cruceCX(f2.getCrom(), cross);
             case EnumCruce.CO -> crom = f1.getCrom().cruceCO(f2.getCrom(), cross);
             case EnumCruce.ERX -> crom = f1.getCrom().cruceERX(f2.getCrom(), cross);

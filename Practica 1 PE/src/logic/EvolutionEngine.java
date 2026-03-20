@@ -58,7 +58,7 @@ public class EvolutionEngine {
             System.out.println();
             
         }
-
+        controller.best(population.best());
         JOptionPane.showMessageDialog(
             null, 
             "El mejor fitness es: " + min_fitness,

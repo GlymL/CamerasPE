@@ -160,7 +160,39 @@ public class Selection {
     }
 
     private ArrayList<FitnessDron> rankingSelection(ArrayList<FitnessDron> population) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'rankingSelection'");
+
+        int n = population.size();
+        double s = 1.5;
+
+        population.sort((a, b) -> Double.compare(b.getAptitude(), a.getAptitude()));
+
+        double[] probs = new double[n];
+
+
+        for (int i = 0; i < n; i++) {
+            probs[i] = (2 - s) / n + (2.0 * (n - i - 1) * (s - 1)) / (n * (n - 1));
+        }
+
+        double[] cumulative = new double[n];
+        cumulative[0] = probs[0];
+
+        for (int i = 1; i < n; i++) {
+            cumulative[i] = cumulative[i - 1] + probs[i];
+        }
+
+        ArrayList<FitnessDron> selected = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            double r = rand.nextDouble();
+
+            for (int j = 0; j < n; j++) {
+                if (r <= cumulative[j]) {
+                    selected.add(population.get(j).clone());
+                    break;
+                }
+            }
+        }
+
+        return selected;
     }
 }
