@@ -9,7 +9,6 @@ public class ResultPanel extends JPanel {
 
     private final JTextPane textPane = new JTextPane();
 
-    // Your fixed color array for drones:
     private static final Color[] color = {Color.MAGENTA, Color.BLUE, Color.RED, Color.CYAN, new Color(255, 140, 0)};
 
     public ResultPanel() {
@@ -25,9 +24,8 @@ public class ResultPanel extends JPanel {
         StyledDocument doc = textPane.getStyledDocument();
         try {
             AEstrellaPrecalc a = best.getPrecalc();
-            doc.remove(0, doc.getLength()); // Clear previous content
+            doc.remove(0, doc.getLength());
 
-            // Style setups
             SimpleAttributeSet redBold = new SimpleAttributeSet();
             StyleConstants.setForeground(redBold, Color.RED);
             StyleConstants.setBold(redBold, true);
@@ -42,18 +40,14 @@ public class ResultPanel extends JPanel {
                 StyleConstants.setForeground(droneColors[i], color[i]);
             }
 
-            // Header
             doc.insertString(doc.getLength(), "RUTA COMPLETADA\n\n", redBold);
 
-            // Makespan (fitness)
             doc.insertString(doc.getLength(), "MAKESPAN: ", blackBold);
             doc.insertString(doc.getLength(), String.format("%.2f s\n", best.getFitness()), null);
 
-            // Seed
             doc.insertString(doc.getLength(), "SEMILLA: ", blackBold);
             doc.insertString(doc.getLength(), seed + "\n\n", null);
 
-            // TIEMPOS POR DRON line
             doc.insertString(doc.getLength(), "TIEMPOS POR DRON: ", blackBold);
 
             int[][] rutas = best.getCrom().rutas();
@@ -74,7 +68,6 @@ public class ResultPanel extends JPanel {
             }
             doc.insertString(doc.getLength(), "\n", null);
 
-            // CROMOSOMA line
             doc.insertString(doc.getLength(), "CROMOSOMA: [ ", blackBold);
 
             for (int i = 0; i < dronesCount; i++) {
@@ -95,7 +88,6 @@ public class ResultPanel extends JPanel {
                         doc.insertString(doc.getLength(), cam + " ", routeColor);
                     }
                 }
-                // If no cameras, leave empty section
 
                 if (i < dronesCount - 1) {
                     doc.insertString(doc.getLength(), "|| ", blackBold);

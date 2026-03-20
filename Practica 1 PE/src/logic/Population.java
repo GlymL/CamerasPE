@@ -12,11 +12,12 @@ public class Population {
     private final Selection s;
     private final Mutacion m;
     private final AEstrellaPrecalc precalc;
+    private final boolean opt;
 
 
     public Population(GeneradorCamaras gc, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
-        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, AEstrellaPrecalc ae) {
+        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, AEstrellaPrecalc ae, boolean opt) {
             generation = new ArrayList<>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
@@ -26,6 +27,7 @@ public class Population {
         initializeRandom(popSize, precalc, gc, n_drones);
         evaluateAll();
         sortByFitness();
+        this.opt = opt;
     }
 
     private void initializeRandom(int popSize, AEstrellaPrecalc precalc, GeneradorCamaras gc, int n_drones) {
@@ -92,6 +94,9 @@ public class Population {
         cr.cruzar(generation, precalc);
         
         m.mutar(generation, precalc);
+
+        if(opt)
+            generation.set(0, generation.get(0).untangle());
         
         evaluateAll();
         
@@ -100,6 +105,7 @@ public class Population {
         for(int i = 0; i < elite.size(); i++){
             generation.set(generation.size() - i - 1, elite.get(i).clone());
         }
+
 
         calculateAptitudes();
         sortByFitness();

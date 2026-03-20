@@ -31,7 +31,8 @@ public class Controller {
                     EnumMutacion enumMut,
                     EnumSelection enumSel,
                     double elitismo,
-                    int n_drones, AEstrellaPrecalc ae
+                    int n_drones, AEstrellaPrecalc ae, 
+                    boolean opt
                     ) {
 
         Population population = new Population(
@@ -43,7 +44,7 @@ public class Controller {
             enumMut,
             enumSel,
             elitismo,
-            n_drones, ae
+            n_drones, ae, opt
         );
 
         this.engine.start(this,

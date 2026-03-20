@@ -2,7 +2,6 @@ package logic;
 
 import controller.Controller;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 public class EvolutionEngine {
 
@@ -59,12 +58,6 @@ public class EvolutionEngine {
             
         }
         controller.best(population.best());
-        JOptionPane.showMessageDialog(
-            null, 
-            "El mejor fitness es: " + min_fitness,
-            "Mejor Fitness",
-            JOptionPane.INFORMATION_MESSAGE
-        );
 
 
     }

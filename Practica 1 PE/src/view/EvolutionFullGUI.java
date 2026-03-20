@@ -68,10 +68,12 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
   private final JButton runButton = new JButton("Ejecutar generaciones");
   private final JTextField seedfield = new JTextField("3000", 5);
+  private final JCheckBox opt_CheckBox = new JCheckBox();
   private ResultPanel resultPanel;
 
   private final Controller c;
   private GeneradorCamaras gc;
+  private int seed;
 
   public EvolutionFullGUI(Controller c) {
     setTitle("Algoritmo Genético - Cámaras");
@@ -245,12 +247,13 @@ private JPanel createCenterPanel() {
     double mutation = (double) mutationSpinner.getValue();
     double elitismo = (double) elitismoSpinner.getValue();
     int n_drones = (int) dronesSpinner.getValue();
-    int seed = Integer.parseInt(seedfield.getText());
+    seed = Integer.parseInt(seedfield.getText());
  
     EnumCruce enumCruce = (EnumCruce)cruceBox.getSelectedItem();
     EnumMutacion enumMut = (EnumMutacion)mutaBox.getSelectedItem();
     EnumSelection selection = (EnumSelection) selectionBox.getSelectedItem();
     int escenario = escenarioBox.getSelectedIndex();
+
     n_mapa = escenario + 1;
 
     gc = new GeneradorCamaras(seed, new MapaCamaras(n_mapa));
@@ -268,7 +271,7 @@ private JPanel createCenterPanel() {
       enumMut,
       selection,
       elitismo,
-      n_drones, precalc)).start();
+      n_drones, precalc, opt)).start();
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
@@ -287,7 +290,7 @@ private JPanel createCenterPanel() {
 
   public void result(FitnessDron best){
 
-    resultPanel.displayFitnessDron(best, WIDTH);
+    resultPanel.displayFitnessDron(best, seed);
   }
 
 }

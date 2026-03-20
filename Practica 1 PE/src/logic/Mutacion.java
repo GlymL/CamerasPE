@@ -15,7 +15,6 @@ public class Mutacion {
 
     public void mutar(ArrayList<FitnessDron> pop, AEstrellaPrecalc ae){
         CromosomasDron crom;
-        ArrayList<FitnessDron> ret = new ArrayList<>();
         for (int i = 0; i < pop.size()/2; i++){
             int rand = r.nextInt(0, pop.size());
             FitnessDron f = pop.get(rand);

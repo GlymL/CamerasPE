@@ -25,8 +25,8 @@ public class GeneradorCamaras {
         // Lista para guardar las posiciones (asumiendo una clase simple Punto(x,y))
         int iter = 0;
         while (iter < numCamaras) {
-            int x = rand.nextInt(mc.getFilas());
             int y = rand.nextInt(mc.getCols());
+            int x = rand.nextInt(mc.getFilas());
             if(mapa[x][y] != 0 && mapa[x][y] < PENALIZACION){
                 mapa[x][y] += PENALIZACION;
                 listaCamaras[iter] = new Pair(x, y);

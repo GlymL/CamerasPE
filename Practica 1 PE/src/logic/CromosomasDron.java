@@ -10,7 +10,10 @@ import java.util.Set;
 public class CromosomasDron{
 
     private final Integer[] cromosoma;
+    
     private final int drones;
+  
+
     private final int camaras;
 
     private static final Random r = new Random();
@@ -21,11 +24,21 @@ public class CromosomasDron{
         cromosoma = new Integer[camaras+(drones-1)];
         randomInitialize();
     }
-
-    private CromosomasDron(int camaras, int drones, Integer[] cromosoma){
+    
+    public CromosomasDron(int camaras, int drones, Integer[] cromosoma){
         this.drones = drones;
         this.camaras = camaras;
         this.cromosoma = cromosoma.clone();
+    }
+
+    public int getLength() {
+        return cromosoma.length;
+    }
+    public int getCamaras(){
+        return camaras;
+    }
+    public int getDrones() {
+        return drones;
     }
 
     public void randomInitialize() {
@@ -395,6 +408,10 @@ public class CromosomasDron{
         
     }
 
+
+    // 0 3 4 5 1 2
+    // 1 3 2 4 0 5
+    
     public CromosomasDron[] cruceCUSTOM(CromosomasDron crom, double crossRatio) {
         if (r.nextDouble() > crossRatio) {
             return new CromosomasDron[]{ this.clone(), crom.clone() };
@@ -418,7 +435,7 @@ public class CromosomasDron{
 
             int index = start;
 
-            // Traverse one cycle
+
             do {
                 visited[index] = true;
 
@@ -435,7 +452,7 @@ public class CromosomasDron{
 
             } while (index != start);
 
-            // Alternate parent for next cycle
+
             takeFromParent1 = !takeFromParent1;
         }
 
