@@ -254,7 +254,7 @@ private JPanel createCenterPanel() {
     double elitismo = (double) elitismoSpinner.getValue();
     int n_drones = (int) dronesSpinner.getValue();
     seed = Integer.parseInt(seedfield.getText());
-    boolean opt = true;
+    boolean opt = opt_CheckBox.isSelected();
  
     EnumCruce enumCruce = (EnumCruce)cruceBox.getSelectedItem();
     EnumMutacion enumMut = (EnumMutacion)mutaBox.getSelectedItem();
