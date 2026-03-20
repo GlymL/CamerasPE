@@ -207,6 +207,12 @@ private JPanel createCenterPanel() {
     gbc.gridx = 1;
     panel.add(mutaBox, gbc);
 
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Optimización 2-Opt:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(opt_CheckBox, gbc);
 
     gbc.gridx = 0;
     gbc.gridy++;
@@ -248,6 +254,7 @@ private JPanel createCenterPanel() {
     double elitismo = (double) elitismoSpinner.getValue();
     int n_drones = (int) dronesSpinner.getValue();
     seed = Integer.parseInt(seedfield.getText());
+    boolean opt = true;
  
     EnumCruce enumCruce = (EnumCruce)cruceBox.getSelectedItem();
     EnumMutacion enumMut = (EnumMutacion)mutaBox.getSelectedItem();
