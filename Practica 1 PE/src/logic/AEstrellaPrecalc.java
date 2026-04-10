@@ -3,19 +3,19 @@ package logic;
 import java.util.Arrays;
 import logic.AEstrella.Pair;
 import logic.AEstrella.Ret;
-import mapaApp.GeneradorCamaras;
+import mapaApp.GeneradorMapa;
 
 
 public class AEstrellaPrecalc {
 
-    private final GeneradorCamaras gc;
+    private final GeneradorMapa gc;
     private final AEstrella ae; 
     private final Double[][] precalc;
     private final Pair[][][] paths;
     private final Double[] precalcBase;
     private final Pair[][] pathsBase;
 
-    public AEstrellaPrecalc(GeneradorCamaras gc, AEstrella aEstrella) {
+    public AEstrellaPrecalc(GeneradorMapa gc, AEstrella aEstrella) {
         this.gc = gc;
         this.ae = aEstrella;
         precalc = new Double[gc.getCameras().length][gc.getCameras().length];

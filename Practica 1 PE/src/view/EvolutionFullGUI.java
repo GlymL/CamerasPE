@@ -14,9 +14,9 @@ import logic.EnumCruce;
 import logic.EnumMutacion;
 import logic.EnumSelection;
 import logic.FitnessDron;
-import mapaApp.MapaCamaras;
+import mapaApp.MapaRover;
 import controller.Controller;
-import mapaApp.GeneradorCamaras;
+import mapaApp.GeneradorMapa;
 
 public class EvolutionFullGUI extends JFrame{
 
@@ -72,7 +72,7 @@ public class EvolutionFullGUI extends JFrame{
   private ResultPanel resultPanel;
 
   private final Controller c;
-  private GeneradorCamaras gc;
+  private GeneradorMapa gc;
   private int seed;
 
   public EvolutionFullGUI(Controller c) {
@@ -263,7 +263,7 @@ private JPanel createCenterPanel() {
 
     n_mapa = escenario + 1;
 
-    gc = new GeneradorCamaras(seed, new MapaCamaras(n_mapa));
+    gc = new GeneradorMapa(seed, new MapaRover(n_mapa));
 
     AEstrellaPrecalc precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
 

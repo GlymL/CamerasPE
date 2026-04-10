@@ -2,7 +2,7 @@ package controller;
 
 
 import logic.*;
-import mapaApp.GeneradorCamaras;
+import mapaApp.GeneradorMapa;
 import view.EvolutionFullGUI;
 
 public class Controller {
@@ -23,7 +23,7 @@ public class Controller {
 
     public void execute(
                     int generations,
-                    GeneradorCamaras gc,
+                    GeneradorMapa gc,
                     int popSize,
                     double crossRatio,
                     double mutRatio,

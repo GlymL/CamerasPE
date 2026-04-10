@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.*;
 import logic.AEstrella.Pair;
 import logic.AEstrellaPrecalc;
-import mapaApp.GeneradorCamaras;
+import mapaApp.GeneradorMapa;
 
 public class MejorMapa extends JPanel {
 
@@ -23,7 +23,7 @@ public class MejorMapa extends JPanel {
         setBackground(Color.WHITE);
     }
 
-    public void updateMap(GeneradorCamaras gc, AEstrellaPrecalc ae) {
+    public void updateMap(GeneradorMapa gc, AEstrellaPrecalc ae) {
         this.map = gc.getMapa();
         this.init = gc.getBase();
         this.listaCamaras = gc.getCameras();

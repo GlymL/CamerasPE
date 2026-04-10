@@ -1,7 +1,7 @@
 package logic;
 
 import java.util.ArrayList;
-import mapaApp.GeneradorCamaras;
+import mapaApp.GeneradorMapa;
 
 public class Population {
     
@@ -15,7 +15,7 @@ public class Population {
     private final boolean opt;
 
 
-    public Population(GeneradorCamaras gc, int popSize, 
+    public Population(GeneradorMapa gc, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
         EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, AEstrellaPrecalc ae, boolean opt) {
             generation = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Population {
         this.opt = opt;
     }
 
-    private void initializeRandom(int popSize, AEstrellaPrecalc precalc, GeneradorCamaras gc, int n_drones) {
+    private void initializeRandom(int popSize, AEstrellaPrecalc precalc, GeneradorMapa gc, int n_drones) {
         
         for (int i = 0; i < popSize; i++) {
             CromosomasDron c;
