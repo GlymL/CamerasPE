@@ -1,20 +1,17 @@
 package logic;
 
-public class FitnessDron implements Comparable<FitnessDron>{
+public class Fitness implements Comparable<Fitness>{
     private final CromosomasDron c;
-    private final AEstrellaPrecalc a;
     private double fitness;
     private double aptitude;
 
 
-    public FitnessDron(CromosomasDron c, AEstrellaPrecalc a){
+    public Fitness(CromosomasDron c){
         this.c = c;
-        this.a = a;
     }
 
-    public FitnessDron(CromosomasDron c, AEstrellaPrecalc a, double fitness, double aptitude) {
+    public Fitness(CromosomasDron c, double fitness, double aptitude) {
         this.c = c;
-        this.a = a;
         this.fitness = fitness;
         this.aptitude = aptitude;
     }
@@ -44,10 +41,10 @@ public class FitnessDron implements Comparable<FitnessDron>{
                 }
 
                 tiempo += a.getInit(ruta[j - 1]);  
-                double timeWithSpeed = tiempo / EnumFlota.values()[i].getVel();
+                //double timeWithSpeed = tiempo / EnumFlota.values()[i].getVel();
 
-                makespan = Math.max(makespan, timeWithSpeed);
-                minTime = Math.min(minTime, timeWithSpeed);
+                // makespan = Math.max(makespan, timeWithSpeed);
+                // minTime = Math.min(minTime, timeWithSpeed);
             }
         }
         
@@ -57,7 +54,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
     }
 
     @Override
-    public int compareTo(FitnessDron a2) {
+    public int compareTo(Fitness a2) {
         return Double.compare(a2.aptitude, aptitude);
     }
 
@@ -69,8 +66,8 @@ public class FitnessDron implements Comparable<FitnessDron>{
         return c.clone();
     }
 
-    public FitnessDron clone(){
-        return new FitnessDron(c, a, fitness, aptitude);
+    public Fitness clone(){
+        return new Fitness(c, a, fitness, aptitude);
     }
     public void setAptitude(double apt){
         this.aptitude = apt;
@@ -88,7 +85,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
 
     // 2-Opt
 
-    public FitnessDron untangle(){
+    public Fitness untangle(){
         int[][] rutas = c.rutas();
         int[][] rutasRet = new int[rutas.length][rutas[0].length];
         Integer[] ret = new Integer[c.getLength()];
@@ -109,7 +106,7 @@ public class FitnessDron implements Comparable<FitnessDron>{
                 ret[iter++] = ret.length - i - 1;
         }
 
-        return new FitnessDron(new CromosomasDron(cams, drones, ret), a);
+        return new Fitness(new CromosomasDron(cams, drones, ret), a);
     }
 
     public int[] twoOpt(int[] route) {

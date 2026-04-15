@@ -1,7 +1,6 @@
 package mapaApp;
 
 import java.util.Random;
-import logic.AEstrella.Pair;
 
 
 public class GeneradorMapa {

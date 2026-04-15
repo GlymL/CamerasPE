@@ -65,7 +65,7 @@ public class Controller {
 
     }
 
-    public void best(FitnessDron best) {
+    public void best(Fitness best) {
         gui.result(best);
     }
 }

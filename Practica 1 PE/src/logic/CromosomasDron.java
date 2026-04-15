@@ -528,7 +528,7 @@ public class CromosomasDron{
                 individuals[i] = posible;
             }
             Integer[][] permutations = permutaciones(individuals);
-            FitnessDron[] cd = new FitnessDron[permutations.length];
+            Fitness[] cd = new Fitness[permutations.length];
             int iter = 0;
             for (Integer[] elem : permutations) {
                 Integer[] crom = new Integer[cromosoma.length];
@@ -543,10 +543,10 @@ public class CromosomasDron{
                         crom[i] = cromosoma[i];
                     }
                 }
-                cd[iter++] = new FitnessDron(new CromosomasDron(camaras, drones, crom), ae);
+                cd[iter++] = new Fitness(new CromosomasDron(camaras, drones, crom), ae);
             }
-            FitnessDron best = null;
-            for(FitnessDron f : cd){
+            Fitness best = null;
+            for(Fitness f : cd){
                 f.calculateFitness();
                 if(best == null)
                     best = f;

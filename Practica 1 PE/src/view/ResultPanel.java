@@ -20,7 +20,7 @@ public class ResultPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Resultado mejor individuo"));
     }
 
-    public void displayFitnessDron(FitnessDron best, int seed) {
+    public void displayFitnessDron(Fitness best, int seed) {
         StyledDocument doc = textPane.getStyledDocument();
         try {
             AEstrellaPrecalc a = best.getPrecalc();

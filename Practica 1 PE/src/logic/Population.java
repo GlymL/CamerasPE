@@ -6,12 +6,12 @@ import mapaApp.GeneradorMapa;
 public class Population {
     
     private double fTotal;
-    private final ArrayList<FitnessDron> generation;
+    private final ArrayList<Fitness> generation;
     private final Cruce cr;
     private final double elitismo;
     private final Selection s;
     private final Mutacion m;
-    private final AEstrellaPrecalc precalc;
+    // private final AEstrellaPrecalc precalc;
     private final boolean opt;
 
 
@@ -21,10 +21,10 @@ public class Population {
             generation = new ArrayList<>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
-        this.precalc = ae;
+        // this.precalc = ae;
         m = new Mutacion(mut, mutRatio);
         s = new Selection(enumS);
-        initializeRandom(popSize, precalc, gc, n_drones);
+        // initializeRandom(popSize, precalc, gc, n_drones);
         evaluateAll();
         sortByFitness();
         this.opt = opt;
@@ -37,14 +37,14 @@ public class Population {
             c = new CromosomasDron(gc.getCameras().length, n_drones);
             c.randomInitialize();
 
-            FitnessDron f = new FitnessDron(c, precalc);
+            Fitness f = new Fitness(c, precalc);
             generation.add(f);
         }
     }
 
     public void evaluateAll() {
         fTotal = 0.0;
-        for (FitnessDron cf : generation) {
+        for (Fitness cf : generation) {
             cf.calculateFitness();
             fTotal += cf.getFitness();
         }
@@ -53,10 +53,10 @@ public class Population {
 
     private void calculateAptitudes(){
         fTotal = 0.0;
-        for (FitnessDron cf : generation) {
+        for (Fitness cf : generation) {
             fTotal += cf.getFitness();
         }
-        for(FitnessDron cf : generation){
+        for(Fitness cf : generation){
             double apt = fTotal/cf.getFitness();
             cf.setAptitude(apt);
         }
@@ -76,8 +76,8 @@ public class Population {
 
     public void evolve() {
 
-        ArrayList<FitnessDron> selected;
-        ArrayList<FitnessDron> elite = new ArrayList<>();
+        ArrayList<Fitness> selected;
+        ArrayList<Fitness> elite = new ArrayList<>();
 
         sortByFitness();
         if(elitismo > 0){
@@ -118,7 +118,7 @@ public class Population {
             System.out.println("generation is empty!");
             return;
         }
-        FitnessDron best = generation.get(0);
+        Fitness best = generation.get(0);
         System.out.println("Best fitness: " + best.getFitness());
     }
 
@@ -129,7 +129,7 @@ public class Population {
 
     public double averageFitness() {
         double sum = 0;
-        for (FitnessDron cf : generation) 
+        for (Fitness cf : generation) 
             sum += cf.getFitness();
         return sum / generation.size();
     }
@@ -146,14 +146,14 @@ public class Population {
 
     
 
-    public FitnessDron best() {
+    public Fitness best() {
         sortByFitness();
         return generation.get(0);
     }
 
     double averageAptitude() {
         double sum = 0;
-        for (FitnessDron cf : generation) 
+        for (Fitness cf : generation) 
             sum += cf.getAptitude();
         return sum / generation.size();
     }

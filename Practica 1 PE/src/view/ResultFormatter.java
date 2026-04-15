@@ -3,13 +3,13 @@ package view;
 import logic.AEstrellaPrecalc;
 import logic.CromosomasDron;
 import logic.EnumFlota;
-import logic.FitnessDron;
+import logic.Fitness;
 
 public class ResultFormatter {
 
-    private final FitnessDron fitnessDron;
+    private final Fitness fitnessDron;
 
-    public ResultFormatter(FitnessDron fitnessDron) {
+    public ResultFormatter(Fitness fitnessDron) {
         this.fitnessDron = fitnessDron;
     }
 

@@ -5,6 +5,12 @@ public class Function {
     private FunctionOperator operator;
     private int value;
 
+    public Function(SpatialSensor s, FunctionOperator op, int v) {
+        sensor = s;
+        operator = op;
+        value = v;
+    }
+
     public SpatialSensor getSensor() {
         return sensor;
     }

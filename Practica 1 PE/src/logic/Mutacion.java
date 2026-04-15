@@ -13,11 +13,11 @@ public class Mutacion {
         this.mut = mut;
     }
 
-    public void mutar(ArrayList<FitnessDron> pop, AEstrellaPrecalc ae){
+    public void mutar(ArrayList<Fitness> pop, AEstrellaPrecalc ae){
         CromosomasDron crom;
         for (int i = 0; i < pop.size()/2; i++){
             int rand = r.nextInt(0, pop.size());
-            FitnessDron f = pop.get(rand);
+            Fitness f = pop.get(rand);
             switch(ec){
             case EnumMutacion.INSERCION -> crom = f.getCrom().mutacionInsercion(mut);
             case EnumMutacion.INTERCAMBIO -> crom = f.getCrom().mutacionIntercambio(mut);
@@ -29,7 +29,7 @@ public class Mutacion {
                 return;
                 }
             }
-            pop.set(rand, new FitnessDron(crom, ae));
+            pop.set(rand, new Fitness(crom, ae));
         }
     }
 }

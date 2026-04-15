@@ -13,12 +13,12 @@ public class Cruce {
         this.cross = cross;
     }
 
-    public void cruzar(ArrayList<FitnessDron> pop, AEstrellaPrecalc ac){
+    public void cruzar(ArrayList<Fitness> pop, AEstrellaPrecalc ac){
         CromosomasDron[] crom;
         for (int i = 0; i < pop.size()/2; i++){
             int r1 = r.nextInt(0, pop.size()), r2 = r.nextInt(0, pop.size());
-            FitnessDron f1 = pop.get(r1);
-            FitnessDron f2 = pop.get(r2);
+            Fitness f1 = pop.get(r1);
+            Fitness f2 = pop.get(r2);
             switch(ec){
             case EnumCruce.PMX -> crom = f1.getCrom().crucePMX(f2.getCrom(), cross);
             case EnumCruce.OX -> crom = f1.getCrom().cruceOX(f2.getCrom(), cross);
@@ -32,8 +32,8 @@ public class Cruce {
                 return;
                 }
             }
-            pop.set(r1, new FitnessDron(crom[0], ac));
-            pop.set(r2, new FitnessDron(crom[1], ac));
+            pop.set(r1, new Fitness(crom[0], ac));
+            pop.set(r2, new Fitness(crom[1], ac));
         }
     }
 }

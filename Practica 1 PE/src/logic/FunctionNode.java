@@ -30,4 +30,16 @@ public class FunctionNode extends ASTNode {
             return else_;
         }
     }
+
+    @Override
+    public void execute(Object params) {
+        RoverState state = (RoverState) params;
+        Function f = (Function) content;
+
+        if (f.evaluate(state)) {
+            if_.execute(params);
+        } else {
+            else_.execute(params);
+        }
+    }
 }

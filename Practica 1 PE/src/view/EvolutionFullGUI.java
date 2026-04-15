@@ -13,7 +13,7 @@ import logic.AEstrellaPrecalc;
 import logic.EnumCruce;
 import logic.EnumMutacion;
 import logic.EnumSelection;
-import logic.FitnessDron;
+import logic.Fitness;
 import mapaApp.MapaRover;
 import controller.Controller;
 import mapaApp.GeneradorMapa;
@@ -295,7 +295,7 @@ private JPanel createCenterPanel() {
         bd.setRoutes(bestCrom);
   }
 
-  public void result(FitnessDron best){
+  public void result(Fitness best){
 
     resultPanel.displayFitnessDron(best, seed);
   }
