@@ -5,7 +5,15 @@ import mapaApp.GeneradorMapa;
 public class RoverState {
     private GeneradorMapa mapa;
 
-    int energia;
+    private int energia;
+
+    private int muestras_obtenidas;
+    private int celdas_exploradas;
+    private int ticks;
+    private int visual_rewarding;
+    private int arena_pisada;
+    private int colisiones;
+
 
     //TO-DO: meter las busquedas lineales de arenas, muestras y obstaculos
     public RoverState(GeneradorMapa m) {

@@ -11,13 +11,17 @@ public class Population {
     private final double elitismo;
     private final Selection s;
     private final Mutacion m;
-    // private final AEstrellaPrecalc precalc;
+
+
+    private final RoverState state;
+    private final TreeGenerator tg;
+
     private final boolean opt;
 
 
     public Population(GeneradorMapa gc, int popSize, 
         double crossRatio, double mutRatio, EnumCruce cr, 
-        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, AEstrellaPrecalc ae, boolean opt) {
+        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, TreeGenerator tg, boolean opt) {
             generation = new ArrayList<>();
         this.cr = new Cruce(cr, crossRatio);
         this.elitismo = elitismo;
@@ -30,22 +34,28 @@ public class Population {
         this.opt = opt;
     }
 
-    private void initializeRandom(int popSize, AEstrellaPrecalc precalc, GeneradorMapa gc, int n_drones) {
-        
-        for (int i = 0; i < popSize; i++) {
-            CromosomasDron c;
-            c = new CromosomasDron(gc.getCameras().length, n_drones);
-            c.randomInitialize();
+    private void initializeRandom(int popSize) {
+        ASTNode[] trees = tg.randomInit(popSize);
 
-            Fitness f = new Fitness(c, precalc);
-            generation.add(f);
+        for (ASTNode tree : trees) {
+            CromosomasRanger c = new CromosomasRanger(tree);
+
+            generation.add(new Fitness(c));
         }
+        // for (int i = 0; i < popSize; i++) {
+        //     CromosomasRanger c;
+        //     c = new CromosomasRanger(gc.getCameras().length, n_drones);
+        //     c.randomInitialize();
+
+        //     Fitness f = new Fitness(c, precalc);
+        //     generation.add(f);
+        // }
     }
 
     public void evaluateAll() {
         fTotal = 0.0;
         for (Fitness cf : generation) {
-            cf.calculateFitness();
+            cf.calculateFitness(state);
             fTotal += cf.getFitness();
         }
         calculateAptitudes();

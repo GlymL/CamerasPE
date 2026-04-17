@@ -6,9 +6,11 @@ public class TreeGenerator {
     private int maxDepth;
     private int minDepth;
 
-    public TreeGenerator() {
-        
+    public TreeGenerator(int maxd, int mind) {
+        maxDepth = maxd;
+        minDepth = mind;
     }
+
     public ASTNode[] randomInit(int population_size) {
         int per_level = population_size / (maxDepth - minDepth + 1);
         ASTNode[] population = new ASTNode[population_size];
@@ -23,6 +25,9 @@ public class TreeGenerator {
                 }
             }
         }
+
+        if (idx < population_size)
+            population[idx] = generateFull(0, maxDepth);
 
         return population;
     }
@@ -57,8 +62,8 @@ public class TreeGenerator {
 
                 ASTNode[] hijos = new ASTNode[num_hijos];
 
-                for (ASTNode hijo : hijos) {
-                    hijo = generateFull(actual + 1, max);
+                for (int i = 0; i < num_hijos; i++) {
+                    hijos[i] = generateFull(actual + 1, max);
                 }
 
                 return new BlockNode(hijos);
@@ -88,8 +93,8 @@ public class TreeGenerator {
                     default -> 50;
                 };
 
-                ASTNode right = generateFull(actual + 1, max);
-                ASTNode left = generateFull(actual + 1, max);
+                ASTNode right = generateGrow(actual + 1, max);
+                ASTNode left = generateGrow(actual + 1, max);
 
                 return res = new FunctionNode(new Function(SpatialSensor.randomSensor(), FunctionOperator.LESS, umbral),
                     right, left);
@@ -100,8 +105,8 @@ public class TreeGenerator {
 
                 ASTNode[] hijos = new ASTNode[num_hijos];
 
-                for (ASTNode hijo : hijos) {
-                    hijo = generateFull(actual + 1, max);
+                for (int i = 0; i < num_hijos; i++) {
+                    hijos[i] = generateGrow(actual + 1, max);
                 }
 
                 return new BlockNode(hijos);
@@ -113,5 +118,12 @@ public class TreeGenerator {
         }
 
         return res;
+    }
+
+    public static void main(String[] args) {
+        TreeGenerator tg = new TreeGenerator(3, 1);
+
+        ASTNode[] trees = tg.randomInit(37);
+
     }
 }
