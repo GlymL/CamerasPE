@@ -7,14 +7,17 @@ public class GeneradorMapa {
     
     // private final Pair[] listaCamaras;
     private final int[][] mapa;
+    private final MapaRover mc;
     private final int base_x;
     private final int base_y;
     private final int filas;
     private final int cols;
-    private static final int PENALIZACION = 500;
+    private final int seed;
+    // private static final int PENALIZACION = 500;
 
     public GeneradorMapa(int seed, MapaRover mc){
-
+        this.mc = mc;
+        this.seed = seed;
         base_x = base_y = 1;
         
          mapa = new int[mc.getCols()][mc.getFilas()];
@@ -56,5 +59,13 @@ public class GeneradorMapa {
 
     public int getCols() {
         return cols;
+    }
+
+    public int getSeed() {
+        return seed;
+    }
+
+    public MapaRover getMapaRover() {
+        return mc;
     }
 }

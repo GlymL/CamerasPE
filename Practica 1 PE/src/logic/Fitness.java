@@ -1,14 +1,19 @@
 package logic;
 
+import mapaApp.GeneradorMapa;
+import mapaApp.MapaRover;
+
 public class Fitness implements Comparable<Fitness>{
     private final CromosomasRanger c;
     // private final TreeGenerator tg;
+    private final GeneradorMapa map;
     private double fitness;
     private double aptitude;
 
 
-    public Fitness(CromosomasRanger c){
+    public Fitness(CromosomasRanger c, GeneradorMapa map){
         this.c = c;
+        this.map = map;
     }
 
     // public Fitness(CromosomasRanger c, double fitness, double aptitude) {
@@ -17,9 +22,22 @@ public class Fitness implements Comparable<Fitness>{
     //     this.aptitude = aptitude;
     // }
 
-    public void calculateFitness(RoverState state) {
+    public void calculateFitness() {
         //Aplicar penalizacion de giro cada 4 ciclos, no a partir de los 4 ciclos.
         //Ejemplo. Penalizamos el giro 4, el 8, el 12, pero no el 5, el 6, el 11...
+        int fitnessTotal = 0;
+
+        for (int i = 0; i < 3; i++) {
+            int fitnessMapa = 0;
+            RoverState state = new RoverState(new GeneradorMapa(map.getSeed() + i, map.getMapaRover()));
+
+            while (state.isAlive() && !state.isFinished()) {
+                state.setAccionTomada(false);
+                c.execute(state);
+            }
+
+            fitnessTotal += fitnessMapa;
+        }
 
     }
 

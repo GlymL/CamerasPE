@@ -1,17 +1,12 @@
 package logic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+// import java.util.Random;
 
 public class CromosomasRanger{
     //IMPLEMENTAR CLONE DE ASTNODE
     private final ASTNode cromosoma;
 
-    private static final Random r = new Random();
+    // private static final Random r = new Random();
 
     public CromosomasRanger(ASTNode cromosoma){
         this.cromosoma = cromosoma;
@@ -43,14 +38,18 @@ public class CromosomasRanger{
     //     }
     // }
     
+    public void execute(RoverState state) {
+        cromosoma.execute(state);
+    }
+
     public CromosomasRanger clone() {
        return new CromosomasRanger(cromosoma);
     }
 
-    private boolean contains(Integer[] arr, int val) {
-        for (Integer x : arr) {
-            if (x != null && x == val) return true;
-        }
-        return false;
-    }
+    // private boolean contains(Integer[] arr, int val) {
+    //     for (Integer x : arr) {
+    //         if (x != null && x == val) return true;
+    //     }
+    //     return false;
+    // }
 }

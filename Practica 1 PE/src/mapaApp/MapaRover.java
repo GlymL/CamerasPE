@@ -1,6 +1,6 @@
 package mapaApp;
 
-import logic.AEstrella.Pair;
+import logic.Direction;
 
 
 public class MapaRover {
@@ -8,7 +8,7 @@ public class MapaRover {
     // private int n_cameras;
     private int filas;
     private int cols;
-    private Pair base;
+    private Direction direction;
 
     public MapaRover(int i){
         // if(i == 1){
@@ -45,8 +45,7 @@ public class MapaRover {
         };
         filas = 15;
         cols = 15;
-
-        base = new Pair(1, 1);
+        direction = Direction.EAST;
     }
 
     // private void cargaMapa1(){
@@ -141,8 +140,8 @@ public class MapaRover {
         return priority;
     }
 
-    public Pair getBase() {
-        return base;
+    public Direction getDirection() {
+        return direction;
     }
 
 }

@@ -11,11 +11,13 @@ public class TerminalNode extends ASTNode {
 
     @Override
     public void execute(Object params) {    
-        // RoverState rover = (RoverState) params;
-        // switch (getAction()) {
-        //     case AVANZAR -> rover.avanzar();
-        //     case GIRAR_IZQ -> rover.girarIzquierda();
-        //     case GIRAR_DER -> rover.girarDerecha();
-        // }
+        RoverState rover = (RoverState) params;
+
+        if (!rover.getAccionTomada()) {
+            MovementInfo minfo = rover.executeAction(getAction());
+            rover.lowerEnergia(minfo.energia());
+            rover.setAccionTomada(minfo.accion_tomada());
+        }
+        
     }
 }
