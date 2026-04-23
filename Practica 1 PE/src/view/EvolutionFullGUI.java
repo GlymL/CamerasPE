@@ -121,8 +121,8 @@ private JPanel createCenterPanel() {
 
     leftGbc.gridy = 1;
     leftGbc.weighty = 0.3;
-    resultPanel = new ResultPanel();
-    leftContainer.add(resultPanel, leftGbc);
+    // resultPanel = new ResultPanel();
+    // leftContainer.add(resultPanel, leftGbc);
 
     panel.add(leftContainer, gbc);
 
@@ -231,12 +231,36 @@ private JPanel createCenterPanel() {
   private JPanel createMapPanel() {
     JPanel panel = new JPanel();
 
-    panel.setLayout(new GridLayout(1, 1));
+    // panel.setLayout(new GridLayout(2, 1));
     panel.setBorder(new TitledBorder("Mapa"));
     panel.setBackground(Color.WHITE);
 
+    // bd = new MejorMapa();S
+    // panel.add(bd);
+    // resultPanel = new ResultPanel();
+    // panel.add(resultPanel);
+
+    panel.setLayout(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+
+    // Configuración común para ambos
+    c.fill = GridBagConstraints.BOTH;  // No lo estires
+    c.anchor = GridBagConstraints.CENTER; // Ponlo en el centro de su celda
+    c.gridx = 0; // Ambos van en la misma columna (la 0)
+    c.weightx = 1.0; // Que ocupen todo el ancho disponible
+
+    c.gridy = 0;      // Fila superior
+    c.weighty = 0.75;  // 70% del espacio vertical
     bd = new MejorMapa();
-    panel.add(bd);
+    JPanel mapPanel = new JPanel(new GridLayout(1, 1));
+    mapPanel.add(bd);
+    panel.add(mapPanel, c);
+
+    resultPanel = new ResultPanel();
+
+    c.gridy = 1;      // Fila inferior
+    c.weighty = 0.25; // Esta celda se lleva el 30% del ancho
+    panel.add(resultPanel, c);
 
     return panel;
   }
