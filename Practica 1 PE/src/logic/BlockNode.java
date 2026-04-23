@@ -20,11 +20,11 @@ public class BlockNode extends ASTNode {
     public void execute(Object params) {
         ASTNode[] nodes = (ASTNode[]) this.content;
 
-        if (i < size)
+        if (i < size) {
             nodes[i].execute(params);
-
-        if (nodes[i].isFinished())
-            i++;
+            if (nodes[i].isFinished())
+                i++;
+        }
     }
 
     @Override
@@ -57,13 +57,13 @@ public class BlockNode extends ASTNode {
     @Override
     public ASTNode selectRandomNode() {
         Random r = new Random();
-        int opt = r.nextInt();
+        int opt = r.nextInt(size + 1);
         ASTNode[] nodes = (ASTNode[]) this.content;
 
-        if (opt % size + 1 >= size)
+        if (opt == size)
             return this;
 
-        return nodes[opt % size + 1];
+        return nodes[opt];
     }
 
     @Override
@@ -72,13 +72,13 @@ public class BlockNode extends ASTNode {
         boolean changed = false;
 
         for (int ix = 0; ix < size; ix++) {
-            if (nodes[i] == node) {
-                nodes[i] = change;
+            if (nodes[ix] == node) {
+                nodes[ix] = change;
 
                 changed = true;
                 break;
             }
-            else if (nodes[i].changeNode(node, change)) {
+            else if (nodes[ix].changeNode(node, change)) {
                 changed = true;
                 break;
             }
@@ -96,5 +96,28 @@ public class BlockNode extends ASTNode {
         }
 
         return max_height + 1;
-    }    
+    }
+
+    @Override
+    public void reset() {
+        i = 0;
+        for (ASTNode child : (ASTNode[]) this.content) {
+            child.reset();
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        ASTNode[] nodes = (ASTNode[]) this.content;
+        for (int j = 0; j < nodes.length; j++) {
+            sb.append(nodes[j].toString());
+            if (j < nodes.length - 1) sb.append("; ");
+        }
+        sb.append(" }");
+        return sb.toString();
+    }
 }
+
+

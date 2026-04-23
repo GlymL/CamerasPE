@@ -2,6 +2,8 @@ package logic;
 
 import mapaApp.GeneradorMapa;
 import mapaApp.MapaRover;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Fitness implements Comparable<Fitness>{
     private final CromosomaRanger c;
@@ -33,7 +35,9 @@ public class Fitness implements Comparable<Fitness>{
             int fitnessMapa = 0;
             RoverState state = new RoverState(new GeneradorMapa(map.getSeed() + i, map.getMapaRover()));
 
-            while (state.isAlive() && !state.isFinished()) {
+            c.reset(); // Resetear el estado del cromosoma antes de cada simulación
+
+            while (state.isAlive() && !state.isFinished() && state.getTicks() < 150) {
                 state.setAccionTomada(false);
                 c.execute(state);
                 
@@ -75,4 +79,18 @@ public class Fitness implements Comparable<Fitness>{
     public double getAptitude(){
         return aptitude;
     }
+
+    // public int[][] rutas() {
+    //     List<int[]> path = new ArrayList<>();
+    //     RoverState state = new RoverState(map);
+
+    //     while (state.isAlive() && !state.isFinished()) {
+    //         state.setAccionTomada(false);
+    //         c.execute(state);
+    //         path.add(new int[]{state.getPos()[1], state.getPos()[0]}); // x, y
+    //         state.incrTicks();
+    //     }
+
+    //     return path.toArray(new int[0][2]);
+    // }
 }

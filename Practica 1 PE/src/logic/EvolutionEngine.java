@@ -28,9 +28,10 @@ public class EvolutionEngine {
 
     public void run(EvolutionListener listener) {
         controller.clearChart();
-        
+        System.out.println("Iniciando evolución por " + generations + " generaciones...");
         double min_fitness = Double.MAX_VALUE;
         for (int gen = 0; gen < generations; gen++) {
+            System.out.println("Generación " + (gen + 1) + "/" + generations);
             population.evolve();
             avgFitnessHistory.add(population.averageFitness());
             bestFitnessHistory.add(population.bestFitness());
@@ -59,9 +60,11 @@ public class EvolutionEngine {
         // }
         controller.best(population.best());
 
+        System.out.println("Evolución finalizada. Mejor fitness: " + population.bestFitness());
 
     }
     // public int[][] getBestMap(){
-    //     return population.mapBest();
+    //     sortByFitness();
+    //     return population.get(0).rutas();
     // }
 }

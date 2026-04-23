@@ -7,9 +7,8 @@ public enum Action {
 
     public static Action randomAction() {
         Random r = new Random();
-        int value = r.nextInt(0, Integer.MAX_VALUE);
 
-        return switch (value % 3) {
+        return switch (r.nextInt(3)) {
             case 0 -> AVANZAR;
             case 1 -> GIRAR_IZQ;
             case 2 -> GIRAR_DER;

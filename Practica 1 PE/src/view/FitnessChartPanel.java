@@ -42,19 +42,21 @@ public class FitnessChartPanel extends Plot2DPanel {
 
     this.removeAllPlots();
 
-  this.addLinePlot("Best Value",Color.BLUE, generations.stream().mapToDouble(Double::doubleValue).toArray(), 
+    this.addLinePlot("Best Value",Color.BLUE, generations.stream().mapToDouble(Double::doubleValue).toArray(), 
                                     maxGeneration.stream().mapToDouble(Double::doubleValue).toArray());
-  this.addLinePlot("Evolutive Pressure",Color.PINK, generations.stream().mapToDouble(Double::doubleValue).toArray()
-    ,EvolutivePressure.stream().mapToDouble(Double::doubleValue).toArray());
-  this.addLinePlot("Best Fitness",Color.RED, generations.stream().mapToDouble(Double::doubleValue).toArray(), 
+    this.addLinePlot("Evolutive Pressure",Color.PINK, generations.stream().mapToDouble(Double::doubleValue).toArray()
+      ,EvolutivePressure.stream().mapToDouble(Double::doubleValue).toArray());
+    this.addLinePlot("Best Fitness",Color.RED, generations.stream().mapToDouble(Double::doubleValue).toArray(), 
                                     bestFitness.stream().mapToDouble(Double::doubleValue).toArray());
-  this.addLinePlot("Average Fitness",Color.GREEN, generations.stream().mapToDouble(Double::doubleValue).toArray()
-    ,avgFitness.stream().mapToDouble(Double::doubleValue).toArray());
+    this.addLinePlot("Average Fitness",Color.GREEN, generations.stream().mapToDouble(Double::doubleValue).toArray()
+      ,avgFitness.stream().mapToDouble(Double::doubleValue).toArray());
 
     generations.add(generations.getLast() + 1);
-
+    this.revalidate();
+    this.repaint();
 }
 public void reset() {
+  System.out.println("Resetting chart...");
   maxGeneration.clear();
   EvolutivePressure.clear();
   bestFitness.clear();
@@ -62,5 +64,9 @@ public void reset() {
 
   generations.clear();
   generations.add(1.0);
+
+  this.removeAllPlots();
+  this.revalidate();
+  this.repaint();
 }
 }

@@ -47,7 +47,8 @@ public class ResultPanel extends JPanel {
             doc.insertString(doc.getLength(), "SEMILLA: ", blackBold);
             doc.insertString(doc.getLength(), seed + "\n\n", null);
 
-            doc.insertString(doc.getLength(), "TIEMPOS POR DRON: ", blackBold);
+            doc.insertString(doc.getLength(), "ÁRBOL: ", blackBold);
+            doc.insertString(doc.getLength(), best.getCrom().getCromosoma().toString() + "\n", null);
 
             // int[][] rutas = best.getCrom().rutas();
             // int dronesCount = rutas.length;

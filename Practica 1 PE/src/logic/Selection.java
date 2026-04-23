@@ -45,13 +45,13 @@ public class Selection {
         }
 
         if (sum == 0) {
-            for (Fitness _ : population) {
+            for (Fitness cf : population) {
                 selected.add(population.get(rand.nextInt(population.size())).clone());
             }
             return selected;
         }
 
-        for (Fitness _ : population) {
+        for (Fitness cf : population) {
             double r = rand.nextDouble() * sum;
             for (int j = 0; j < cumulative.size(); j++) {
                 if (r <= cumulative.get(j)) {
@@ -73,12 +73,19 @@ public class Selection {
                     i++;
                 }
             }
+
+        //int cutoff = Math.max(1, population.size() / 10);
+        // while (selected.size() < population.size()) {
+        //     for (int i = 0; i < cutoff && selected.size() < population.size(); i++) {
+        //         selected.add(population.get(i).clone());
+        //     }
+        // }
         return selected;
     }
 
     private ArrayList<Fitness> torneoSelection(ArrayList<Fitness> population) {
         ArrayList<Fitness> selected = new ArrayList<>();
-        for (Fitness _ : population) {
+        for (Fitness cf : population) {
             ArrayList<Fitness> torneo = new ArrayList<>();
             Fitness c1 = population.get(rand.nextInt(population.size()));
             torneo.add(c1);

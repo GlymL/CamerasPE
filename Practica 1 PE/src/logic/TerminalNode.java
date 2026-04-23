@@ -55,4 +55,14 @@ public class TerminalNode extends ASTNode {
     public int getHeight() {
         return 1;
     }
+
+    @Override
+    public void reset() {
+        executed = false;
+    }
+
+    @Override
+    public String toString() {
+        return getAction().toString();
+    }
 }

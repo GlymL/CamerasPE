@@ -23,7 +23,7 @@ public enum SpatialSensor {
     public static SpatialSensor randomSensor() {
         Random r = new Random();
 
-        return switch (r.nextInt() % 4) {
+        return switch (r.nextInt(4)) {
             case 0 -> DIST_MUESTRA;
             case 1 -> DIST_ARENA;
             case 2 -> DIST_OBSTACULO;

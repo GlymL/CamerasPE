@@ -28,6 +28,10 @@ public class CromosomaRanger{
        return new CromosomaRanger(cromosoma.clone());
     }
 
+    public void reset() {
+        cromosoma.reset();
+    }
+
     CromosomaRanger[] cruce(CromosomaRanger otro, double cross_ratio) {
         if(r.nextDouble() > cross_ratio){
             return new CromosomaRanger[]{ this.clone(), otro.clone() };
@@ -69,31 +73,30 @@ public class CromosomaRanger{
 
     public CromosomaRanger mutacionSubArbol(double mut) {
         ASTNode copy = cromosoma.clone();
-        if(r.nextDouble() < mut){
-            ASTNode random_child;
-
-            do {
-                random_child = copy.selectRandomNode();
-            } while (random_child == copy);
+        if (r.nextDouble() < mut) {
+            ASTNode random_child = copy.selectRandomNode();
 
             int rchild_height = random_child.getHeight();
-            int max_height = rchild_height + (r.nextInt() % 3);
+            int max_height = Math.min(rchild_height, 10);
             int min_height = Math.max(1, rchild_height - r.nextInt(rchild_height));
-            
-            int new_height = (r.nextInt() % 2 == 0 ? max_height : min_height);
+
+            int new_height = Math.min((r.nextInt(2) == 0 ? max_height : min_height), 5);
 
             TreeGenerator tg = new TreeGenerator(new_height, 1);
-            Random r = new Random();
-            int opt = r.nextInt();
+            int opt = r.nextInt(2);
 
             ASTNode new_node;
 
-            if (opt % 2 == 0)
+            if (opt == 0)
                 new_node = tg.generateFull(0, new_height);
             else
                 new_node = tg.generateGrow(0, new_height);
 
-            copy.changeNode(random_child, new_node);
+            if (random_child == copy) {
+                copy = new_node;
+            } else {
+                copy.changeNode(random_child, new_node);
+            }
         }
         return new CromosomaRanger(copy);
     }
@@ -171,7 +174,7 @@ public class CromosomaRanger{
     }
 
     public CromosomaRanger mutacionRandom(double mut) {
-        return switch (r.nextInt() % 4) {
+        return switch (r.nextInt(4)) {
             case 0 -> mutacionFuncional(mut);
             case 1 -> mutacionSubArbol(mut);
             case 2 -> mutacionTerminal(mut);

@@ -47,11 +47,14 @@ public class FunctionNode extends ASTNode {
             evaluated = true;
         }
 
-        if (option && !if_.isFinished()) {
-            if_.execute(params);
+        if (option) {
+            if (!if_.isFinished()) {
+                if_.execute(params);
             }
-        else if (!else_.isFinished()) {
-            else_.execute(params);
+        } else {
+            if (!else_.isFinished()) {
+                else_.execute(params);
+            }
         }
     }
 
@@ -75,11 +78,11 @@ public class FunctionNode extends ASTNode {
     @Override
     public ASTNode selectRandomNode() {
         Random r = new Random();
-        int opt = r.nextInt();
+        int opt = r.nextInt(3);
 
-        if (opt % 3 == 0)
+        if (opt == 0)
             return if_;
-        else if (opt % 3 == 1)
+        else if (opt == 1)
             return else_;
         else
             return this;
@@ -108,5 +111,19 @@ public class FunctionNode extends ASTNode {
     @Override
     public int getHeight() {
         return 1 + Math.max(if_.getHeight(), else_.getHeight());
+    }
+
+    @Override
+    public void reset() {
+        evaluated = false;
+        option = false;
+        if_.reset();
+        else_.reset();
+    }
+
+    @Override
+    public String toString() {
+        Function f = (Function) content;
+        return "if (" + f.getSensor() + " " + f.getOperator() + " " + f.getValue() + ") { " + if_.toString() + " } else { " + else_.toString() + " }";
     }
 }

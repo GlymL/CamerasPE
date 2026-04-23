@@ -43,7 +43,7 @@ public class Controller {
             bloating,
             enumMut,
             enumSel,
-            new TreeGenerator(generations, prof_inicial)
+            new TreeGenerator(prof_inicial, 1)
         );
 
         this.engine.start(this,

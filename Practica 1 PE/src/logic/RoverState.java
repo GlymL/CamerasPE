@@ -192,6 +192,10 @@ public class RoverState {
         return colisiones;
     }
 
+    public int[] getPos() {
+        return pos.clone(); // Return a copy to prevent external modification
+    }
+
     public boolean isAlive() {
         return energia > 0;
     }

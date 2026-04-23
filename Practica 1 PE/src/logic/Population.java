@@ -50,13 +50,27 @@ public class Population {
     }
 
     private void calculateAptitudes(){
+        double minFitness = Double.POSITIVE_INFINITY;
+        for (Fitness cf : generation) {
+            minFitness = Math.min(minFitness, cf.getFitness());
+        }
+
+        double offset = minFitness <= 0 ? 1 - minFitness : 0;
+
         fTotal = 0.0;
         for (Fitness cf : generation) {
-            fTotal += cf.getFitness();
+            fTotal += cf.getFitness() + offset;
         }
-        for(Fitness cf : generation){
-            double apt = fTotal/cf.getFitness();
-            cf.setAptitude(apt);
+
+        if (fTotal <= 0) {
+            for (Fitness cf : generation) {
+                cf.setAptitude(1.0);
+            }
+            return;
+        }
+
+        for (Fitness cf : generation) {
+            cf.setAptitude((cf.getFitness() + offset) / fTotal);
         }
     }
 
@@ -89,7 +103,13 @@ public class Population {
         }
 
         selected = s.select(generation);
-        
+        if (selected == null || selected.isEmpty()) {
+            selected = new ArrayList<>();
+            for (Fitness cf : generation) {
+                selected.add(cf.clone());
+            }
+        }
+
         generation.clear();
         generation.addAll(selected);
 

@@ -5,10 +5,13 @@ import java.util.Random;
 public class TreeGenerator {
     private int maxDepth;
     private int minDepth;
+    private final Random r = new Random();
+
+    private static final int MAX_ALLOWED_DEPTH = 10;
 
     public TreeGenerator(int maxd, int mind) {
-        maxDepth = maxd;
-        minDepth = mind;
+        maxDepth = Math.min(maxd, MAX_ALLOWED_DEPTH);
+        minDepth = Math.max(1, Math.min(mind, maxDepth));
     }
 
     //Ramped and Half
@@ -40,11 +43,9 @@ public class TreeGenerator {
             res = new TerminalNode(Action.randomAction());
         }
         else {
-            Random r = new Random();
-
             //Nodo Condicional
-            if ((r.nextInt() % 2) == 0) {
-                int umbral = switch (r.nextInt() % 3) {
+            if (r.nextInt(2) == 0) {
+                int umbral = switch (r.nextInt(3)) {
                     case 0 -> 10;
                     case 1 -> 50;
                     case 2 -> 100;
@@ -59,7 +60,7 @@ public class TreeGenerator {
             }
             //Nodo bloque
             else {
-                int num_hijos = r.nextInt(2, 4);
+                int num_hijos = r.nextInt(2, 3);
 
                 ASTNode[] hijos = new ASTNode[num_hijos];
 
@@ -81,13 +82,11 @@ public class TreeGenerator {
             res = new TerminalNode(Action.randomAction());
         }
         else {
-            Random r = new Random();
-
-            int option = r.nextInt() % 3;
+            int option = r.nextInt(3);
 
             //Nodo Condicional
             if (option == 0) {
-                int umbral = switch (r.nextInt() % 3) {
+                int umbral = switch (r.nextInt(3)) {
                     case 0 -> 10;
                     case 1 -> 50;
                     case 2 -> 100;
@@ -102,7 +101,7 @@ public class TreeGenerator {
             }
             //Nodo bloque
             else if (option == 1) {
-                int num_hijos = r.nextInt(2, 4);
+                int num_hijos = r.nextInt(2, 3);
 
                 ASTNode[] hijos = new ASTNode[num_hijos];
 

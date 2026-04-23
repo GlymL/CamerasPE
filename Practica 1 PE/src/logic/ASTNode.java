@@ -19,6 +19,11 @@ public abstract class ASTNode {
     public abstract ASTNode selectRandomNode();
     public abstract boolean changeNode(ASTNode node, ASTNode change);
 
+    public abstract void reset();
+
     @Override
     public abstract ASTNode clone();
+
+    @Override
+    public abstract String toString();
 }
