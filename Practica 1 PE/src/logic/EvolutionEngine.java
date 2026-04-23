@@ -47,21 +47,21 @@ public class EvolutionEngine {
 
             double currentMin = min_fitness;
             controller.updateChart(currentMin, pEv, bf, af);
-            controller.updateMap(getBestMap());
+            // controller.updateMap(getBestMap());
         }
-        int[][] ret = getBestMap();
-        for (int[] re : ret) {
-            for (int r : re) {
-                System.out.print(r + " ");
-            }
-            System.out.println();
+        // int[][] ret = getBestMap();
+        // for (int[] re : ret) {
+        //     for (int r : re) {
+        //         System.out.print(r + " ");
+        //     }
+        //     System.out.println();
             
-        }
+        // }
         controller.best(population.best());
 
 
     }
-    public int[][] getBestMap(){
-        return population.mapBest();
-    }
+    // public int[][] getBestMap(){
+    //     return population.mapBest();
+    // }
 }

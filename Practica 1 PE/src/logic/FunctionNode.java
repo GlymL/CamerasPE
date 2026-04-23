@@ -104,4 +104,9 @@ public class FunctionNode extends ASTNode {
             return changeNode(else_, change);
 
     }
+
+    @Override
+    public int getHeight() {
+        return 1 + Math.max(if_.getHeight(), else_.getHeight());
+    }
 }

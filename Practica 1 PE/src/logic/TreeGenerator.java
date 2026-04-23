@@ -33,7 +33,7 @@ public class TreeGenerator {
         return population;
     }
 
-    private ASTNode generateFull(int actual, int max) {
+    public ASTNode generateFull(int actual, int max) {
         ASTNode res;
 
         if (actual == max) {
@@ -74,7 +74,7 @@ public class TreeGenerator {
         return res;
     }
 
-    private ASTNode generateGrow(int actual, int max) {
+    public ASTNode generateGrow(int actual, int max) {
         ASTNode res;
 
         if (actual == max) {

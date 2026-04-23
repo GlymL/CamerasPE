@@ -3,37 +3,26 @@ package logic;
 import java.util.ArrayList;
 import java.util.Random;
 
+import mapaApp.GeneradorMapa;
+
 public class Cruce {
-    private final EnumCruce ec;
     private final double cross;
 
     private final Random r = new Random();
-    public Cruce(EnumCruce ec, double cross){
-        this.ec = ec;
+    public Cruce(double cross){
         this.cross = cross;
     }
 
-    public void cruzar(ArrayList<Fitness> pop/*, AEstrellaPrecalc ac*/){
-        CromosomasRanger[] crom;
+    public void cruzar(ArrayList<Fitness> pop, GeneradorMapa map, double bloating){
         for (int i = 0; i < pop.size()/2; i++){
             int r1 = r.nextInt(0, pop.size()), r2 = r.nextInt(0, pop.size());
             Fitness f1 = pop.get(r1);
             Fitness f2 = pop.get(r2);
-            switch(ec){
-            // case EnumCruce.PMX -> crom = f1.getCrom().crucePMX(f2.getCrom(), cross);
-            // case EnumCruce.OX -> crom = f1.getCrom().cruceOX(f2.getCrom(), cross);
-            // case EnumCruce.OXOP -> crom = f1.getCrom().cruceOXOP(f2.getCrom(), cross);
-            // case EnumCruce.CX -> crom = f1.getCrom().cruceCX(f2.getCrom(), cross);
-            // case EnumCruce.CO -> crom = f1.getCrom().cruceCO(f2.getCrom(), cross);
-            // case EnumCruce.ERX -> crom = f1.getCrom().cruceERX(f2.getCrom(), cross);
-            // case EnumCruce.CUSTOM -> crom = f1.getCrom().cruceCUSTOM(f2.getCrom(), cross);
-            default -> {
-                System.err.println();
-                return;
-                }
-            }
-            // pop.set(r1, new Fitness(crom[0]));
-            // pop.set(r2, new Fitness(crom[1]));
+            
+            CromosomaRanger[] hijos = f1.getCrom().cruce(f2.getCrom(), cross);
+
+            pop.set(r1, new Fitness(hijos[0], map, bloating));
+            pop.set(r2, new Fitness(hijos[1], map, bloating));
         }
     }
 }

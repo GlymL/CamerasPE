@@ -85,5 +85,16 @@ public class BlockNode extends ASTNode {
         }
 
         return changed;
+    }
+
+    @Override
+    public int getHeight() {
+        int max_height = 0;
+
+        for (ASTNode child : (ASTNode[]) this.content) {
+            max_height = Math.max(max_height, child.getHeight());
+        }
+
+        return max_height + 1;
     }    
 }

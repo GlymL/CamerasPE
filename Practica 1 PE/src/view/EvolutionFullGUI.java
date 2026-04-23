@@ -8,9 +8,6 @@ import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import logic.AEstrella;
-import logic.AEstrellaPrecalc;
-import logic.EnumCruce;
 import logic.EnumMutacion;
 import logic.EnumSelection;
 import logic.Fitness;
@@ -47,8 +44,8 @@ public class EvolutionFullGUI extends JFrame{
       "Escenario 2 - Pasillos",
       "Escenario 3 - Supermercado"
     });
-  private final JComboBox < EnumCruce > cruceBox =
-    new JComboBox<>(EnumCruce.values());
+  // private final JComboBox < EnumCruce > cruceBox =
+  //   new JComboBox<>(EnumCruce.values());
      private final JComboBox < EnumMutacion > mutaBox =
     new JComboBox<>(EnumMutacion.values());
   private final JComboBox < EnumSelection > selectionBox =
@@ -62,6 +59,8 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05));
   private final JSpinner mutationSpinner =
     new JSpinner(new SpinnerNumberModel(0.01, 0.0, 1.0, 0.01));
+  private final JSpinner bloatingSpinner =
+    new JSpinner(new SpinnerNumberModel(1.0, 0.0, 2.0, 0.01));
   private final JSpinner elitismoSpinner =
     new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1.0, 0.01));
   private final JSpinner dronesSpinner =
@@ -188,17 +187,17 @@ private JPanel createCenterPanel() {
 
     gbc.gridx = 0;
     gbc.gridy++;
+    panel.add(new JLabel("Coef. Bloating"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(bloatingSpinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
     panel.add(new JLabel("Est. Selección:"), gbc);
 
     gbc.gridx = 1;
     panel.add(selectionBox, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    panel.add(new JLabel("Est. Cruce:"), gbc);
-
-    gbc.gridx = 1;
-    panel.add(cruceBox, gbc);
 
     gbc.gridx = 0;
     gbc.gridy++;
@@ -207,16 +206,16 @@ private JPanel createCenterPanel() {
     gbc.gridx = 1;
     panel.add(mutaBox, gbc);
 
-    gbc.gridx = 0;
-    gbc.gridy++;
-    panel.add(new JLabel("Optimización 2-Opt:"), gbc);
+    // gbc.gridx = 0;
+    // gbc.gridy++;
+    // panel.add(new JLabel("Optimización 2-Opt:"), gbc);
 
-    gbc.gridx = 1;
-    panel.add(opt_CheckBox, gbc);
+    // gbc.gridx = 1;
+    // panel.add(opt_CheckBox, gbc);
 
-    gbc.gridx = 0;
-    gbc.gridy++;
-    gbc.gridwidth = 2;
+    // gbc.gridx = 0;
+    // gbc.gridy++;
+    // gbc.gridwidth = 2;
 
     gbc.gridy++;
      runButton.addActionListener((e) -> runAlgorithm());

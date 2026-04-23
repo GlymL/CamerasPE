@@ -1,7 +1,7 @@
 package view;
 
 import logic.AEstrellaPrecalc;
-import logic.CromosomasRanger;
+import logic.CromosomaRanger;
 import logic.EnumFlota;
 import logic.Fitness;
 
@@ -40,7 +40,7 @@ public class ResultFormatter {
      * Builds a string describing the solution, per drone
      */
     public String buildSummaryString() {
-        CromosomasRanger c = fitnessDron.getCrom();
+        CromosomaRanger c = fitnessDron.getCrom();
         int[][] rutas = c.rutas();
         StringBuilder sb = new StringBuilder();
 

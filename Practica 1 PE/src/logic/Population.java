@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import mapaApp.GeneradorMapa;
 
 public class Population {
+    //REVISAR SI EL FITNESS SE COMPARA BIEN
     
+    private int pop_size;
     private double fTotal;
     private final ArrayList<Fitness> generation;
     private final Cruce cr;
@@ -12,50 +14,36 @@ public class Population {
     private final Selection s;
     private final Mutacion m;
 
+    private final double bloating;
 
-    private final RoverState state;
     private final TreeGenerator tg;
+    private final GeneradorMapa map;
 
-    private final boolean opt;
+    public Population(GeneradorMapa gc, int popSize, double crossRatio, double mutRatio, double elitismo, double bloating,
+        EnumMutacion mut, EnumSelection enumS, TreeGenerator tg) {
 
+        generation = new ArrayList<>(popSize);
+        pop_size = popSize;
 
-    public Population(GeneradorMapa gc, int popSize, 
-        double crossRatio, double mutRatio, EnumCruce cr, 
-        EnumMutacion mut, EnumSelection enumS, double elitismo, int n_drones, TreeGenerator tg, boolean opt) {
-            generation = new ArrayList<>();
-        this.cr = new Cruce(cr, crossRatio);
+        map = gc;
+
+        this.cr = new Cruce(crossRatio);
         this.elitismo = elitismo;
-        // this.precalc = ae;
+        this.bloating = bloating;
         m = new Mutacion(mut, mutRatio);
         s = new Selection(enumS);
-        // initializeRandom(popSize, precalc, gc, n_drones);
+        this.tg = tg;
+
+
+        initFitness();
         evaluateAll();
         sortByFitness();
-        this.opt = opt;
-    }
-
-    private void initializeRandom(int popSize) {
-        ASTNode[] trees = tg.randomInit(popSize);
-
-        for (ASTNode tree : trees) {
-            CromosomasRanger c = new CromosomasRanger(tree);
-
-            generation.add(new Fitness(c));
-        }
-        // for (int i = 0; i < popSize; i++) {
-        //     CromosomasRanger c;
-        //     c = new CromosomasRanger(gc.getCameras().length, n_drones);
-        //     c.randomInitialize();
-
-        //     Fitness f = new Fitness(c, precalc);
-        //     generation.add(f);
-        // }
     }
 
     public void evaluateAll() {
         fTotal = 0.0;
         for (Fitness cf : generation) {
-            cf.calculateFitness(state);
+            cf.calculateFitness();
             fTotal += cf.getFitness();
         }
         calculateAptitudes();
@@ -81,11 +69,15 @@ public class Population {
         generation.sort((a, b) -> a.compareTo(b));
     }
 
-
-
+    private void initFitness() {
+        ASTNode[] crom_infos = tg.randomInit(pop_size);
+        
+        for (ASTNode c : crom_infos) {
+            generation.add(new Fitness(new CromosomaRanger(c), map, bloating));
+        }
+    }
 
     public void evolve() {
-
         ArrayList<Fitness> selected;
         ArrayList<Fitness> elite = new ArrayList<>();
 
@@ -101,9 +93,9 @@ public class Population {
         generation.clear();
         generation.addAll(selected);
 
-        cr.cruzar(generation, precalc);
+        cr.cruzar(generation, map, bloating);
         
-        m.mutar(generation, precalc);
+        m.mutar(generation, map, bloating);
 
         
         evaluateAll();
@@ -130,10 +122,10 @@ public class Population {
         System.out.println("Best fitness: " + best.getFitness());
     }
 
-    public int[][] mapBest(){
-        sortByFitness();
-        return generation.get(0).getCrom().rutas();
-    }
+    // public int[][] mapBest(){
+    //     sortByFitness();
+    //     return generation.get(0).getCrom().rutas();
+    // }
 
     public double averageFitness() {
         double sum = 0;

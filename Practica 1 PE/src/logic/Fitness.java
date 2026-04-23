@@ -4,7 +4,7 @@ import mapaApp.GeneradorMapa;
 import mapaApp.MapaRover;
 
 public class Fitness implements Comparable<Fitness>{
-    private final CromosomasRanger c;
+    private final CromosomaRanger c;
     // private final TreeGenerator tg;
     private final GeneradorMapa map;
     private double fitness;
@@ -12,7 +12,7 @@ public class Fitness implements Comparable<Fitness>{
     private double bloating;
 
 
-    public Fitness(CromosomasRanger c, GeneradorMapa map, double bloating){
+    public Fitness(CromosomaRanger c, GeneradorMapa map, double bloating){
         this.c = c.clone();
         this.map = map;
         this.bloating = bloating;
@@ -61,7 +61,7 @@ public class Fitness implements Comparable<Fitness>{
         return fitness;
     }
 
-    public CromosomasRanger getCrom(){
+    public CromosomaRanger getCrom(){
         return c.clone();
     }
 

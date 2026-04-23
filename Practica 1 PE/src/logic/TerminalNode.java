@@ -50,4 +50,9 @@ public class TerminalNode extends ASTNode {
         //Como no tiene hijos, no puede cambiar nada.
         return false;
     }
+
+    @Override
+    public int getHeight() {
+        return 1;
+    }
 }
