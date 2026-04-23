@@ -15,4 +15,9 @@ public abstract class ASTNode {
 
     public abstract boolean isFinished();
     public abstract int getNumberOfNodes();
+    public abstract ASTNode selectRandomNode();
+    public abstract boolean changeNode(ASTNode node, ASTNode change);
+
+    @Override
+    public abstract ASTNode clone();
 }

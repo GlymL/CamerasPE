@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Random;
+
 public class FunctionNode extends ASTNode {
     boolean evaluated;
     boolean option;
@@ -63,5 +65,43 @@ public class FunctionNode extends ASTNode {
     @Override
     public int getNumberOfNodes() {
         return 1 + if_.getNumberOfNodes() + else_.getNumberOfNodes();
+    }
+
+    @Override
+    public ASTNode clone() {
+        return new FunctionNode((Function) this.content, if_.clone(), else_.clone());
+    }
+
+    @Override
+    public ASTNode selectRandomNode() {
+        Random r = new Random();
+        int opt = r.nextInt();
+
+        if (opt % 3 == 0)
+            return if_;
+        else if (opt % 3 == 1)
+            return else_;
+        else
+            return this;
+    }
+
+    @Override
+    public boolean changeNode(ASTNode node, ASTNode change) {
+        //Si llegas a esta función, sabes que no eres el tú el nodo a cambiar. (COMPROBAR)
+
+        if (node == if_) {
+            if_ = change;
+            return true;
+        } else if (node == else_) {
+            else_ = change;
+            return true;
+        }
+
+        //Si llegas aquí, el nodo a cambiar no es ningún hijo directo.
+        if (changeNode(if_, change))
+            return true;
+        else
+            return changeNode(else_, change);
+
     }
 }

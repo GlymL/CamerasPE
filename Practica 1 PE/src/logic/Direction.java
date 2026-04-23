@@ -1,7 +1,15 @@
 package logic;
 
 public enum Direction {
-    NORTH, SOUTH, EAST, WEST;
+    NORTH(0, -1), SOUTH(0, 1), EAST(1, 0), WEST(-1, 0);
+
+    public int x;
+    public int y;
+
+    private Direction(int i, int j) {
+        x = i;
+        y = j;
+    }
 
     public Direction rotateLeft() {
         return switch (this) {

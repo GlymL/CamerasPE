@@ -34,4 +34,20 @@ public class TerminalNode extends ASTNode {
     public int getNumberOfNodes() {
         return 1;
     }
+
+    @Override
+    public ASTNode clone() {
+        return new TerminalNode(getAction());
+    }
+
+    @Override
+    public ASTNode selectRandomNode() {
+        return this;
+    }
+
+    @Override
+    public boolean changeNode(ASTNode node, ASTNode change) {
+        //Como no tiene hijos, no puede cambiar nada.
+        return false;
+    }
 }

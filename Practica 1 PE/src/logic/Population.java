@@ -105,8 +105,6 @@ public class Population {
         
         m.mutar(generation, precalc);
 
-        if(opt)
-            generation.set(0, generation.get(0).untangle());
         
         evaluateAll();
         

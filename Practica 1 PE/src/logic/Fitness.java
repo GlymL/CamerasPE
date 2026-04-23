@@ -9,11 +9,13 @@ public class Fitness implements Comparable<Fitness>{
     private final GeneradorMapa map;
     private double fitness;
     private double aptitude;
+    private double bloating;
 
 
-    public Fitness(CromosomasRanger c, GeneradorMapa map){
-        this.c = c;
+    public Fitness(CromosomasRanger c, GeneradorMapa map, double bloating){
+        this.c = c.clone();
         this.map = map;
+        this.bloating = bloating;
     }
 
     // public Fitness(CromosomasRanger c, double fitness, double aptitude) {
@@ -38,12 +40,16 @@ public class Fitness implements Comparable<Fitness>{
                 state.incrTicks();
             }
 
+            fitnessMapa = state.getMuestras() * 500 + state.getCeldasExploradas() * 20 + state.getVisualRewarding()
+                - state.getArenas() * 30 - state.getColisiones() * 10 - state.applyPereza();
+
             fitnessTotal += fitnessMapa;
         }
 
         double fitnessBase = fitnessTotal / 3;
 
-        fitness = fitnessBase;
+        //Aplicamos Impuesto por Bloating
+        fitness = fitnessBase - c.getNumberOfNodes() * bloating;
     }
 
     @Override
@@ -60,7 +66,7 @@ public class Fitness implements Comparable<Fitness>{
     }
 
     public Fitness clone(){
-        return new Fitness(c, map);
+        return new Fitness(c, map, bloating);
     }
     public void setAptitude(double apt){
         this.aptitude = apt;

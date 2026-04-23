@@ -11,6 +11,7 @@ public class TreeGenerator {
         minDepth = mind;
     }
 
+    //Ramped and Half
     public ASTNode[] randomInit(int population_size) {
         int per_level = population_size / (maxDepth - minDepth + 1);
         ASTNode[] population = new ASTNode[population_size];
