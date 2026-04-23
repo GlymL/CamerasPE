@@ -113,10 +113,10 @@ public class MejorMapa extends JPanel {
                     colorTile = new Color(120, 0, 0); // muro / obstáculo
                 }
                 else if (map[row][col] == 2) {
-                    colorTile = Color.DARK_GRAY; // base floor under sample
+                    colorTile = Color.BLACK; // base floor under sample
                 }
                 else if (map[row][col] == 3) {
-                    colorTile = new Color(120, 60, 0); // arena
+                    colorTile = new Color(210, 180, 130); // arena más clara
                 }
                 else {
                     colorTile = Color.BLACK; // libre
@@ -124,6 +124,16 @@ public class MejorMapa extends JPanel {
 
                 g2.setColor(colorTile);
                 g2.fillRect(x, y, tileSize, tileSize);
+
+                if (map[row][col] == 1) {
+                    g2.setColor(new Color(180, 0, 0));
+                    int edge = Math.max(2, tileSize / 5);
+                    Stroke oldStroke = g2.getStroke();
+                    g2.setStroke(new BasicStroke(Math.max(1, tileSize / 10)));
+                    g2.drawLine(x + edge, y + edge, x + tileSize - edge, y + tileSize - edge);
+                    g2.drawLine(x + edge, y + tileSize - edge, x + tileSize - edge, y + edge);
+                    g2.setStroke(oldStroke);
+                }
 
                 if (map[row][col] == 2) {
                     g2.setColor(Color.YELLOW);
@@ -138,14 +148,17 @@ public class MejorMapa extends JPanel {
                     int cy = y + tileSize / 2;
                     int baseSize = Math.max(8, tileSize / 3);
                     Polygon baseMarker = new Polygon(
-                        new int[]{cx - baseSize / 2, cx + baseSize / 2, cx},
-                        new int[]{cy + baseSize / 2, cy + baseSize / 2, cy - baseSize / 2},
+                        new int[]{cx - baseSize / 2, cx - baseSize / 2, cx + baseSize / 2},
+                        new int[]{cy - baseSize / 2, cy + baseSize / 2, cy},
                         3
                     );
                     g2.setColor(Color.CYAN);
                     g2.fillPolygon(baseMarker);
                     g2.setColor(Color.WHITE);
+                    Stroke originalStroke = g2.getStroke();
+                    g2.setStroke(new BasicStroke(Math.max(1, tileSize / 15)));
                     g2.drawPolygon(baseMarker);
+                    g2.setStroke(originalStroke);
                 }
 
                 g2.setColor(Color.GRAY);
