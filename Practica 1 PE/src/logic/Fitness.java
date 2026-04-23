@@ -44,7 +44,7 @@ public class Fitness implements Comparable<Fitness>{
                 state.incrTicks();
             }
 
-            fitnessMapa = state.getMuestras() * 500 + state.getCeldasExploradas() * 20 + state.getVisualRewarding()
+            fitnessMapa = state.getMuestras() * 500 + state.getCeldasExploradas() * 20 + state.getVisualRewarding() * 2
                 - state.getArenas() * 30 - state.getColisiones() * 10 - state.applyPereza();
 
             fitnessTotal += fitnessMapa;

@@ -156,6 +156,7 @@ public class Population {
     
     public double bestFitness(){
         sortByFitness();
+        System.out.println("Best fitness: " + generation.get(0).getCrom().getNumberOfNodes());
         return generation.get(0).getFitness();
     }
 
