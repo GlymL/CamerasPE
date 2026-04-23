@@ -23,7 +23,6 @@ public class ResultPanel extends JPanel {
     public void displayFitnessDron(Fitness best, int seed) {
         StyledDocument doc = textPane.getStyledDocument();
         try {
-            AEstrellaPrecalc a = best.getPrecalc();
             doc.remove(0, doc.getLength());
 
             SimpleAttributeSet redBold = new SimpleAttributeSet();
@@ -50,49 +49,49 @@ public class ResultPanel extends JPanel {
 
             doc.insertString(doc.getLength(), "TIEMPOS POR DRON: ", blackBold);
 
-            int[][] rutas = best.getCrom().rutas();
-            int dronesCount = rutas.length;
+            // int[][] rutas = best.getCrom().rutas();
+            // int dronesCount = rutas.length;
 
-            for (int i = 0; i < dronesCount; i++) {
-                double speed = EnumFlota.values()[i].getVel();
-                double time = computeDroneTime(rutas[i], a, speed);
+            // for (int i = 0; i < dronesCount; i++) {
+            //     double speed = EnumFlota.values()[i].getVel();
+            //     double time = computeDroneTime(rutas[i], a, speed);
 
-                String droneLabel = "D" + (i + 1) + " (x" + String.format("%.1f", speed) + "): ";
+            //     String droneLabel = "D" + (i + 1) + " (x" + String.format("%.1f", speed) + "): ";
 
-                doc.insertString(doc.getLength(), droneLabel, droneColors[i]);
+            //     doc.insertString(doc.getLength(), droneLabel, droneColors[i]);
 
-                String timeStr = String.format("%.1f s", time);
-                doc.insertString(doc.getLength(), timeStr, droneColors[i]);
+            //     String timeStr = String.format("%.1f s", time);
+            //     doc.insertString(doc.getLength(), timeStr, droneColors[i]);
 
-                if (i < dronesCount - 1) doc.insertString(doc.getLength(), " ", null);
-            }
+            //     if (i < dronesCount - 1) doc.insertString(doc.getLength(), " ", null);
+            // }
             doc.insertString(doc.getLength(), "\n", null);
 
             doc.insertString(doc.getLength(), "CROMOSOMA: [ ", blackBold);
 
-            for (int i = 0; i < dronesCount; i++) {
-                SimpleAttributeSet routeColor = droneColors[i];
-                int[] ruta = rutas[i];
+            // for (int i = 0; i < dronesCount; i++) {
+            //     SimpleAttributeSet routeColor = droneColors[i];
+            //     int[] ruta = rutas[i];
 
-                boolean hasCams = false;
-                for (int cam : ruta) {
-                    if (cam != -1) {
-                        hasCams = true;
-                        break;
-                    }
-                }
+            //     boolean hasCams = false;
+            //     for (int cam : ruta) {
+            //         if (cam != -1) {
+            //             hasCams = true;
+            //             break;
+            //         }
+            //     }
 
-                if (hasCams) {
-                    for (int cam : ruta) {
-                        if (cam == -1) break;
-                        doc.insertString(doc.getLength(), cam + " ", routeColor);
-                    }
-                }
+            //     if (hasCams) {
+            //         for (int cam : ruta) {
+            //             if (cam == -1) break;
+            //             doc.insertString(doc.getLength(), cam + " ", routeColor);
+            //         }
+            //     }
 
-                if (i < dronesCount - 1) {
-                    doc.insertString(doc.getLength(), "|| ", blackBold);
-                }
-            }
+            //     if (i < dronesCount - 1) {
+            //         doc.insertString(doc.getLength(), "|| ", blackBold);
+            //     }
+            // }
             doc.insertString(doc.getLength(), "]\n", blackBold);
 
         } catch (BadLocationException e) {
@@ -100,17 +99,17 @@ public class ResultPanel extends JPanel {
         }
     }
 
-    private double computeDroneTime(int[] ruta, AEstrellaPrecalc a, double speed) {
+    private double computeDroneTime(int[] ruta, double speed) {
         if (ruta == null || ruta.length == 0 || ruta[0] == -1) return 0.0;
 
         double tiempo = 0;
         int j = 0;
         while (j < ruta.length && ruta[j] != -1) {
-            if (j == 0) tiempo += a.getInit(ruta[j]);
-            else tiempo += a.getPrecalc(ruta[j - 1], ruta[j]);
+            // if (j == 0) tiempo += a.getInit(ruta[j]);
+            // else tiempo += a.getPrecalc(ruta[j - 1], ruta[j]);
             j++;
         }
-        tiempo += a.getInit(ruta[j - 1]);
+        //tiempo += a.getInit(ruta[j - 1]);
         return tiempo / speed;
     }
 }

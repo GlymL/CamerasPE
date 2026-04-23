@@ -4,16 +4,15 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
-import logic.AEstrella.Pair;
-import logic.AEstrellaPrecalc;
 import mapaApp.GeneradorMapa;
 
 public class MejorMapa extends JPanel {
 
     private int[][] map;
-    private Pair init;
-    private Pair[] listaCamaras;
-    private AEstrellaPrecalc ae;
+    private int init_x;
+    private int init_y;
+    // private Pair[] listaCamaras;
+    // private AEstrellaPrecalc ae;
 
     private final List<List<Point>> dronePaths = new ArrayList<>();
     private final List<List<Integer>> droneVisitNumbers = new ArrayList<>();
@@ -23,11 +22,12 @@ public class MejorMapa extends JPanel {
         setBackground(Color.WHITE);
     }
 
-    public void updateMap(GeneradorMapa gc, AEstrellaPrecalc ae) {
+    public void updateMap(GeneradorMapa gc) {
         this.map = gc.getMapa();
-        this.init = gc.getBase();
-        this.listaCamaras = gc.getCameras();
-        this.ae = ae;
+        this.init_x = gc.getBaseX();
+        this.init_y = gc.getBaseY();
+        // this.listaCamaras = gc.getCameras();
+        // this.ae = ae;
         repaint();
     }
 
@@ -39,35 +39,35 @@ public class MejorMapa extends JPanel {
             List<Point> fullDronePath = new ArrayList<>();
             List<Integer> visitNumbers = new ArrayList<>();
 
-            fullDronePath.add(new Point(init.getFirst(), init.getSecond()));
-            Pair last = init;
+            fullDronePath.add(new Point(init_x, init_y));
+            int last_x = init_x, last_y = init_y;
 
             for (int i = 0; i < ruta.length; i++) {
-                int camIndex = ruta[i];
-                if (camIndex == -1) break;
-                if (camIndex < 0 || camIndex >= listaCamaras.length) continue;
+                // int camIndex = ruta[i];
+                // if (camIndex == -1) break;
+                // if (camIndex < 0 || camIndex >= 15) continue;
 
-                Pair target = listaCamaras[camIndex];
-                Pair[] pathPairs = ae.getPathBetween(last, target);
-                if (pathPairs == null || pathPairs.length == 0) continue;
+                // Pair target = listaCamaras[camIndex];
+                // Pair[] pathPairs = ae.getPathBetween(last, target);
+                // if (pathPairs == null || pathPairs.length == 0) continue;
 
-                int start = last.equals(pathPairs[0]) ? 1 : 0;
-                for (int k = start; k < pathPairs.length; k++) {
-                    Pair p = pathPairs[k];
-                    fullDronePath.add(new Point(p.getSecond(), p.getFirst()));
-                }
+                // int start = last.equals(pathPairs[0]) ? 1 : 0;
+                // for (int k = start; k < pathPairs.length; k++) {
+                //     Pair p = pathPairs[k];
+                //     fullDronePath.add(new Point(p.getSecond(), p.getFirst()));
+                // }
 
-                last = target;
-                visitNumbers.add(camIndex);
+                // last = target;
+                // visitNumbers.add(camIndex);
             }
 
-            Pair[] returnPath = ae.getPathBetween(last, init);
-            if (returnPath != null && returnPath.length > 1) {
-                for (int k = 1; k < returnPath.length; k++) {
-                    Pair p = returnPath[k];
-                    fullDronePath.add(new Point(p.getSecond(), p.getFirst()));
-                }
-            }
+            // Pair[] returnPath = ae.getPathBetween(last, init);
+            // if (returnPath != null && returnPath.length > 1) {
+            //     for (int k = 1; k < returnPath.length; k++) {
+            //         Pair p = returnPath[k];
+            //         fullDronePath.add(new Point(p.getSecond(), p.getFirst()));
+            //     }
+            // }
 
             dronePaths.add(fullDronePath);
             droneVisitNumbers.add(visitNumbers);
@@ -106,21 +106,47 @@ public class MejorMapa extends JPanel {
 
                 Color colorTile;
 
-                if (row == init.getSecond() && col == init.getFirst()) {
-                    colorTile = Color.YELLOW; // base
+                if (row == init_y && col == init_x) {
+                    colorTile = Color.BLACK; // base floor underneath
                 }
-                else if (map[row][col] > 500) {
-                    colorTile = Color.GREEN; // camara
+                else if (map[row][col] == 1) {
+                    colorTile = new Color(120, 0, 0); // muro / obstáculo
                 }
-                else if (map[row][col] == 0) {
-                    colorTile = Color.BLACK; // libre
+                else if (map[row][col] == 2) {
+                    colorTile = Color.DARK_GRAY; // base floor under sample
+                }
+                else if (map[row][col] == 3) {
+                    colorTile = new Color(120, 60, 0); // arena
                 }
                 else {
-                    colorTile = new Color(255, 0, 0, map[row][col]*10); // zonas de peso
+                    colorTile = Color.BLACK; // libre
                 }
 
                 g2.setColor(colorTile);
                 g2.fillRect(x, y, tileSize, tileSize);
+
+                if (map[row][col] == 2) {
+                    g2.setColor(Color.YELLOW);
+                    int dotSize = Math.max(4, tileSize / 4);
+                    int dotX = x + (tileSize - dotSize) / 2;
+                    int dotY = y + (tileSize - dotSize) / 2;
+                    g2.fillOval(dotX, dotY, dotSize, dotSize);
+                }
+
+                if (row == init_y && col == init_x) {
+                    int cx = x + tileSize / 2;
+                    int cy = y + tileSize / 2;
+                    int baseSize = Math.max(8, tileSize / 3);
+                    Polygon baseMarker = new Polygon(
+                        new int[]{cx - baseSize / 2, cx + baseSize / 2, cx},
+                        new int[]{cy + baseSize / 2, cy + baseSize / 2, cy - baseSize / 2},
+                        3
+                    );
+                    g2.setColor(Color.CYAN);
+                    g2.fillPolygon(baseMarker);
+                    g2.setColor(Color.WHITE);
+                    g2.drawPolygon(baseMarker);
+                }
 
                 g2.setColor(Color.GRAY);
                 g2.drawRect(x, y, tileSize, tileSize);
@@ -153,10 +179,9 @@ public class MejorMapa extends JPanel {
                 if (visited != null) {
                     int number = 1;
                     for (int camIndex : visited) {
-                        if (camIndex < 0 || camIndex >= listaCamaras.length) continue;
-                        Pair cam = listaCamaras[camIndex];
-                        int x = cam.getSecond() * tileSize + tileSize / 2;
-                        int y = cam.getFirst() * tileSize + tileSize / 2 - 2;
+                        if (camIndex < 0 || camIndex >= 15) continue;
+                        int x = 1 * tileSize + tileSize / 2;
+                        int y = 1 * tileSize + tileSize / 2 - 2;
                         g2.setColor(color[d % color.length]);
                         g2.setFont(g2.getFont().deriveFont(Font.BOLD, (float) tileSize * 0.6f));
                         g2.drawString(String.valueOf(number++), x, y);

@@ -27,12 +27,11 @@ public class Controller {
                     int popSize,
                     double crossRatio,
                     double mutRatio,
-                    EnumCruce enumCr,
                     EnumMutacion enumMut,
                     EnumSelection enumSel,
                     double elitismo,
-                    int n_drones, AEstrellaPrecalc ae, 
-                    boolean opt
+                    double bloating,
+                    int prof_inicial
                     ) {
 
         Population population = new Population(
@@ -40,11 +39,11 @@ public class Controller {
             popSize,
             crossRatio,
             mutRatio,
-            enumCr,
+            elitismo,
+            bloating,
             enumMut,
             enumSel,
-            elitismo,
-            n_drones, ae, opt
+            new TreeGenerator(generations, prof_inicial)
         );
 
         this.engine.start(this,

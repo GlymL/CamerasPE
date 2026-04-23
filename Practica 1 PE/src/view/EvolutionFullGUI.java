@@ -36,14 +36,13 @@ public class EvolutionFullGUI extends JFrame{
 
   FitnessChartPanel fitnessChart;
   MejorMapa bd;
-  private int n_mapa;
 
-  private final JComboBox < String > escenarioBox =
-    new JComboBox < > (new String[] {
-      "Escenario 1 - Museo",
-      "Escenario 2 - Pasillos",
-      "Escenario 3 - Supermercado"
-    });
+  // private final JComboBox < String > escenarioBox =
+  //   new JComboBox < > (new String[] {
+  //     "Escenario 1 - Museo",
+  //     "Escenario 2 - Pasillos",
+  //     "Escenario 3 - Supermercado"
+  //   });
   // private final JComboBox < EnumCruce > cruceBox =
   //   new JComboBox<>(EnumCruce.values());
      private final JComboBox < EnumMutacion > mutaBox =
@@ -53,6 +52,8 @@ public class EvolutionFullGUI extends JFrame{
 
   private final JSpinner populationSpinner =
     new JSpinner(new SpinnerNumberModel(100, 1, 10000, 10));
+  private final JSpinner profInicialSpinner =
+    new JSpinner(new SpinnerNumberModel(3, 1, 10, 1));
   private final JSpinner generationsSpinner =
     new JSpinner(new SpinnerNumberModel(500, 1, 10000, 50));
   private final JSpinner crossoverSpinner =
@@ -63,11 +64,11 @@ public class EvolutionFullGUI extends JFrame{
     new JSpinner(new SpinnerNumberModel(1.0, 0.0, 2.0, 0.01));
   private final JSpinner elitismoSpinner =
     new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1.0, 0.01));
-  private final JSpinner dronesSpinner =
-    new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
+  // private final JSpinner dronesSpinner =
+  //   new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
   private final JButton runButton = new JButton("Ejecutar generaciones");
   private final JTextField seedfield = new JTextField("3000", 5);
-  private final JCheckBox opt_CheckBox = new JCheckBox();
+  // private final JCheckBox opt_CheckBox = new JCheckBox();
   private ResultPanel resultPanel;
 
   private final Controller c;
@@ -75,7 +76,7 @@ public class EvolutionFullGUI extends JFrame{
   private int seed;
 
   public EvolutionFullGUI(Controller c) {
-    setTitle("Algoritmo Genético - Cámaras");
+    setTitle("Algoritmo Genético - Rover");
     setSize(1100, 600);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -84,22 +85,18 @@ public class EvolutionFullGUI extends JFrame{
 
     add(createTopPanel(), BorderLayout.NORTH);
     add(createCenterPanel(), BorderLayout.CENTER);
+
     this.c = c;
+
+    bd.updateMap(new GeneradorMapa(3000, new MapaRover(0)));
   }
 
   private JPanel createTopPanel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
 
-    panel.add(new JLabel("Escenario:"));
-    panel.add(escenarioBox);
-
-    panel.add(new JLabel("Numero drones:"));
-    panel.add(dronesSpinner);
-
     panel.add(new JLabel("Semilla:"));
     seedfield.setInputVerifier(new OnlyIntVerifier());
     panel.add(seedfield);
-
     return panel;
   }
 
@@ -187,6 +184,13 @@ private JPanel createCenterPanel() {
 
     gbc.gridx = 0;
     gbc.gridy++;
+    panel.add(new JLabel("Prof. Inicial"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(profInicialSpinner, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
     panel.add(new JLabel("Coef. Bloating"), gbc);
 
     gbc.gridx = 1;
@@ -213,9 +217,9 @@ private JPanel createCenterPanel() {
     // gbc.gridx = 1;
     // panel.add(opt_CheckBox, gbc);
 
-    // gbc.gridx = 0;
-    // gbc.gridy++;
-    // gbc.gridwidth = 2;
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
 
     gbc.gridy++;
      runButton.addActionListener((e) -> runAlgorithm());
@@ -251,33 +255,26 @@ private JPanel createCenterPanel() {
     double crossover = (double) crossoverSpinner.getValue();
     double mutation = (double) mutationSpinner.getValue();
     double elitismo = (double) elitismoSpinner.getValue();
-    int n_drones = (int) dronesSpinner.getValue();
+    double bloating = (double) bloatingSpinner.getValue();
+    int prof_inicial = (int) profInicialSpinner.getValue();
     seed = Integer.parseInt(seedfield.getText());
-    boolean opt = opt_CheckBox.isSelected();
- 
-    EnumCruce enumCruce = (EnumCruce)cruceBox.getSelectedItem();
+
     EnumMutacion enumMut = (EnumMutacion)mutaBox.getSelectedItem();
     EnumSelection selection = (EnumSelection) selectionBox.getSelectedItem();
-    int escenario = escenarioBox.getSelectedIndex();
 
-    n_mapa = escenario + 1;
+    gc = new GeneradorMapa(seed, new MapaRover(0));
 
-    gc = new GeneradorMapa(seed, new MapaRover(n_mapa));
-
-    AEstrellaPrecalc precalc = new AEstrellaPrecalc(gc, new AEstrella(gc.getMapa()));
-
-    bd.updateMap(gc, precalc);
+    bd.updateMap(gc);
     new Thread(() -> c.execute(
       generations,
       gc,
       population,
       crossover,
       mutation,
-      enumCruce,
       enumMut,
       selection,
       elitismo,
-      n_drones, precalc, opt)).start();
+      bloating, prof_inicial)).start();
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
