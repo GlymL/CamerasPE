@@ -34,11 +34,16 @@ public class Fitness implements Comparable<Fitness>{
             while (state.isAlive() && !state.isFinished()) {
                 state.setAccionTomada(false);
                 c.execute(state);
+                
+                state.incrTicks();
             }
 
             fitnessTotal += fitnessMapa;
         }
 
+        double fitnessBase = fitnessTotal / 3;
+
+        fitness = fitnessBase;
     }
 
     @Override
@@ -55,7 +60,7 @@ public class Fitness implements Comparable<Fitness>{
     }
 
     public Fitness clone(){
-        return new Fitness(c);
+        return new Fitness(c, map);
     }
     public void setAptitude(double apt){
         this.aptitude = apt;

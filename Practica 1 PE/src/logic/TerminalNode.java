@@ -1,8 +1,10 @@
 package logic;
 
 public class TerminalNode extends ASTNode {
+    boolean executed;
     public TerminalNode(Action a) {
         super(a);
+        executed = false;
     }
 
     public Action getAction() {
@@ -16,8 +18,20 @@ public class TerminalNode extends ASTNode {
         if (!rover.getAccionTomada()) {
             MovementInfo minfo = rover.executeAction(getAction());
             rover.lowerEnergia(minfo.energia());
-            rover.setAccionTomada(minfo.accion_tomada());
+            executed = true;
+
+            rover.setAccionTomada(true);
         }
         
+    }
+
+    @Override
+    public boolean isFinished() {
+        return executed;
+    }
+
+    @Override
+    public int getNumberOfNodes() {
+        return 1;
     }
 }

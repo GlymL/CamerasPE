@@ -1,11 +1,13 @@
 package logic;
 
-import java.util.ArrayList;
-
 public class BlockNode extends ASTNode {
+    int size;
+    int i;
     
     public BlockNode(ASTNode[] nodes) {
         super(nodes);
+        i = 0;
+        size = nodes.length;
     }
 
     public ASTNode[] getNodes() {
@@ -14,8 +16,27 @@ public class BlockNode extends ASTNode {
 
     @Override
     public void execute(Object params) {
-        for (ASTNode node : getNodes()) {
-            node.execute(params);
+        ASTNode[] nodes = (ASTNode[]) this.content;
+
+        if (i < size)
+            nodes[i].execute(params);
+
+        if (nodes[i].isFinished())
+            i++;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return i >= size;
+    }
+
+    @Override
+    public int getNumberOfNodes() {
+        int res = 1;
+        
+        for(ASTNode child : (ASTNode[]) this.content) {
+            res += child.getNumberOfNodes();
         }
+        return res;
     }    
 }

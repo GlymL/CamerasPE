@@ -4,9 +4,13 @@ import mapaApp.GeneradorMapa;
 
 public class RoverState {
     //TO-DO: CAMBIAR LAS DISRANCIAS PARA QUE CONCUERDEN CON LAS TRANSPARENCIAS (no me acuerdo si esta hecho bien y revisado)
+    //distancia deben ser de rango de visión.
     //TO-DO: Implementar patologias evolutivas
+    //TO-DO: Ajustar energía (puede  ser negativa)
+
 
     private GeneradorMapa mapa;
+    private int[][] celdas;
 
     private int energia;
 
@@ -24,6 +28,7 @@ public class RoverState {
     //TO-DO: meter las busquedas lineales de arenas, muestras y obstaculos
     public RoverState(GeneradorMapa m) {
         mapa = m;
+        celdas = m.getMapa().clone();
         energia = 100;
 
         visitado = new boolean[m.getMapa().length][m.getMapa()[0].length];
@@ -51,11 +56,11 @@ public class RoverState {
                 dist++;
 
                 //Obstaculo
-                if (mapa.getMapa()[pos_x][pos_y] == 1) {
+                if (celdas[pos_x][pos_y] == 1) {
                     break;
                 }
                 //Muestra
-                else if (mapa.getMapa()[pos_x][pos_y] == 2) {
+                else if (celdas[pos_x][pos_y] == 2) {
                     res = Math.min(res, dist);
                     break;
                 }
@@ -81,11 +86,11 @@ public class RoverState {
                 dist++;
 
                 //Obstaculo
-                if (mapa.getMapa()[pos_x][pos_y] == 1) {
+                if (celdas[pos_x][pos_y] == 1) {
                     break;
                 }
                 //Arena
-                else if (mapa.getMapa()[pos_x][pos_y] == 3) {
+                else if (celdas[pos_x][pos_y] == 3) {
                     res = Math.min(res, dist);
                     break;
                 }
@@ -111,7 +116,7 @@ public class RoverState {
                 dist++;
 
                 //Obstaculo
-                if (mapa.getMapa()[pos_x][pos_y] == 1) {
+                if (celdas[pos_x][pos_y] == 1) {
                     res = Math.min(res, dist);
                     break;
                 }
@@ -230,17 +235,33 @@ public class RoverState {
                 energia_gastada = 100 - energia;
             }
 
-            if (mapa.getMapa()[destiny_y][destiny_x] == 1) {
+            if (celdas[destiny_y][destiny_x] == 1) {
                 energia_gastada = 2;
+                colisiones++;
             }
-            else if (mapa.getMapa()[destiny_y][destiny_x] == 2) {
+            else if (celdas[destiny_y][destiny_x] == 2) {
                 energia_gastada = 10;
-                visitado[destiny_y][destiny_x] = true;
+                arena_pisada++;
+
+                if (!visitado[destiny_y][destiny_x]) {
+                    celdas_exploradas++;
+                    visitado[destiny_y][destiny_x] = true;
+                }
+
+                pos[1] = destiny_x;
+                pos[0] = destiny_y;
             }
             else {
                 muestras_obtenidas++;
-                visitado[destiny_y][destiny_x] = true;
-                mapa.getMapa()[destiny_y][destiny_x] = 0;
+                celdas[destiny_y][destiny_x] = 0;
+
+                if (!visitado[destiny_y][destiny_x]) {
+                    celdas_exploradas++;
+                    visitado[destiny_y][destiny_x] = true;
+                }
+
+                pos[1] = destiny_x;
+                pos[0] = destiny_y;
             }
         }
         else if (a == Action.GIRAR_DER) {

@@ -1,6 +1,8 @@
 package logic;
 
 public class FunctionNode extends ASTNode {
+    boolean evaluated;
+    boolean option;
     ASTNode if_;
     ASTNode else_;
     
@@ -8,6 +10,8 @@ public class FunctionNode extends ASTNode {
         super(f);
         if_ = ifChild;
         else_ = elseChild;
+
+        evaluated = false;
     }
 
     public SpatialSensor getSensor() {
@@ -36,10 +40,28 @@ public class FunctionNode extends ASTNode {
         RoverState state = (RoverState) params;
         Function f = (Function) content;
 
-        if (f.evaluate(state)) {
+        if (!evaluated) {
+            option = f.evaluate(state);
+            evaluated = true;
+        }
+
+        if (option && !if_.isFinished()) {
             if_.execute(params);
-        } else {
+            }
+        else if (!else_.isFinished()) {
             else_.execute(params);
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        boolean child_finished = (option && if_.isFinished()) || (!option && else_.isFinished());
+
+        return child_finished && evaluated;
+    }
+
+    @Override
+    public int getNumberOfNodes() {
+        return 1 + if_.getNumberOfNodes() + else_.getNumberOfNodes();
     }
 }

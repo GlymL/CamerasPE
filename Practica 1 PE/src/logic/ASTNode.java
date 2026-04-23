@@ -12,4 +12,7 @@ public abstract class ASTNode {
     public void setContent(Object c) {
         content = c;
     }
+
+    public abstract boolean isFinished();
+    public abstract int getNumberOfNodes();
 }
