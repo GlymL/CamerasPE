@@ -41,14 +41,11 @@ public class ResultPanel extends JPanel {
 
             doc.insertString(doc.getLength(), "RUTA COMPLETADA\n\n", redBold);
 
-            doc.insertString(doc.getLength(), "MAKESPAN: ", blackBold);
-            doc.insertString(doc.getLength(), String.format("%.2f s\n", best.getFitness()), null);
+            doc.insertString(doc.getLength(), "FITNESS: ", blackBold);
+            doc.insertString(doc.getLength(), String.format("%.2f \n", best.getFitness()), null);
 
             doc.insertString(doc.getLength(), "SEMILLA: ", blackBold);
             doc.insertString(doc.getLength(), seed + "\n\n", null);
-
-            doc.insertString(doc.getLength(), "ÁRBOL: ", blackBold);
-            doc.insertString(doc.getLength(), best.getCrom().getCromosoma().toString() + "\n", null);
 
             // int[][] rutas = best.getCrom().rutas();
             // int dronesCount = rutas.length;
@@ -68,49 +65,26 @@ public class ResultPanel extends JPanel {
             // }
             doc.insertString(doc.getLength(), "\n", null);
 
-            doc.insertString(doc.getLength(), "CROMOSOMA: [ ", blackBold);
-
-            // for (int i = 0; i < dronesCount; i++) {
-            //     SimpleAttributeSet routeColor = droneColors[i];
-            //     int[] ruta = rutas[i];
-
-            //     boolean hasCams = false;
-            //     for (int cam : ruta) {
-            //         if (cam != -1) {
-            //             hasCams = true;
-            //             break;
-            //         }
-            //     }
-
-            //     if (hasCams) {
-            //         for (int cam : ruta) {
-            //             if (cam == -1) break;
-            //             doc.insertString(doc.getLength(), cam + " ", routeColor);
-            //         }
-            //     }
-
-            //     if (i < dronesCount - 1) {
-            //         doc.insertString(doc.getLength(), "|| ", blackBold);
-            //     }
-            // }
-            doc.insertString(doc.getLength(), "]\n", blackBold);
+            doc.insertString(doc.getLength(), "CROMOSOMA: { \n", blackBold);
+            doc.insertString(doc.getLength(), best.getCrom().toString(), null);
+            doc.insertString(doc.getLength(), "\n}", blackBold);
 
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
-    private double computeDroneTime(int[] ruta, double speed) {
-        if (ruta == null || ruta.length == 0 || ruta[0] == -1) return 0.0;
+    // private double computeDroneTime(int[] ruta, double speed) {
+    //     if (ruta == null || ruta.length == 0 || ruta[0] == -1) return 0.0;
 
-        double tiempo = 0;
-        int j = 0;
-        while (j < ruta.length && ruta[j] != -1) {
-            // if (j == 0) tiempo += a.getInit(ruta[j]);
-            // else tiempo += a.getPrecalc(ruta[j - 1], ruta[j]);
-            j++;
-        }
-        //tiempo += a.getInit(ruta[j - 1]);
-        return tiempo / speed;
-    }
+    //     double tiempo = 0;
+    //     int j = 0;
+    //     while (j < ruta.length && ruta[j] != -1) {
+    //         // if (j == 0) tiempo += a.getInit(ruta[j]);
+    //         // else tiempo += a.getPrecalc(ruta[j - 1], ruta[j]);
+    //         j++;
+    //     }
+    //     //tiempo += a.getInit(ruta[j - 1]);
+    //     return tiempo / speed;
+    // }
 }

@@ -51,17 +51,17 @@ public class EvolutionFullGUI extends JFrame{
     new JComboBox < > (EnumSelection.values());
 
   private final JSpinner populationSpinner =
-    new JSpinner(new SpinnerNumberModel(300, 1, 10000, 10));
+    new JSpinner(new SpinnerNumberModel(100, 1, 10000, 10));
   private final JSpinner profInicialSpinner =
     new JSpinner(new SpinnerNumberModel(3, 1, 10, 1));
   private final JSpinner generationsSpinner =
-    new JSpinner(new SpinnerNumberModel(300, 1, 10000, 50));
+    new JSpinner(new SpinnerNumberModel(500, 1, 10000, 50));
   private final JSpinner crossoverSpinner =
     new JSpinner(new SpinnerNumberModel(0.8, 0.0, 1.0, 0.05));
   private final JSpinner mutationSpinner =
     new JSpinner(new SpinnerNumberModel(0.01, 0.0, 1.0, 0.01));
   private final JSpinner bloatingSpinner =
-    new JSpinner(new SpinnerNumberModel(0.5, 0.0, 2.0, 0.01));
+    new JSpinner(new SpinnerNumberModel(1.0, 0.0, 2.0, 0.01));
   private final JSpinner elitismoSpinner =
     new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1.0, 0.01));
   // private final JSpinner dronesSpinner =
@@ -101,31 +101,38 @@ public class EvolutionFullGUI extends JFrame{
   }
 
 private JPanel createCenterPanel() {
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    JPanel panel = new JPanel(new GridBagLayout());
     panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-    // Configuración arriba
-    JPanel configPanel = createConfigPanel();
-    configPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, configPanel.getPreferredSize().height));
-    panel.add(configPanel);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridy = 0;
+    gbc.fill = GridBagConstraints.BOTH;
+    gbc.weighty = 0.2;
 
-    // Mapa en el medio
-    JPanel mapPanel = createMapPanel();
-    mapPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, mapPanel.getPreferredSize().height));
-    panel.add(mapPanel);
+    JPanel leftContainer = new JPanel(new GridBagLayout());
+    GridBagConstraints leftGbc = new GridBagConstraints();
+    leftGbc.gridx = 0;
+    leftGbc.weightx = 0.3;
+    leftGbc.fill = GridBagConstraints.BOTH;
 
-    // ResultPanel debajo del mapa
+    leftGbc.gridy = 0;
+    leftGbc.weighty = 0.7;
+    leftContainer.add(createConfigPanel(), leftGbc);
+
+    leftGbc.gridy = 1;
+    leftGbc.weighty = 0.3;
     resultPanel = new ResultPanel();
-    resultPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, resultPanel.getPreferredSize().height));
-    panel.add(resultPanel);
+    leftContainer.add(resultPanel, leftGbc);
 
-    // Chart a la derecha, pero como es vertical, quizás quitar o ajustar
-    // Para mantener el chart, quizás añadir un JPanel horizontal para mapa y chart
-    JPanel bottomPanel = new JPanel(new BorderLayout());
-    bottomPanel.add(createFitnessPanel(), BorderLayout.EAST);
-    bottomPanel.add(resultPanel, BorderLayout.WEST);
-    panel.add(bottomPanel);
+    panel.add(leftContainer, gbc);
+
+    gbc.gridx = 1;
+    gbc.weightx = 0.5;
+    panel.add(createMapPanel(), gbc);
+
+    gbc.gridx = 2;
+    gbc.weightx = 0.3;
+    panel.add(createFitnessPanel(), gbc);
 
     return panel;
 }
@@ -215,7 +222,7 @@ private JPanel createCenterPanel() {
     gbc.gridwidth = 2;
 
     gbc.gridy++;
-     runButton.addActionListener((e) -> {System.out.println("Run button clicked"); runAlgorithm();});
+     runButton.addActionListener((e) -> runAlgorithm());
     panel.add(runButton, gbc);
 
     return panel;
@@ -258,7 +265,6 @@ private JPanel createCenterPanel() {
     gc = new GeneradorMapa(seed, new MapaRover(0));
 
     bd.updateMap(gc);
-    System.out.println("Iniciando algoritmo genético...");
     new Thread(() -> c.execute(
       generations,
       gc,
@@ -269,8 +275,6 @@ private JPanel createCenterPanel() {
       selection,
       elitismo,
       bloating, prof_inicial)).start();
-
-      System.out.println("Algoritmo genético iniciado.");
   }
 
   public void updateChart(double maxGen, double pEv, double bestFitness, double avgFitness) {
@@ -280,9 +284,7 @@ private JPanel createCenterPanel() {
   }
 
   public void clearChart() {
-    SwingUtilities.invokeLater(() -> {
-      fitnessChart.reset();
-    });
+    fitnessChart.reset();
   }
 
   public void updateMap(int[][] bestCrom) {

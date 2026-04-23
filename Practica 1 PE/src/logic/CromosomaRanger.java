@@ -220,4 +220,9 @@ public class CromosomaRanger{
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return cromosoma.toString();
+    }
 }

@@ -124,6 +124,6 @@ public class FunctionNode extends ASTNode {
     @Override
     public String toString() {
         Function f = (Function) content;
-        return "if (" + f.getSensor() + " " + f.getOperator() + " " + f.getValue() + ") { " + if_.toString() + " } else { " + else_.toString() + " }";
+        return "if (" + f.getSensor() + " " + f.getOperator() + " " + f.getValue() + ") { \n" + if_.toString() + " } else { \n" + else_.toString() + " }";
     }
 }

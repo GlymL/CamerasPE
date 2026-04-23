@@ -63,6 +63,6 @@ public class TerminalNode extends ASTNode {
 
     @Override
     public String toString() {
-        return getAction().toString();
+        return getAction().toString() + "\n";
     }
 }

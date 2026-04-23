@@ -113,7 +113,7 @@ public class BlockNode extends ASTNode {
         ASTNode[] nodes = (ASTNode[]) this.content;
         for (int j = 0; j < nodes.length; j++) {
             sb.append(nodes[j].toString());
-            if (j < nodes.length - 1) sb.append("; ");
+            if (j < nodes.length - 1) sb.append("; \n");
         }
         sb.append(" }");
         return sb.toString();

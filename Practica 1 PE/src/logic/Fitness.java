@@ -80,17 +80,8 @@ public class Fitness implements Comparable<Fitness>{
         return aptitude;
     }
 
-    // public int[][] rutas() {
-    //     List<int[]> path = new ArrayList<>();
-    //     RoverState state = new RoverState(map);
-
-    //     while (state.isAlive() && !state.isFinished()) {
-    //         state.setAccionTomada(false);
-    //         c.execute(state);
-    //         path.add(new int[]{state.getPos()[1], state.getPos()[0]}); // x, y
-    //         state.incrTicks();
-    //     }
-
-    //     return path.toArray(new int[0][2]);
-    // }
+    @Override
+    public String toString() {
+        return this.c.toString();
+    }
 }
