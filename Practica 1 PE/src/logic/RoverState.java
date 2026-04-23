@@ -298,6 +298,8 @@ public class RoverState {
             visual_rewarding++;
         }
 
+        incrTicks();
+
         return new MovementInfo(energia_gastada, true);
     }
 }
